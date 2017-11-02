@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rbxpacker --exclude **/*.spec.lua --folder TestEZ --name TestEZ lib > testez-installer.lua

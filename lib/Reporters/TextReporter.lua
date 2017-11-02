@@ -3,6 +3,8 @@
 	standard output and TestService.
 ]]
 
+local TestService = game:GetService("TestService")
+
 local TestEnum = require(script.Parent.Parent.TestEnum)
 
 local INDENT = (" "):rep(3)
@@ -84,10 +86,10 @@ function TextReporter.report(results)
 
 	if #results.errors > 0 then
 		print("Errors reported by tests:")
+		print("")
 
 		for _, message in ipairs(results.errors) do
-			-- game:GetService("TestService"):Error(message)
-			print(message)
+			game:GetService("TestService"):Error(message)
 
 			-- Insert a blank line after each error
 			print("")

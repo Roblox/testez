@@ -11,6 +11,8 @@
 
 TestEZ can run within Roblox itself, as well as inside [Lemur](https://github.com/LPGhatguy/Lemur) for testing on CI systems.
 
+It provides an API that can run all of your tests with a single method call as well as a more granular API that exposes each step of the pipeline.
+
 ## Installation
 
 ### Method 1: Installation Script (Roblox)
@@ -26,9 +28,23 @@ If building a Roblox place by importing scripts from the filesystem, copy the `l
 ### Method 3: Lemur (CI Systems)
 You can use [Lemur](https://github.com/LPGhatguy/Lemur) paired together with a regular Lua 5.1 interpreter to run tests written with TestEZ.
 
-This is the best approach when testing Roblox Lua libraries using existing continuous integration systems like Travis-CI. We use this technique to run tests for [Rodux](https://github.com/Roblox/Rodux).
+This is the best approach when testing Roblox Lua libraries using existing continuous integration systems like Travis-CI. We use this technique to run tests for [Rodux](https://github.com/Roblox/Rodux) and other libraries.
 
-## Usage
+## Creating a Test Script
+TestEZ provides two levels of granularity for creating a test script.
+
+The easiest (and recommended) approach is to load the `TestBootstrap` module and `Reporters.TextReporter`. To run all the tests contained in the object `MY_TESTS`, it's just:
+
+```lua
+local TestBootstrap = require(TestEZ.TestBootstrap)
+local TextReporter = require(TestEZ.Reporters.TextReporter)
+
+TestBootstrap:run(MY_TESTS, TextReporter)
+```
+
+The method also returns information about the test run that can be used to take further action.
+
+Alternatively, you can use the other APIs directly. See [the source of `TestBootstrap`](lib/TestBootstrap.lua) as well as [DESIGN.md](DESIGN.md) for details on how to accomplish that.
 
 ## Writing Tests
 Create `.spec.lua` files (or Roblox objects with the `.spec` suffix) for each module you want to test. These modules should return a function that in turn calls functions from TestEZ.

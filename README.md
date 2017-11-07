@@ -9,7 +9,7 @@
 
 <div>&nbsp;</div>
 
-TestEZ can run within Roblox itself, as well as inside [Lemur](https://github.com/LPGhatguy/Lemur) for testing on CI systems.
+TestEZ can run within Roblox itself, as well as inside [Lemur](https://github.com/LPGhatguy/Lemur) for testing on CI systems. We use it at Roblox for testing lots of Lua code, as well as libraries like [Rodux](https://github.com/Roblox/Rodux).
 
 It provides an API that can run all of your tests with a single method call as well as a more granular API that exposes each step of the pipeline.
 
@@ -100,7 +100,7 @@ Often during development, you'll want to only run the test that's concerned with
 
 TestEZ provides the `SKIP()` and `FOCUS()` functions to either skip or focus the block that the call is contained in.
 
-This mechanism does not work for `it` blocks, where you can instead is `itSKIP` and `itFOCUS`. This is because the code inside `it` blocks is not run until the test is executed.
+This mechanism does not work for `it` blocks, where you can instead use `itSKIP` and `itFOCUS`. This is because the code inside `it` blocks is not run until the test is executed.
 
 For example, I might want to run the tests targeting a specific method for my `DateTime` module:
 
@@ -125,10 +125,10 @@ end
 
 ***`FOCUS` and `SKIP` are intended exclusively for development; future versions of TeztEZ will be able to detect this when running in a CI system and fail tests!***
 
-## TestEZ API
+## TestEZ Test API
 
 ### `describe(phrase, callback)`
-This function creates a new `describe` block. These blocks correspond to the things that are being tested.
+This function creates a new `describe` block. These blocks correspond to the **things** that are being tested.
 
 Put `it` blocks inside of `describe` blocks to describe what behavior should be correct.
 
@@ -143,7 +143,7 @@ end)
 ```
 
 ### `it(phrase, callback)`
-This function creates a new 'it' block. These blocks correspond to the behaviors that should be expected of the thing you're testing.
+This function creates a new 'it' block. These blocks correspond to the **behaviors** that should be expected of the thing you're testing.
 
 For example:
 
@@ -215,6 +215,9 @@ end).never.to.throw()
 The `describe` and `it` syntax in TestEZ is based on the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) methodology, notably as implemented in RSpec (Ruby), busted (Lua), Mocha (JavaScript), and Ginkgo (Go).
 
 The `expect` syntax is based on Chai, a JavaScript assertion library commonly used with Mocha. Similar expectation systems are also used in RSpec and Ginkgo, with slightly different syntax.
+
+## Contributing
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for information.
 
 ## License
 TestEZ is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.

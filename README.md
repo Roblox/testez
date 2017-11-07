@@ -217,4 +217,6 @@ The `describe` and `it` syntax in TestEZ is based on the [Behavior-Driven Develo
 The `expect` syntax is based on Chai, a JavaScript assertion library commonly used with Mocha. Similar expectation systems are also used in RSpec and Ginkgo, with slightly different syntax.
 
 ## License
-TestEZ is available under the [todo] license. See [LICENSE.md](LICENSE.md) for details.
+TestEZ is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
+
+For easy distribution, the license is duplicated in [lib/LICENSE.lua](lib/LICENSE.lua).

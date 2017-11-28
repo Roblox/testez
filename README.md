@@ -1,6 +1,8 @@
 <h1 align="center">TestEZ</h1>
 <div align="center">
-	<!-- TODO: badges and stuff here -->
+	<a href="https://travis-ci.org/Roblox/TestEZ">
+		<img src="https://api.travis-ci.org/Roblox/TestEZ.svg?branch=master" alt="Travis-CI Build Status" />
+	</a>
 </div>
 
 <div align="center">
@@ -221,5 +223,3 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for informatio
 
 ## License
 TestEZ is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
-
-For easy distribution, the license is duplicated in [lib/LICENSE.lua](lib/LICENSE.lua).

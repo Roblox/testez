@@ -89,7 +89,7 @@ function TextReporter.report(results)
 		print("")
 
 		for _, message in ipairs(results.errors) do
-			game:GetService("TestService"):Error(message)
+			TestService:Error(message)
 
 			-- Insert a blank line after each error
 			print("")

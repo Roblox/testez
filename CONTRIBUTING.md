@@ -67,6 +67,4 @@ You should get it working on your system, and then get a plugin for the editor y
 ### Tests
 When submitting a bug fix, create a test that verifies the broken behavior and that the bug fix works. This helps us avoid regressions!
 
-When submitting a new feature, add tests for all functionality.
-
 We use [LuaCov](https://keplerproject.github.io/luacov) for keeping track of code coverage. We'd like it to be as close to 100% as possible, but it's not always easy.

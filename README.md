@@ -91,10 +91,10 @@ Every module is implicitly scoped according to its path, meaning the tree that t
 
 ```
 LuaChat
-    Greeter
-        greet
-            [+] should include the customary English greeting
-            [+] should include the person being greeted
+	Greeter
+		greet
+			[+] should include the customary English greeting
+			[+] should include the person being greeted
 ```
 
 ## Debugging Tests

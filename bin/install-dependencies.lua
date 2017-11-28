@@ -9,7 +9,7 @@
 local dependencies = {
 	lemur = {
 		git = "https://github.com/LPGhatguy/lemur.git",
-		version = "master",
+		version = "v0.1.0",
 	},
 }
 

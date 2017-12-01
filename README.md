@@ -17,7 +17,7 @@ It provides an API that can run all of your tests with a single method call as w
 
 ## Installation
 
-### Method 1: Installation Script (Roblox)
+### Method 1: Installation Script (Roblox Studio)
 * Download the latest release from the [GitHub releases page](https://github.com/Roblox/TestEZ/releases).
 * Use the 'Run Script' menu (located in the Test tab) to locate and run this script.
 * Follow the instructions in the installer

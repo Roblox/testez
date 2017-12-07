@@ -1,7 +1,7 @@
 <h1 align="center">TestEZ</h1>
 <div align="center">
-	<a href="https://travis-ci.org/Roblox/TestEZ">
-		<img src="https://api.travis-ci.org/Roblox/TestEZ.svg?branch=master" alt="Travis-CI Build Status" />
+	<a href="https://travis-ci.org/Roblox/testez">
+		<img src="https://api.travis-ci.org/Roblox/testez.svg?branch=master" alt="Travis-CI Build Status" />
 	</a>
 </div>
 

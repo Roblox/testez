@@ -44,13 +44,16 @@ function TestSession:calculateTotals()
 
 	results:visitAllNodes(function(node)
 		local status = node.status
+		local nodeType = node.planNode.type
 
-		if status == TestEnum.TestStatus.Success then
-			results.successCount = results.successCount + 1
-		elseif status == TestEnum.TestStatus.Failure then
-			results.failureCount = results.failureCount + 1
-		elseif status == TestEnum.TestStatus.Skipped then
-			results.skippedCount = results.skippedCount + 1
+		if nodeType == TestEnum.NodeType.It then
+			if status == TestEnum.TestStatus.Success then
+				results.successCount = results.successCount + 1
+			elseif status == TestEnum.TestStatus.Failure then
+				results.failureCount = results.failureCount + 1
+			elseif status == TestEnum.TestStatus.Skipped then
+				results.skippedCount = results.skippedCount + 1
+			end
 		end
 	end)
 end

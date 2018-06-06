@@ -47,6 +47,10 @@ function TestBootstrap:getModules(root, modules, current)
 		end
 	end
 
+	table.sort(modules, function(a, b)
+		return a.path[#a.path]:lower() < b.path[#b.path]:lower()
+	end)
+
 	return modules
 end
 

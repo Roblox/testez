@@ -50,29 +50,53 @@ function TestRunner.runPlanNode(session, planNode, noXpcall)
 			if session:shouldSkip() then
 				childResultNode.status = TestEnum.TestStatus.Skipped
 			else
-				-- Apply environment for test functions
-				local baseEnv = getfenv(childPlanNode.callback)
+				-- Errors can be set either via `error` propagating upwards or
+				-- by a test calling fail([message]).
+				local success = true
+				local errorMessage
+
+				local testEnvironment = getfenv(childPlanNode.callback)
+
 				for key, value in pairs(TestRunner.environment) do
-					baseEnv[key] = value
+					testEnvironment[key] = value
+				end
+
+				testEnvironment.fail = function(message)
+					if message == nil then
+						message = "fail() was called."
+					end
+
+					success = false
+					errorMessage = message .. "\n" .. debug.traceback()
 				end
 
 				-- We prefer xpcall, but yielding doesn't work from xpcall.
 				-- As a workaround, you can mark nodes as "not xpcallable"
 				local call = noXpcall and pcall or xpcall
 
+				-- Any code can check RUNNING_GLOBAL to fork behavior based on
+				-- whether a test is running. We use this to avoid accessing
+				-- protected APIs; it's a workaround that will go away someday.
 				_G[RUNNING_GLOBAL] = true
 
-				local ok, err = call(childPlanNode.callback, function(err)
-					return err .. "\n" .. debug.traceback()
+				local nodeSuccess, nodeResult = call(childPlanNode.callback, function(message)
+					return message .. "\n" .. debug.traceback()
 				end)
 
 				_G[RUNNING_GLOBAL] = nil
 
-				if ok then
+				-- If a node threw an error, we prefer to use that message over
+				-- one created by fail() if it was set.
+				if not nodeSuccess then
+					success = false
+					errorMessage = nodeResult
+				end
+
+				if success then
 					childResultNode.status = TestEnum.TestStatus.Success
 				else
 					childResultNode.status = TestEnum.TestStatus.Failure
-					table.insert(childResultNode.errors, err)
+					table.insert(childResultNode.errors, errorMessage)
 				end
 			end
 		elseif childPlanNode.type == TestEnum.NodeType.Describe then

@@ -1,0 +1,27 @@
+site_name: TestEZ Documentation
+site_url: https://roblox.github.io/testez/
+repo_name: Roblox/testez
+repo_url: https://github.com/Roblox/testez
+
+theme:
+  name: material
+  palette:
+    primary: 'Light Blue'
+    accent: 'Light Blue'
+
+pages:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Running Tests: getting-started/running-tests.md
+    - Writing Tests: getting-started/writing-tests.md
+    - Debugging Tests: getting-started/debugging-tests.md
+  - API Reference: api-reference.md
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.superfences

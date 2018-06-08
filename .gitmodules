@@ -1,0 +1,3 @@
+[submodule "modules/lemur"]
+	path = modules/lemur
+	url = https://github.com/LPGhatguy/lemur.git

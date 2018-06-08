@@ -7,6 +7,7 @@ stds.roblox = {
 		"script",
 
 		-- -- Extra functions
+		"typeof",
 		"tick", "warn",
 	}
 }

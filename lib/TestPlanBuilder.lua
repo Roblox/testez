@@ -19,7 +19,8 @@ TestPlanBuilder.__index = TestPlanBuilder
 function TestPlanBuilder.new()
 	local self = {
 		plan = TestPlan.new(),
-		nodeStack = {}
+		nodeStack = {},
+		noXpcallByDefault = false,
 	}
 
 	setmetatable(self, TestPlanBuilder)
@@ -69,6 +70,8 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 	end
 
 	table.insert(self.nodeStack, useNode)
+
+	useNode.HACK_NO_XPCALL = self.noXpcallByDefault
 
 	return useNode
 end

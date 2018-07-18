@@ -18,7 +18,7 @@ local UNKNOWN_STATUS_SYMBOL = "?"
 local TextReporter = {}
 
 local function compareNodes(a, b)
-	return a.planNode.phrase < b.planNode.phrase
+	return a.planNode.phrase:lower() < b.planNode.phrase:lower()
 end
 
 local function reportNode(node, buffer, level)

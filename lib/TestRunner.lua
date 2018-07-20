@@ -104,12 +104,19 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 						childResultNode.status = TestEnum.TestStatus.Success
 					else
 						childResultNode.status = TestEnum.TestStatus.Failure
+						if tryStack:size() > 0 then tryStack:setBack({isOk = false, failedNode = childPlanNode}) end
 						table.insert(childResultNode.errors, errorMessage)
 					end
 				end
 			end
 		elseif childPlanNode.type == TestEnum.NodeType.Describe or childPlanNode.type == TestEnum.NodeType.Try then
-			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:push({isOk = true, failedNode = nil}) end
+			if childPlanNode.type == TestEnum.NodeType.Try then
+				if tryStack:size() > 0 then
+					tryStack:push(tryStack:getBack())
+				else
+					tryStack:push({isOk = true, failedNode = nil})
+				end
+			end
 			TestRunner.runPlanNode(session, childPlanNode, tryStack, childPlanNode.HACK_NO_XPCALL)
 			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:pop() end
 

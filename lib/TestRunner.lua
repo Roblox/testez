@@ -104,7 +104,9 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 						childResultNode.status = TestEnum.TestStatus.Success
 					else
 						childResultNode.status = TestEnum.TestStatus.Failure
-						if tryStack:size() > 0 then tryStack:setBack({isOk = false, failedNode = childPlanNode}) end
+						if tryStack:size() > 0 then
+							tryStack:setBack({isOk = false, failedNode = childPlanNode})
+						end
 						table.insert(childResultNode.errors, errorMessage)
 					end
 				end

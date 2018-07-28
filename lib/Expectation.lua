@@ -198,6 +198,33 @@ function Expectation:equal(otherValue)
 end
 
 --[[
+	Assert that our expectation value is equal to another value within some delta
+]]
+function Expectation:near(otherValue, delta)
+	local result = (math.abs(self.value - otherValue) < delta) == self.successCondition
+
+	local message = formatMessage(self.successCondition,
+		("Expected value %q (%s) within %q , got %q (%s) instead"):format(
+			tostring(otherValue),
+			type(otherValue),
+			tostring(delta),
+			tostring(self.value),
+			type(self.value)
+		),
+		("Expected anything but value %q (%s) within %q"):format(
+			tostring(otherValue),
+			type(otherValue),
+			tostring(delta)
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+--[[
 	Assert that our functoid expectation value throws an error when called
 ]]
 function Expectation:throw()

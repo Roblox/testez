@@ -198,23 +198,23 @@ function Expectation:equal(otherValue)
 end
 
 --[[
-	Assert that our expectation value is equal to another value within some delta
+	Assert that our expectation value is equal to another value within some limit, inclusive
 ]]
-function Expectation:near(otherValue, delta)
-	local result = (math.abs(self.value - otherValue) < delta) == self.successCondition
+function Expectation:near(otherValue, limit)
+	local result = (math.abs(self.value - otherValue) <= limit) == self.successCondition
 
 	local message = formatMessage(self.successCondition,
 		("Expected value %q (%s) within %q , got %q (%s) instead"):format(
 			tostring(otherValue),
 			type(otherValue),
-			tostring(delta),
+			tostring(limit),
 			tostring(self.value),
 			type(self.value)
 		),
 		("Expected anything but value %q (%s) within %q"):format(
 			tostring(otherValue),
 			type(otherValue),
-			tostring(delta)
+			tostring(limit)
 		)
 	)
 

@@ -53,7 +53,7 @@ end
 ]]
 local function bindSelf(self, method)
 	return function(firstArg, ...)
-		if (firstArg == self) then
+		if firstArg == self then
 			return method(self, ...)
 		else
 			return method(self, firstArg, ...)

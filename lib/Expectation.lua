@@ -86,7 +86,6 @@ function Expectation.new(value)
 	self.ok = bindSelf(self, self.ok)
 	self.equal = bindSelf(self, self.equal)
 	self.throw = bindSelf(self, self.throw)
-	self.called = bindSelf(self, self.called)
 
 	return self
 end

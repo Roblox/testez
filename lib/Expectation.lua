@@ -87,6 +87,7 @@ function Expectation.new(value)
 	self.equal = bindSelf(self, self.equal)
 	self.throw = bindSelf(self, self.throw)
 	self.called = bindSelf(self, self.called)
+	self.near = bindSelf(self, self.near)
 
 	return self
 end

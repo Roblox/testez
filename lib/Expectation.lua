@@ -201,9 +201,9 @@ end
 	Assert that our expectation value is equal to another value within some limit, inclusive
 ]]
 function Expectation:near(otherValue, limit)
-	assert(type(self.value) == "number", "expectation value should be a number")
-	assert(type(otherValue) == "number", "value should be a number")
-	assert(type(limit) == "number", "limit value should be a number")
+	assert(type(self.value) == "number", "Expectation value must be a number to use 'near'")
+	assert(type(otherValue) == "number", "otherValue must be a number")
+	assert(type(limit) == "number" or limit == nil, "limit must be a number or nil")
 
 	local result = (math.abs(self.value - otherValue) <= limit) == self.successCondition
 
@@ -213,10 +213,10 @@ function Expectation:near(otherValue, limit)
 			tostring(otherValue),
 			tostring(self.value)
 		),
-		("Expected value to be outside of %f from %f, but got %f instead"):format(
+		("Expected value to not be within %f from %f, but got %f instead"):format(
+			tostring(limit),
 			tostring(otherValue),
-			type(otherValue),
-			tostring(limit)
+			tostring(self.value)
 		)
 	)
 

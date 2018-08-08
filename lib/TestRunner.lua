@@ -7,6 +7,7 @@
 ]]
 
 local Expectation = require(script.Parent.Expectation)
+local createSpy = require(script.Parent.createSpy)
 local TestEnum = require(script.Parent.TestEnum)
 local TestSession = require(script.Parent.TestSession)
 local Stack = require(script.Parent.Stack)
@@ -14,12 +15,11 @@ local Stack = require(script.Parent.Stack)
 local RUNNING_GLOBAL = "__TESTEZ_RUNNING_TEST__"
 
 local TestRunner = {
-	environment = {}
+	environment = {
+		expect = Expectation.new,
+		createSpy = createSpy,
+	}
 }
-
-function TestRunner.environment.expect(...)
-	return Expectation.new(...)
-end
 
 --[[
 	Runs the given TestPlan and returns a TestResults object representing the

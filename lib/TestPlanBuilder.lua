@@ -73,7 +73,8 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 		end
 	end
 
-	if self.testNamePattern and nodeModifier == TestEnum.NodeModifier.None then
+	local nodeModifierNotSet = nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None
+	if self.testNamePattern and nodeModifierNotSet then
 		local fullName = constructFullName(phrase, lastNode)
 		if fullName:match(self.testNamePattern) then
 			nodeModifier = TestEnum.NodeModifier.Focus

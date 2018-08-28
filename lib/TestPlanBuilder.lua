@@ -48,14 +48,14 @@ function TestPlanBuilder:getCurrentNode()
 	return self.nodeStack[#self.nodeStack] or self.plan
 end
 
-local function constructFullName(phrase, node)
-	if node then
-		local parent = constructFullName(node.phrase, node.parent)
-		if parent then
-			return parent .. " " .. phrase
+local function constructFullName(node)
+	if node.parent then
+		local parentPhrase = constructFullName(node.parent)
+		if parentPhrase then
+			return parentPhrase .. " " .. node.phrase
 		end
 	end
-	return phrase
+	return node.phrase
 end
 
 --[[
@@ -73,14 +73,6 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 		end
 	end
 
-	local nodeModifierNotSet = nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None
-	if self.testNamePattern and nodeModifierNotSet then
-		local fullName = constructFullName(phrase, lastNode)
-		if fullName:match(self.testNamePattern) then
-			nodeModifier = TestEnum.NodeModifier.Focus
-		end
-	end
-
 	-- Didn't find one, create a new node
 	if not useNode then
 		useNode = TestPlan.createNode(phrase, nodeType, nodeModifier)
@@ -91,6 +83,13 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 
 	table.insert(self.nodeStack, useNode)
 
+	local nodeModifierNotSet = useNode.modifier == nil or useNode.modifier == TestEnum.NodeModifier.None
+	if self.testNamePattern and nodeModifierNotSet then
+		local fullName = constructFullName(useNode)
+		if fullName:match(self.testNamePattern) then
+			useNode.modifier = TestEnum.NodeModifier.Focus
+		end
+	end
 	useNode.HACK_NO_XPCALL = self.noXpcallByDefault
 
 	return useNode

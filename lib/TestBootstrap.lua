@@ -40,14 +40,14 @@ function TestBootstrap:getModules(root, modules, current)
 	local function processChild(child, parent)
 		if isSpecScript(child) then
 			local method = require(child)
-			local path = getPath(child, root)
+			local path = getPath(child, parent)
 
 			table.insert(modules, {
 				method = method,
 				path = path
 			})
 		else
-			self:getModules(root, modules, child)
+			self:getModules(parent, modules, child)
 		end
 	end
 

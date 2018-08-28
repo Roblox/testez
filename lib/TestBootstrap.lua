@@ -73,7 +73,7 @@ function TestBootstrap:run(root, reporter, otherOptions)
 	reporter = reporter or TextReporter
 
 	otherOptions = otherOptions or {}
-	local showTimingInfo = otherOptions["showTimingInfo"]
+	local showTimingInfo = otherOptions["showTimingInfo"] or false
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
 	local testNamePattern = otherOptions["testNamePattern"]
 

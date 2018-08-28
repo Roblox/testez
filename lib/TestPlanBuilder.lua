@@ -8,6 +8,7 @@
 ]]
 
 local TestPlan = require(script.Parent.TestPlan)
+local TestEnum = require(script.Parent.TestEnum)
 
 local TestPlanBuilder = {}
 
@@ -21,6 +22,7 @@ function TestPlanBuilder.new()
 		plan = TestPlan.new(),
 		nodeStack = {},
 		noXpcallByDefault = false,
+		testNamePattern = nil,
 	}
 
 	setmetatable(self, TestPlanBuilder)
@@ -46,6 +48,16 @@ function TestPlanBuilder:getCurrentNode()
 	return self.nodeStack[#self.nodeStack] or self.plan
 end
 
+local function constructFullName(phrase, node)
+	if node then
+		local parent = constructFullName(node.phrase, node.parent)
+		if parent then
+			return parent .. " " .. phrase
+		end
+	end
+	return phrase
+end
+
 --[[
 	Creates and pushes a node onto the navigation stack.
 ]]
@@ -58,6 +70,13 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 		if child.phrase == phrase then
 			useNode = child
 			break
+		end
+	end
+
+	if self.testNamePattern and nodeModifier == TestEnum.NodeModifier.None then
+		local fullName = constructFullName(phrase, lastNode)
+		if fullName:match(self.testNamePattern) then
+			nodeModifier = TestEnum.NodeModifier.Focus
 		end
 	end
 

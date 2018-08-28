@@ -153,9 +153,10 @@ end
 	These functions should call a combination of `describe` and `it` (and their
 	variants), which will be turned into a test plan to be executed.
 ]]
-function TestPlanner.createPlan(specFunctions, noXpcallByDefault)
+function TestPlanner.createPlan(specFunctions, noXpcallByDefault, testNamePattern)
 	local builder = TestPlanBuilder.new()
 	builder.noXpcallByDefault = noXpcallByDefault
+	builder.testNamePattern = testNamePattern
 	local env = TestPlanner.createEnvironment(builder)
 
 	for _, module in ipairs(specFunctions) do

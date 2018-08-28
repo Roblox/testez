@@ -75,6 +75,7 @@ function TestBootstrap:run(root, reporter, otherOptions)
 	otherOptions = otherOptions or {}
 	local showTimingInfo = otherOptions["showTimingInfo"]
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
+	local testNamePattern = otherOptions["testNamePattern"]
 
 	if not root then
 		error("You must provide a root object to search for tests in!", 2)
@@ -91,7 +92,7 @@ function TestBootstrap:run(root, reporter, otherOptions)
 
 	local afterModules = tick()
 
-	local plan = TestPlanner.createPlan(modules, noXpcallByDefault)
+	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern)
 	local afterPlan = tick()
 
 	local results = TestRunner.runPlan(plan)

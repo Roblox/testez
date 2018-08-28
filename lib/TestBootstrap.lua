@@ -11,6 +11,9 @@ local TestBootstrap = {}
 local function stripSpecSuffix(name)
 	return (name:gsub("%.spec$", ""))
 end
+local function isSpecScript(aScript)
+	return aScript:IsA("ModuleScript") and aScript.Name:match("%.spec$")
+end
 
 local function getPath(module, root)
 	root = root or game
@@ -34,8 +37,8 @@ function TestBootstrap:getModules(root, modules, current)
 	modules = modules or {}
 	current = current or root
 
-	for _, child in ipairs(current:GetChildren()) do
-		if child:IsA("ModuleScript") and child.Name:match("%.spec$") then
+	local function processChild(child, parent)
+		if isSpecScript(child) then
 			local method = require(child)
 			local path = getPath(child, root)
 
@@ -45,6 +48,14 @@ function TestBootstrap:getModules(root, modules, current)
 			})
 		else
 			self:getModules(root, modules, child)
+		end
+	end
+
+	if isSpecScript(root) then
+		processChild(root, root.Parent)
+	else
+		for _, child in ipairs(current:GetChildren()) do
+			processChild(child, root)
 		end
 	end
 

@@ -22,6 +22,7 @@ local function getPath(module, root)
 		table.insert(path, stripSpecSuffix(last.Name))
 		last = last.Parent
 	end
+	table.insert(path, stripSpecSuffix(root.Name))
 
 	return path
 end
@@ -82,6 +83,10 @@ function TestBootstrap:run(root, reporter, showTimingInfo, noXpcallByDefault)
 	local modules
 	if type(root) == "function" then
 		modules = {{method = root, path = {}}}
+	elseif type(root) == "table" then
+		for _, subRoot in ipairs(root) do
+			modules = self:getModules(subRoot, modules)
+		end
 	else
 		modules = self:getModules(root)
 	end

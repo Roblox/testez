@@ -52,8 +52,16 @@ end
 function TestPlanner.createEnvironment(builder)
 	local env = {}
 
-	function env.describe(phrase, callback)
-		local node = builder:pushNode(phrase, TestEnum.NodeType.Describe)
+	function env.describeFOCUS(phrase, callback)
+		return env.describe(phrase, callback, TestEnum.NodeModifier.Focus)
+	end
+
+	function env.describeSKIP(phrase, callback)
+		return env.describe(phrase, callback, TestEnum.NodeModifier.Skip)
+	end
+
+	function env.describe(phrase, callback, nodeModifier)
+		local node = builder:pushNode(phrase, TestEnum.NodeType.Describe, nodeModifier)
 
 		local ok, err = pcall(callback)
 
@@ -130,6 +138,11 @@ function TestPlanner.createEnvironment(builder)
 	end
 
 	env.step = env.it
+
+	env.fit = env.itFOCUS
+	env.xit = env.itSKIP
+	env.fdescribe = env.describeFOCUS
+	env.xdescribe = env.describeSKIP
 
 	function env.include(...)
 		local args = {...}

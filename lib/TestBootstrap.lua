@@ -81,13 +81,17 @@ end
 	the test plan before we execute it, allowing them to toggle specific tests
 	before they're run, but after they've been identified!
 ]]
-function TestBootstrap:run(root, reporter, showTimingInfo, noXpcallByDefault)
-	noXpcallByDefault = noXpcallByDefault or false
+function TestBootstrap:run(root, reporter, otherOptions)
+	reporter = reporter or TextReporter
+
+	otherOptions = otherOptions or {}
+	local showTimingInfo = otherOptions["showTimingInfo"] or false
+	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
+	local testNamePattern = otherOptions["testNamePattern"]
+
 	if not root then
 		error("You must provide a root object to search for tests in!", 2)
 	end
-
-	reporter = reporter or TextReporter
 
 	local startTime = tick()
 
@@ -104,7 +108,7 @@ function TestBootstrap:run(root, reporter, showTimingInfo, noXpcallByDefault)
 
 	local afterModules = tick()
 
-	local plan = TestPlanner.createPlan(modules, noXpcallByDefault)
+	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern)
 	local afterPlan = tick()
 
 	local results = TestRunner.runPlan(plan)

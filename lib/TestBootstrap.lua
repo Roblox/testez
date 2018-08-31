@@ -100,10 +100,6 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 	local modules
 	for _, subRoot in ipairs(roots) do
 		modules = self:getModules(subRoot, modules)
-	elseif type(root) == "table" then
-		for _, subRoot in ipairs(root) do
-			modules = self:getModules(subRoot, modules)
-		end
 	end
 
 	local afterModules = tick()

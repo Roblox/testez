@@ -81,7 +81,7 @@ end
 	the test plan before we execute it, allowing them to toggle specific tests
 	before they're run, but after they've been identified!
 ]]
-function TestBootstrap:run(root, reporter, otherOptions)
+function TestBootstrap:run(roots, reporter, otherOptions)
 	reporter = reporter or TextReporter
 
 	otherOptions = otherOptions or {}
@@ -89,21 +89,21 @@ function TestBootstrap:run(root, reporter, otherOptions)
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
 	local testNamePattern = otherOptions["testNamePattern"]
 
-	if not root then
-		error("You must provide a root object to search for tests in!", 2)
+	if not roots then
+		error("You must provide a roots object to search for tests in!", 2)
+	elseif type(roots) ~= "table" then
+		error("roots object should be a table!", 3)
 	end
 
 	local startTime = tick()
 
 	local modules
-	if type(root) == "function" then
-		modules = {{method = root, path = {}}}
+	for _, subRoot in ipairs(roots) do
+		modules = self:getModules(subRoot, modules)
 	elseif type(root) == "table" then
 		for _, subRoot in ipairs(root) do
 			modules = self:getModules(subRoot, modules)
 		end
-	else
-		modules = self:getModules(root)
 	end
 
 	local afterModules = tick()

@@ -37,7 +37,7 @@ function TestBootstrap:getModules(root, modules)
 	modules = modules or {}
 
 	if isSpecScript(root) then
-		self:processScript(root, modules)
+		self.processScript(root, modules)
 	else
 		self:processFolder(root, modules)
 	end
@@ -61,7 +61,7 @@ end
 --[[
 	Collect tests from ModuleScript.
 ]]
-function TestBootstrap:processScript(child, modules)
+function TestBootstrap.processScript(child, modules)
 	local method = require(child)
 	local path = getPath(child, child.Parent)
 

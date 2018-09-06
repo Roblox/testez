@@ -33,30 +33,13 @@ end
 --[[
 	Find all the ModuleScripts in this tree that are tests.
 ]]
-function TestBootstrap:getModules(root, modules, current)
+function TestBootstrap:getModules(root, modules)
 	modules = modules or {}
-	current = current or root
-
-	local function processChild(child, parent)
-		if isSpecScript(child) then
-			local method = require(child)
-			local path = getPath(child, parent)
-
-			table.insert(modules, {
-				method = method,
-				path = path
-			})
-		else
-			self:getModules(parent, modules, child)
-		end
-	end
 
 	if isSpecScript(root) then
-		processChild(root, root.Parent)
+		self:processScript(root, modules)
 	else
-		for _, child in ipairs(current:GetChildren()) do
-			processChild(child, root)
-		end
+		self:processFolder(root, modules)
 	end
 
 	table.sort(modules, function(a, b)
@@ -64,6 +47,28 @@ function TestBootstrap:getModules(root, modules, current)
 	end)
 
 	return modules
+end
+
+--[[
+	Recurse down into the processing
+]]
+function TestBootstrap:processFolder(folder, modules)
+	for _, child in ipairs(folder:GetChildren()) do
+		self:getModules(child, modules)
+	end
+end
+
+--[[
+	Collect tests from ModuleScript.
+]]
+function TestBootstrap:processScript(child, modules)
+	local method = require(child)
+	local path = getPath(child, child.Parent)
+
+	table.insert(modules, {
+		method = method,
+		path = path
+	})
 end
 
 --[[

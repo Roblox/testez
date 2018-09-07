@@ -37,9 +37,17 @@ function TestBootstrap:getModules(root, modules)
 	modules = modules or {}
 
 	if isSpecScript(root) then
-		self.processScript(root, modules)
-	else
-		self:processFolder(root, modules)
+		local method = require(root)
+		local path = getPath(root, root.Parent)
+
+		table.insert(modules, {
+			method = method,
+			path = path
+		})
+	end
+
+	for _, child in ipairs(root:GetChildren()) do
+		self:getModules(child, modules)
 	end
 
 	table.sort(modules, function(a, b)
@@ -47,28 +55,6 @@ function TestBootstrap:getModules(root, modules)
 	end)
 
 	return modules
-end
-
---[[
-	Recurse down into the processing
-]]
-function TestBootstrap:processFolder(folder, modules)
-	for _, child in ipairs(folder:GetChildren()) do
-		self:getModules(child, modules)
-	end
-end
-
---[[
-	Collect tests from ModuleScript.
-]]
-function TestBootstrap.processScript(child, modules)
-	local method = require(child)
-	local path = getPath(child, child.Parent)
-
-	table.insert(modules, {
-		method = method,
-		path = path
-	})
 end
 
 --[[
@@ -94,10 +80,8 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
 	local testNamePattern = otherOptions["testNamePattern"]
 
-	if not roots then
-		error("You must provide a roots object to search for tests in!", 2)
-	elseif type(roots) ~= "table" then
-		error("roots object should be a table!", 3)
+	if type(roots) ~= "table" then
+		error(("Bad argument #1 to TestBootstrap:run. Expected table, got %s"):format(typeof(roots)), 2)
 	end
 
 	local startTime = tick()

@@ -88,6 +88,8 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 		local fullName = constructFullName(useNode)
 		if fullName:match(self.testNamePattern) then
 			useNode.modifier = TestEnum.NodeModifier.Focus
+		else
+			useNode.modifier = TestEnum.NodeModifier.Skip
 		end
 	end
 	useNode.HACK_NO_XPCALL = self.noXpcallByDefault

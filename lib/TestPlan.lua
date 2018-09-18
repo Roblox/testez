@@ -59,7 +59,7 @@ function TestPlan.createNode(phrase, nodeType, nodeModifier)
 		modifier = nodeModifier,
 		children = {},
 		callback = nil,
-		fullName = constructNodeFullName
+		getFullName = constructNodeFullName
 	}
 
 	return node

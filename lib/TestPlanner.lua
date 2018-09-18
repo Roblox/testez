@@ -113,7 +113,7 @@ function TestPlanner.createEnvironment(builder)
 	function env.itFIXME(phrase, callback)
 		local node = builder:pushNode(phrase, TestEnum.NodeType.It, TestEnum.NodeModifier.Skip)
 
-		warn("FIXME: broken test", node:fullName())
+		warn("FIXME: broken test", node:getFullName())
 		node.callback = callback
 
 		builder:popNode()
@@ -121,7 +121,7 @@ function TestPlanner.createEnvironment(builder)
 
 	function env.FIXME(optionalMessage)
 		local currentNode = builder:getCurrentNode()
-		warn("FIXME: broken test", currentNode:fullName(), optionalMessage or "")
+		warn("FIXME: broken test", currentNode:getFullName(), optionalMessage or "")
 
 		currentNode.modifier = TestEnum.NodeModifier.Skip
 	end

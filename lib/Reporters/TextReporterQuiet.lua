@@ -17,7 +17,7 @@ local STATUS_SYMBOLS = {
 }
 local UNKNOWN_STATUS_SYMBOL = "?"
 
-local TextReporter = {}
+local TextReporterQuiet = {}
 
 local function reportNode(node, buffer, level)
 	buffer = buffer or {}
@@ -64,7 +64,7 @@ local function report(root)
 	return table.concat(buffer, "\n")
 end
 
-function TextReporter.report(results)
+function TextReporterQuiet.report(results)
 	local resultBuffer = {
 		"Test results:",
 		report(results),
@@ -94,4 +94,4 @@ function TextReporter.report(results)
 	end
 end
 
-return TextReporter
+return TextReporterQuiet

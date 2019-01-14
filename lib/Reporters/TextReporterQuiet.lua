@@ -29,17 +29,12 @@ local function reportNode(node, buffer, level)
 
 	local line
 
-	if node.status ~= nil and node.status ~= TestEnum.TestStatus.Success then
+	if node.status ~= TestEnum.TestStatus.Success then
 		local symbol = STATUS_SYMBOLS[node.status] or UNKNOWN_STATUS_SYMBOL
 
 		line = ("%s[%s] %s"):format(
 			INDENT:rep(level),
 			symbol,
-			node.planNode.phrase
-		)
-	else
-		line = ("%s%s"):format(
-			INDENT:rep(level),
 			node.planNode.phrase
 		)
 	end

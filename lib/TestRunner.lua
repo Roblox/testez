@@ -10,6 +10,7 @@ local Expectation = require(script.Parent.Expectation)
 local TestEnum = require(script.Parent.TestEnum)
 local TestSession = require(script.Parent.TestSession)
 local Stack = require(script.Parent.Stack)
+local LifecycleHooks = require(script.Parent.LifecycleHooks)
 
 local RUNNING_GLOBAL = "__TESTEZ_RUNNING_TEST__"
 
@@ -28,6 +29,7 @@ end
 function TestRunner.runPlan(plan)
 	local session = TestSession.new(plan)
 	local tryStack = Stack.new()
+	local lifecycleHooks = LifecycleHooks.new()
 
 	local exclusiveNodes = plan:findNodes(function(node)
 		return node.modifier == TestEnum.NodeModifier.Focus
@@ -35,7 +37,7 @@ function TestRunner.runPlan(plan)
 
 	session.hasFocusNodes = #exclusiveNodes > 0
 
-	TestRunner.runPlanNode(session, plan, tryStack)
+	TestRunner.runPlanNode(session, plan, tryStack, lifecycleHooks)
 
 	return session:finalize()
 end
@@ -44,7 +46,10 @@ end
 	Run the given test plan node and its descendants, using the given test
 	session to store all of the results.
 ]]
-function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
+function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noXpcall)
+
+	lifecycleHooks:pushHooksFrom(planNode)
+
 	for _, childPlanNode in ipairs(planNode.children) do
 		local childResultNode = session:pushNode(childPlanNode)
 
@@ -63,21 +68,6 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 					local success = true
 					local errorMessage
 
-					local testEnvironment = getfenv(childPlanNode.callback)
-
-					for key, value in pairs(TestRunner.environment) do
-						testEnvironment[key] = value
-					end
-
-					testEnvironment.fail = function(message)
-						if message == nil then
-							message = "fail() was called."
-						end
-
-						success = false
-						errorMessage = message .. "\n" .. debug.traceback()
-					end
-
 					-- We prefer xpcall, but yielding doesn't work from xpcall.
 					-- As a workaround, you can mark nodes as "not xpcallable"
 					local call = noXpcall and pcall or xpcall
@@ -87,18 +77,61 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 					-- protected APIs; it's a workaround that will go away someday.
 					_G[RUNNING_GLOBAL] = true
 
-					local nodeSuccess, nodeResult = call(childPlanNode.callback, function(message)
-						return message .. "\n" .. debug.traceback()
-					end)
+					local function runCallback(callback, messagePrefix)
+
+						-- Skip over any further callbacks for this node if one of them has failed already
+						if success == false then
+							return
+						end
+
+						messagePrefix = messagePrefix or ""
+
+						local testEnvironment = getfenv(callback)
+
+						for key, value in pairs(TestRunner.environment) do
+							testEnvironment[key] = value
+						end
+
+						testEnvironment.fail = function(message)
+							if message == nil then
+								message = "fail() was called."
+							end
+
+							success = false
+							errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
+						end
+
+						local nodeSuccess, nodeResult = call(callback, function(message)
+							return messagePrefix .. message .. "\n" .. debug.traceback()
+						end)
+
+						-- If a node threw an error, we prefer to use that message over
+						-- one created by fail() if it was set.
+						if not nodeSuccess then
+							success = false
+							errorMessage = nodeResult
+						end
+					end
+
+					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
+						runCallback(hook)
+					end
+
+					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
+						runCallback(hook)
+					end
+
+					runCallback(childPlanNode.callback)
+
+					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
+						runCallback(hook)
+					end
+
+					for _, hook in pairs(lifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)) do
+						runCallback(hook)
+					end
 
 					_G[RUNNING_GLOBAL] = nil
-
-					-- If a node threw an error, we prefer to use that message over
-					-- one created by fail() if it was set.
-					if not nodeSuccess then
-						success = false
-						errorMessage = nodeResult
-					end
 
 					if success then
 						childResultNode.status = TestEnum.TestStatus.Success
@@ -110,7 +143,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 			end
 		elseif childPlanNode.type == TestEnum.NodeType.Describe or childPlanNode.type == TestEnum.NodeType.Try then
 			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:push({isOk = true, failedNode = nil}) end
-			TestRunner.runPlanNode(session, childPlanNode, tryStack, childPlanNode.HACK_NO_XPCALL)
+			TestRunner.runPlanNode(session, childPlanNode, tryStack, lifecycleHooks, childPlanNode.HACK_NO_XPCALL)
 			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:pop() end
 
 			local status = TestEnum.TestStatus.Success
@@ -147,6 +180,8 @@ function TestRunner.runPlanNode(session, planNode, tryStack, noXpcall)
 
 		session:popNode()
 	end
+
+	lifecycleHooks:popHooks()
 end
 
 return TestRunner

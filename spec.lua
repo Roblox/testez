@@ -1,6 +1,5 @@
 local LOAD_MODULES = {
 	{"lib", "TestEZ"},
-	{"tests", "TestEZTests"},
 }
 
 -- This makes sure we can load Lemur and other libraries that depend on init.lua
@@ -8,6 +7,7 @@ package.path = package.path .. ";?/init.lua"
 
 -- If this fails, make sure you've cloned all Git submodules.
 local lemur = require("modules.lemur")
+local lfs = assert(require("lfs"), "LuaFileSystem is not installed, try `luarocks install luafilesystem`")
 
 --[[
 	Collapses ModuleScripts named 'init' into their parent folders.
@@ -64,18 +64,52 @@ local function findUnitTests(container, foundTests)
 	return foundTests
 end
 
-local function findIntegrationTests(container, foundTests)
-	foundTests = foundTests or {}
+local MockOutput = {}
+function MockOutput:__call(append)
+	self.output = self.output .. append
+end
 
-	for _, child in ipairs(container:GetChildren()) do
-		if child:IsA("ModuleScript") then
-			table.insert(foundTests, child)
+local function runIntegrationTests()
+	local TestEZ = habitat:require(root.TestEZ)
+	local tests = {}
+
+	for testName in lfs.dir("tests/") do
+		if testName ~= "." and testName ~= ".." then
+			local baseDirectory = "tests/" .. testName .. "/"
+			local source = habitat:loadFromFs(baseDirectory .. testName .. ".spec.lua")
+			local expectedOutput = assert(io.open(baseDirectory .. "output.txt")):read("*all")
+
+			table.insert(tests, {
+				path = { testName },
+				method = function()
+					describe(testName, function()
+						it("should return the expected output", function()
+							local testOutput = setmetatable({
+								output = ""
+							}, MockOutput)
+
+							local unitPlan = TestEZ.TestPlanner.createPlan({
+								method = habitat:require(source),
+								path = { testName },
+							})
+							local results = TestEZ.TestRunner.runPlan(unitPlan)
+							TestEZ.Reporters.TextReporter.report(results, testOutput)
+
+							if testOutput.output ~= expectedOutput then
+								io.open(baseDirectory .. "output.failure.txt", "w"):write(testOutput.output)
+							end
+
+							expect(testOutput.output).to.equal(expectedOutput)
+						end)
+					end)
+				end,
+			})
 		end
-
-		findUnitTests(child, foundTests)
 	end
 
-	return foundTests
+	local plan = TestEZ.TestPlanner.createPlan(tests)
+	local results = TestEZ.TestRunner.runPlan(plan)
+	TestEZ.Reporters.TextReporter.report(results)
 end
 
 -- Run all unit tests, which are located in .spec.lua files next to the source
@@ -87,13 +121,7 @@ for _, test in ipairs(unitTests) do
 	habitat:require(test)()
 end
 
--- Run all integration tests, which are located in the 'tests' folder
-local integrationTests = findIntegrationTests(root.TestEZTests)
-print(("Running %d integration tests..."):format(#integrationTests))
-
--- Integration tests should be passed the root TestEZ object
-for _, test in ipairs(integrationTests) do
-	habitat:require(test)(habitat:require(root.TestEZ))
-end
+print("Running integration tests...")
+runIntegrationTests()
 
 print("All tests passed.")

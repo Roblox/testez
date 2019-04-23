@@ -67,7 +67,8 @@ local function report(root)
 	return table.concat(buffer, "\n")
 end
 
-function TextReporter.report(results)
+function TextReporter.report(results, output)
+	output = output or print
 	local resultBuffer = {
 		"Test results:",
 		report(results),
@@ -78,21 +79,21 @@ function TextReporter.report(results)
 		)
 	}
 
-	print(table.concat(resultBuffer, "\n"))
+	output(table.concat(resultBuffer, "\n"))
 
 	if results.failureCount > 0 then
-		print(("%d test nodes reported failures."):format(results.failureCount))
+		output(("%d test nodes reported failures."):format(results.failureCount))
 	end
 
 	if #results.errors > 0 then
-		print("Errors reported by tests:")
-		print("")
+		output("Errors reported by tests:")
+		output("")
 
 		for _, message in ipairs(results.errors) do
 			TestService:Error(message)
 
 			-- Insert a blank line after each error
-			print("")
+			output("")
 		end
 	end
 end

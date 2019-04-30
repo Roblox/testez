@@ -77,10 +77,10 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 					-- protected APIs; it's a workaround that will go away someday.
 					_G[RUNNING_GLOBAL] = true
 
-					local function runCallback(callback, messagePrefix)
+					local function runCallback(callback, always, messagePrefix)
 
 						-- Skip over any further callbacks for this node if one of them has failed already
-						if success == false then
+						if not always and success == false then
 							return
 						end
 
@@ -114,21 +114,21 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 					end
 
 					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
-						runCallback(hook)
+						runCallback(hook, false, 'before hook: ')
 					end
 
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
-						runCallback(hook)
+						runCallback(hook, false, 'before each hook: ')
 					end
 
 					runCallback(childPlanNode.callback)
 
 					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
-						runCallback(hook)
+						runCallback(hook, true, 'after each hook: ')
 					end
 
 					for _, hook in pairs(lifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)) do
-						runCallback(hook)
+						runCallback(hook, true, 'after hook: ')
 					end
 
 					_G[RUNNING_GLOBAL] = nil

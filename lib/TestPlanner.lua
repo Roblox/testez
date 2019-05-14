@@ -49,15 +49,16 @@ end
 	as state doesn't need to be passed around between functions or explicitly
 	global.
 ]]
-function TestPlanner.createEnvironment(builder, optionalEnv)
+function TestPlanner.createEnvironment(builder, extraEnvironment)
 	local env = {}
 
-	if optionalEnv then
-		if type(optionalEnv) ~= "table" then
-			error(("Bad argument #1 to TestPlanner.createEnvironment. Expected table, got %s"):format(typeof(optionalEnv)), 2)
+	if extraEnvironment then
+		if type(extraEnvironment) ~= "table" then
+			error(("Bad argument #2 to TestPlanner.createEnvironment. Expected table, got %s"):format(
+				typeof(extraEnvironment)), 2)
 		end
 
-		for key, value in pairs(optionalEnv) do
+		for key, value in pairs(extraEnvironment) do
 			env[key] = value
 		end
 	end
@@ -192,11 +193,11 @@ end
 	These functions should call a combination of `describe` and `it` (and their
 	variants), which will be turned into a test plan to be executed.
 ]]
-function TestPlanner.createPlan(specFunctions, noXpcallByDefault, testNamePattern, optionalEnv)
+function TestPlanner.createPlan(specFunctions, noXpcallByDefault, testNamePattern, extraEnvironment)
 	local builder = TestPlanBuilder.new()
 	builder.noXpcallByDefault = noXpcallByDefault
 	builder.testNamePattern = testNamePattern
-	local env = TestPlanner.createEnvironment(builder, optionalEnv)
+	local env = TestPlanner.createEnvironment(builder, extraEnvironment)
 
 	for _, module in ipairs(specFunctions) do
 		buildPlan(builder, module, env)

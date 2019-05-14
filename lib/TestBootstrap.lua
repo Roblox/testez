@@ -80,7 +80,7 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 	local showTimingInfo = otherOptions["showTimingInfo"] or false
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
 	local testNamePattern = otherOptions["testNamePattern"]
-	local optionalEnv = otherOptions["optionalEnv"] or {}
+	local extraEnvironment = otherOptions["extraEnvironment"] or {}
 
 	if type(roots) ~= "table" then
 		error(("Bad argument #1 to TestBootstrap:run. Expected table, got %s"):format(typeof(roots)), 2)
@@ -95,7 +95,7 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 
 	local afterModules = tick()
 
-	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern, optionalEnv)
+	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern, extraEnvironment)
 	local afterPlan = tick()
 
 	local results = TestRunner.runPlan(plan)

@@ -18,6 +18,11 @@
 local Expectation = {}
 
 --[[
+	Default depth for deepEqual to recurse to before doing shallow comparisons
+]]
+local DEFAULT_MAXIMUM_RECURSIVE_DEPTH = 5
+
+--[[
 	These keys don't do anything except make expectations read more cleanly
 ]]
 local SELF_KEYS = {
@@ -152,7 +157,7 @@ function Expectation:a(typeName)
 end
 
 --[[
-	Assert that our expectation value is truthy
+	Assert that our expectation value is not nil
 ]]
 function Expectation:ok()
 	local result = (self.value ~= nil) == self.successCondition
@@ -196,6 +201,93 @@ function Expectation:equal(otherValue)
 
 	return self
 end
+
+--[[
+	Assert that our expectation value is deeply equal to another value
+]]
+function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
+	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, {})
+
+	local message = formatMessage(self.successCondition,
+		("Expected value %q (%s), got %q (%s) instead"):format(
+			tostring(otherValue),
+			type(otherValue),
+			tostring(self.value),
+			type(self.value)
+		),
+		("Expected anything but value %q (%s)"):format(
+			tostring(otherValue),
+			type(otherValue)
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, callList)
+	if o1 == o2 then
+		return true
+	end
+	if remainingRecursions <= 0 then
+		return o1 == o2
+	end
+    local o1Type = type(o1)
+    local o2Type = type(o2)
+	if o1Type ~= o2Type then
+		return false
+	end
+	if o1Type ~= 'table' then
+		return false
+	end
+
+    -- add only when objects are tables, cache results
+    local oComparisons = callList[o1]
+    if not oComparisons then
+        oComparisons = {}
+        callList[o1] = oComparisons
+    end
+    -- false means that comparison is in progress
+    oComparisons[o2] = false
+
+    if not ignoreMetatables then
+        local mt1 = getmetatable(o1)
+        if mt1 and mt1.__eq then
+            --compare using built in method
+            return o1 == o2
+        end
+    end
+
+    local keySet = {}
+    for key1, value1 in pairs(o1) do
+        local value2 = o2[key1]
+        if value2 == nil then return false end
+
+        local vComparisons = callList[value1]
+        if not vComparisons or vComparisons[value2] == nil then
+            if not _deepEqualHelper(value1, value2, ignoreMetatables, callList) then
+                return false
+            end
+        end
+
+        keySet[key1] = true
+    end
+
+    for key2, _ in pairs(o2) do
+        if not keySet[key2] then
+            return false
+        end
+    end
+
+    -- comparison finished - objects are equal do not compare again
+    oComparisons[o2] = true
+    return true
+end
+
+
 
 --[[
 	Assert that our expectation value is equal to another value within some

@@ -39,7 +39,7 @@ return function(TestEZ)
     do
         local value1 = {
             num = ARBITRARY_NUMBER,
-            innerTable1= {
+            innerTable= {
                 key = "value"
             },
         }

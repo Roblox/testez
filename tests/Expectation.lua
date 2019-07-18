@@ -15,6 +15,17 @@ return function(TestEZ)
         assert(not pcall(expectation.deepEqual, value3))
     end
 
+    -- Works with list-style tables
+    do
+        local value1 = {2, 3, 4}
+        local value2 = {2, 3, 4}
+        local expectation = Expectation.new(value1)
+        assert(pcall(expectation.deepEqual, value2))
+
+        local value3 = {3, 4, 2}
+        assert(not pcall(expectation.deepEqual, value3))
+    end
+
     -- Works with singly-deep tables
     do
         local value1 = {
@@ -61,6 +72,20 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.deepEqual, value3))
+    end
+
+    -- Works for mixed list/dictionary tables
+    do
+        local value1 = {2, 3, 4, key = "value"}
+        local value2 = {2, 3, 4, ["key"] = "value"}
+        local expectation = Expectation.new(value1)
+        assert(pcall(expectation.deepEqual, value2))
+
+        local value3 = {2, 3, 4, ["wrongkey"] = "value"}
+        assert(not pcall(expectation.deepEqual, value3))
+
+        local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
+        assert(not pcall(expectation.deepEqual, value4))
     end
 
     -- Works for tables as keys
@@ -148,6 +173,47 @@ return function(TestEZ)
         assert(not pcall(expectation1.deepEqual, value2, false, 3))
         -- ... but are equal at a depth of 10
         assert(pcall(expectation1.deepEqual, value2, false, 10))
+    end
+
+    -- A variety of weird edge cases
+    do
+        local value1 = {}
+        local value2 = {}
+        local expectation1 = Expectation.new(value1)
+        assert(pcall(expectation1.deepEqual, value2))
+    end
+    do
+        local value1 = {{{}}}
+        local value2 = {{}}
+        local expectation1 = Expectation.new(value1)
+        assert(not pcall(expectation1.deepEqual, value2))
+    end
+    do
+        local value1 = {
+            [{}] = {{}}
+        }
+        local value2 = {
+            [{}] = {{}}
+        }
+        local expectation1 = Expectation.new(value1)
+        assert(pcall(expectation1.deepEqual, value2))
+
+        local value3 = {
+            [{}] = {{1}}
+        }
+        assert(not pcall(expectation1.deepEqual, value3))
+    end
+    do
+        local value1 = nil
+        local value2 = nil
+        local expectation1 = Expectation.new(value1)
+        assert(pcall(expectation1.deepEqual, value2))
+    end
+    do
+        local value1 = 2
+        local value2 = "2"
+        local expectation1 = Expectation.new(value1)
+        assert(not pcall(expectation1.deepEqual, value2))
     end
 end
 

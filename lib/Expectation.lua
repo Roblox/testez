@@ -207,7 +207,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft)
 		if recursionsLeft <= 0 then
-			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check")
+			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
 			return t1 == t2
 		end
 		-- compare value types
@@ -279,6 +279,8 @@ end
 
 --[[
 	Assert that our expectation value is deeply equal to another value
+	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
+	maxRecursiveDepth specifies how many levels should be recurisvely traversed before reverting to ==.
 ]]
 function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
@@ -302,8 +304,6 @@ function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 
 	return self
 end
-
-
 
 
 --[[

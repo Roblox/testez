@@ -229,64 +229,79 @@ function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	return self
 end
 
-local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, callList)
-	if o1 == o2 then
+
+local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
+	local avoidLoops = {}
+	local function recurse(t1, t2, recursionsLeft)
+		if recursionsLeft <= 0 then
+			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check")
+			return t1 == t2
+		end
+		-- compare value types
+		if type(t1) ~= type(t2) then
+			return false
+		end
+
+		-- Base case: compare simple values
+		if type(t1) ~= "table" then
+			return t1 == t2
+		end
+		-- Alternatively, use mt equality
+		local mt = getmetatable(t1)
+		if not ignoreMetatables and mt and mt.__eq then
+			return t1 == t2
+		end
+
+		-- Now, on to tables.
+		-- First, let's avoid looping forever.
+		if avoidLoops[t1] then
+			return avoidLoops[t1] == t2
+		end
+		avoidLoops[t1] = t2
+		-- Copy keys from t2
+		local t2keys = {}
+		local t2tablekeys = {}
+		for k, _ in pairs(t2) do
+			if type(k) == "table" then
+				table.insert(t2tablekeys, k)
+			end
+			t2keys[k] = true
+		end
+		-- Let's iterate keys from t1
+		for k1, v1 in pairs(t1) do
+			local v2 = t2[k1]
+			if type(k1) == "table" then
+				-- if key is a table, we need to find an equivalent one.
+				local ok = false
+				for i, tk in ipairs(t2tablekeys) do
+					if _deepEqualHelper(k1, tk, ignoreMetatables, recursionsLeft - 1) and recurse(v1, t2[tk], recursionsLeft - 1) then
+						table.remove(t2tablekeys, i)
+						t2keys[tk] = nil
+						ok = true
+						break
+					end
+				end
+				if not ok then
+					return false
+				end
+			else
+				-- t1 has a key which t2 doesn't have, fail.
+				if v2 == nil then
+					return false
+				end
+				t2keys[k1] = nil
+				if not recurse(v1, v2) then
+					return false
+				end
+			end
+		end
+		-- if t2 has a key which t1 doesn't have, fail.
+		if next(t2keys) then
+			return false
+		end
 		return true
 	end
-	if remainingRecursions <= 0 then
-		warn("Deep equality testing hit maximum recursive depth")
-		return o1 == o2
-	end
-    local o1Type = type(o1)
-    local o2Type = type(o2)
-	if o1Type ~= o2Type then
-		return false
-	end
-	if o1Type ~= 'table' then
-		return false
-	end
-
-    -- add only when objects are tables, cache results
-    local oComparisons = callList[o1]
-    if not oComparisons then
-        oComparisons = {}
-        callList[o1] = oComparisons
-    end
-    -- false means that comparison is in progress
-    oComparisons[o2] = false
-
-    if not ignoreMetatables then
-        local mt1 = getmetatable(o1)
-        if mt1 and mt1.__eq then
-            --compare using built in method
-            return o1 == o2
-        end
-    end
-
-    local keySet = {}
-    for key1, value1 in pairs(o1) do
-        local value2 = o2[key1]
-        if value2 == nil then return false end
-
-        local vComparisons = callList[value1]
-        if not vComparisons or vComparisons[value2] == nil then
-            if not _deepEqualHelper(value1, value2, ignoreMetatables, callList) then
-                return false
-            end
-        end
-
-        keySet[key1] = true
-    end
-
-    for key2, _ in pairs(o2) do
-        if not keySet[key2] then
-            return false
-        end
-    end
-
-    -- comparison finished - objects are equal do not compare again
-    oComparisons[o2] = true
-    return true
+	return recurse(o1, o2, remainingRecursions)
 end
 
 

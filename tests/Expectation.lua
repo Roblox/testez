@@ -2,7 +2,7 @@ return function(TestEZ)
     local Expectation = TestEZ.Expectation
 
     local ARBITRARY_NUMBER = 5
-    
+
     -- Works with primitives
     do
         local value1 = ARBITRARY_NUMBER

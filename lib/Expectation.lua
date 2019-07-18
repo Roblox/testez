@@ -20,7 +20,7 @@ local Expectation = {}
 --[[
 	Default depth for deepEqual to recurse to before doing shallow comparisons
 ]]
-local DEFAULT_MAXIMUM_RECURSIVE_DEPTH = 5
+local DEFAULT_MAXIMUM_RECURSIVE_DEPTH = 10
 
 --[[
 	These keys don't do anything except make expectations read more cleanly
@@ -263,7 +263,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 					return false
 				end
 				t2keys[k1] = nil
-				if not recurse(v1, v2) then
+				if not recurse(v1, v2, recursionsLeft - 1) then
 					return false
 				end
 			end
@@ -282,7 +282,7 @@ end
 ]]
 function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, {})
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth)
 
 	local message = formatMessage(self.successCondition,
 		("Expected value %q (%s), got %q (%s) instead"):format(

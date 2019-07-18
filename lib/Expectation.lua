@@ -92,6 +92,7 @@ function Expectation.new(value)
 	self.equal = bindSelf(self, self.equal)
 	self.throw = bindSelf(self, self.throw)
 	self.near = bindSelf(self, self.near)
+	self.deepEqual = bindSelf(self, self.deepEqual)
 
 	return self
 end
@@ -233,6 +234,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, c
 		return true
 	end
 	if remainingRecursions <= 0 then
+		warn("Deep equality testing hit maximum recursive depth")
 		return o1 == o2
 	end
     local o1Type = type(o1)

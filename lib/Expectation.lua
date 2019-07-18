@@ -203,33 +203,6 @@ function Expectation:equal(otherValue)
 	return self
 end
 
---[[
-	Assert that our expectation value is deeply equal to another value
-]]
-function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
-	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, {})
-
-	local message = formatMessage(self.successCondition,
-		("Expected value %q (%s), got %q (%s) instead"):format(
-			tostring(otherValue),
-			type(otherValue),
-			tostring(self.value),
-			type(self.value)
-		),
-		("Expected anything but value %q (%s)"):format(
-			tostring(otherValue),
-			type(otherValue)
-		)
-	)
-
-	assertLevel(result, message, 3)
-	self:_resetModifiers()
-
-	return self
-end
-
-
 local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft)
@@ -303,6 +276,33 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 	end
 	return recurse(o1, o2, remainingRecursions)
 end
+
+--[[
+	Assert that our expectation value is deeply equal to another value
+]]
+function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
+	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, {})
+
+	local message = formatMessage(self.successCondition,
+		("Expected value %q (%s), got %q (%s) instead"):format(
+			tostring(otherValue),
+			type(otherValue),
+			tostring(self.value),
+			type(self.value)
+		),
+		("Expected anything but value %q (%s)"):format(
+			tostring(otherValue),
+			type(otherValue)
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
 
 
 

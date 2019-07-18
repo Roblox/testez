@@ -2,6 +2,7 @@ return function(TestEZ)
     local Expectation = TestEZ.Expectation
 
     local ARBITRARY_NUMBER = 5
+    local DIFFERENT_ARBITRARY_NUMBER = ARBITRARY_NUMBER + 1
 
     -- Works with primitives
     do
@@ -97,7 +98,7 @@ return function(TestEZ)
         }
         local value2 = {
             strUsedForComparison = "same",
-            num = ARBITRARY_NUMBER,
+            num = DIFFERENT_ARBITRARY_NUMBER,
         }
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2))

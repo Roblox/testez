@@ -200,7 +200,7 @@ return function(TestEZ)
 
         local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
         assert(not pcall(expectation.deepEqual, value4))
-        assert(pcall(expectation.never.to.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value4))
     end
 
     -- Takes into account metatables, if desired
@@ -215,6 +215,7 @@ return function(TestEZ)
         }
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2))
+        assert(pcall(expectation1.never.to.deepEqual, value2))
 
         -- Compare based only on strUsedForComparison
         local mt = {
@@ -226,6 +227,7 @@ return function(TestEZ)
         setmetatable(value2, mt)
         local expectation2 = Expectation.new(value1)
         assert(pcall(expectation2.deepEqual, value2))
+
         assert(not pcall(expectation1.deepEqual, value2, true))
         assert(pcall(expectation1.never.to.deepEqual, value2, true))
     end
@@ -264,7 +266,6 @@ return function(TestEZ)
         assert(pcall(expectation1.never.to.deepEqual, value2, false, 3))
         -- ... but are equal at a depth of 10
         assert(pcall(expectation1.deepEqual, value2, false, 10))
-        
     end
 
     -- A variety of weird edge cases
@@ -290,6 +291,7 @@ return function(TestEZ)
             [{}] = {{}}
         }
         local expectation1 = Expectation.new(value1)
+        assert(not pcall(expectation1.to.deepEqual, value2))
         assert(pcall(expectation1.never.to.deepEqual, value2))
     end
     do

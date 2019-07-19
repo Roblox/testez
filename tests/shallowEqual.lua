@@ -11,7 +11,6 @@ return function(TestEZ)
         assert(pcall(expectation.shallowEqual, value2))
 
         local value3 = "teststring"
-        assert(not pcall(expectation.shallowEqual, value3))
         assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
@@ -23,7 +22,6 @@ return function(TestEZ)
         assert(pcall(expectation.shallowEqual, value2))
 
         local value3 = {3, 4, 2}
-        assert(not pcall(expectation.deepEqual, value3))
         assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
@@ -45,7 +43,6 @@ return function(TestEZ)
             str = "differentstring",
         }
 
-        assert(not pcall(expectation.shallowEqual, value3))
         assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
@@ -69,7 +66,6 @@ return function(TestEZ)
         local value3 = {
             key = referenceCopy
         }
-        assert(not pcall(expectation.shallowEqual, value3))
         assert(pcall(expectation.never.to.shallowEqual, value3))
 
     end

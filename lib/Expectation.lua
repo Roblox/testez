@@ -204,6 +204,14 @@ function Expectation:equal(otherValue)
 	return self
 end
 
+local function _pathify(obj)
+	if type(k1) == "string" then
+		return "\"[" .. tostring(obj) .. "\"]"
+	else
+		return "[" .. tostring(obj) .. "]"
+	end
+end
+
 local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, shallow)
 	local savedWarningMessage = ""
 	local stopPrinting = false -- Flipped as soon as we find an inequality
@@ -257,14 +265,12 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 				if not stopPrinting then
 					savedWarningMessage = "LHS has a key that RHS does not have at " .. p
 					stopPrinting = true
-					--print(savedWarningMessage .. " point 1")
 				end
 				return false
 			end
 			-- t2 also has that key. We must now check that the associated values are equal.
 			t2keys[k1] = nil
-			local newPath = p
-			newPath = newPath .. " -> " .. tostring(k1)
+			newPath = newPath .. _pathify(k1)
 			if not recurse(v1, v2, recursionsLeft - 1, newPath) then
 				if not stopPrinting then
 					local warningMessage = "Different values at " .. newPath
@@ -273,7 +279,6 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 					end
 					savedWarningMessage = warningMessage
 					stopPrinting = true
-					--print(savedWarningMessage .. " point 2")
 				end
 				return false
 			end
@@ -283,14 +288,12 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			if not stopPrinting then
 				savedWarningMessage = "RHS has a key that LHS does not have at " .. p
 				stopPrinting = true
-				--print(savedWarningMessage .. " point 3")
 			end
 			return false
 		end
 		return true
 	end
-	local equal = recurse(lhs, rhs, maxRecursiveDepth, "")
-	--print(savedWarningMessage, "here")
+	local equal = recurse(lhs, rhs, maxRecursiveDepth, "tableroot")
 	return equal, savedWarningMessage
 end
 

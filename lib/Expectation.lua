@@ -257,6 +257,8 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			t2keys[k] = true
 		end
 
+		local newPath = p
+
 		-- Iterate over t1's keys
 		for k1, v1 in pairs(t1) do
 			local v2 = t2[k1]

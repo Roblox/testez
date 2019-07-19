@@ -317,6 +317,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 		return recurse(o1, o2, remainingRecursions, path)
 	end
 	local equal = _deepEqualHelper(lhs, rhs, maxRecursiveDepth, "")
+	print(savedWarningMessage, "here")
 	return equal, savedWarningMessage
 end
 

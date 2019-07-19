@@ -205,9 +205,6 @@ function Expectation:equal(otherValue)
 end
 
 local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, path)
-	-- If TableUtilities.CheckListConsistency(t) would fail, then we can't really give a path or anything.
-	-- If we have just (nested) lists, then we can try to pretty print.
-	-- If we have nested tables, then we can try to give a path to the objects that are different.
 	local stopPrinting = false
 	if path == nil then
 		stopPrinting = true

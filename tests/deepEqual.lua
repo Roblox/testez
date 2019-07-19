@@ -13,6 +13,7 @@ return function(TestEZ)
 
         local value3 = "teststring"
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works with list-style tables
@@ -24,6 +25,7 @@ return function(TestEZ)
 
         local value3 = {3, 4, 2}
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works with singly-deep tables
@@ -45,6 +47,7 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works for multi-deep tables
@@ -72,6 +75,7 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works for multi-deep table where some "levels" of the table are lists and some are dictionaries
@@ -136,6 +140,7 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works for tables that are different in multiple locations
@@ -179,6 +184,7 @@ return function(TestEZ)
 
         local expectation = Expectation.new(value1)
         assert(not pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.never.to.deepEqual, value2))
     end
 
     -- Works for mixed list/dictionary tables
@@ -190,9 +196,11 @@ return function(TestEZ)
 
         local value3 = {2, 3, 4, ["wrongkey"] = "value"}
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
 
         local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
         assert(not pcall(expectation.deepEqual, value4))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Works for tables as keys
@@ -220,6 +228,7 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
     -- Takes into account metatables, if desired
@@ -246,6 +255,7 @@ return function(TestEZ)
         local expectation2 = Expectation.new(value1)
         assert(pcall(expectation2.deepEqual, value2))
         assert(not pcall(expectation1.deepEqual, value2, true))
+        assert(pcall(expectation1.never.to.deepEqual, value2, true))
     end
 
     -- Takes into account maximum recursive depth
@@ -279,8 +289,10 @@ return function(TestEZ)
         -- value1 and value2 are deeply equal, but are not shallowly equal at a depth of 3...
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2, false, 3))
+        assert(pcall(expectation1.never.to.deepEqual, value2, false, 3))
         -- ... but are equal at a depth of 10
         assert(pcall(expectation1.deepEqual, value2, false, 10))
+        
     end
 
     -- A variety of weird edge cases
@@ -295,6 +307,7 @@ return function(TestEZ)
         local value2 = {{}}
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2))
+        assert(pcall(expectation1.never.to.deepEqual, value2))
     end
     do
         local value1 = {
@@ -310,6 +323,7 @@ return function(TestEZ)
             [{}] = {{1}}
         }
         assert(not pcall(expectation1.deepEqual, value3))
+        assert(pcall(expectation1.never.to.deepEqual, value3))
     end
     do
         local value1 = nil
@@ -322,6 +336,7 @@ return function(TestEZ)
         local value2 = "2"
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2))
+        assert(pcall(expectation1.never.to.deepEqual, value2))
     end
 
 end

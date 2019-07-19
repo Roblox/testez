@@ -13,6 +13,7 @@ return function(TestEZ)
 
         local value3 = "teststring"
         assert(not pcall(expectation.shallowEqual, value3))
+        assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
     -- Works with list-style tables
@@ -24,6 +25,7 @@ return function(TestEZ)
 
         local value3 = {3, 4, 2}
         assert(not pcall(expectation.deepEqual, value3))
+        assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
     -- Works with singly-deep tables
@@ -45,6 +47,7 @@ return function(TestEZ)
         }
 
         assert(not pcall(expectation.shallowEqual, value3))
+        assert(pcall(expectation.never.to.shallowEqual, value3))
     end
 
     -- Behaves as expected with respect to references
@@ -68,6 +71,7 @@ return function(TestEZ)
             key = referenceCopy
         }
         assert(not pcall(expectation.shallowEqual, value3))
+        assert(pcall(expectation.never.to.shallowEqual, value3))
 
     end
 end

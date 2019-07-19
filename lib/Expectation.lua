@@ -208,6 +208,9 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 	-- If we have just (nested) lists, then we can try to pretty print.
 	-- If we have nested tables, then we can try to give a path to the objects that are different.
 	local stopPrinting = false
+	if path == nil then
+		stopPrinting = true
+	end
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft, p)
 		local tryToOutputPath = p ~= nil
@@ -257,6 +260,8 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 				local ok = false
 				for i, tk in ipairs(t2tablekeys) do
 					-- We must check that the keys AND values match. Otherwise we will try again.
+					-- We don't send in path, so path gets set to nil and we don't try and print, since it is not possible to print a
+					-- path through a table with tables for keys.
 					if _deepEqualHelper(k1, tk, ignoreMetatables, recursionsLeft - 1) and recurse(v1, t2[tk], recursionsLeft - 1) then
 						-- We've already "used up" the key from t2: it's no longer available to match with any key from t1.
 						table.remove(t2tablekeys, i)
@@ -281,7 +286,11 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 				end
 				if not recurse(v1, v2, recursionsLeft - 1, newPath) then
 					if tryToOutputPath and not stopPrinting then
-						print("Different values at " .. newPath)
+						local warningMessage = "Different values at " .. newPath
+						if recursionsLeft == 1 then
+							warningMessage = warningMessage .. "\nBeware that this may be because maximum recursive depth was reached."
+						end
+						print(warningMessage)
 						stopPrinting = true
 					end
 					return false

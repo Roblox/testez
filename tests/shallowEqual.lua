@@ -8,7 +8,7 @@ return function(TestEZ)
         local value1 = ARBITRARY_NUMBER
         local value2 = ARBITRARY_NUMBER
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.shallowEqual, value2))
+        assert(pcall(expectation.to.shallowEqual, value2))
 
         local value3 = "teststring"
         assert(pcall(expectation.never.to.shallowEqual, value3))
@@ -19,7 +19,7 @@ return function(TestEZ)
         local value1 = {2, 3, 4}
         local value2 = {2, 3, 4}
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.shallowEqual, value2))
+        assert(pcall(expectation.to.shallowEqual, value2))
 
         local value3 = {3, 4, 2}
         assert(pcall(expectation.never.to.shallowEqual, value3))
@@ -36,7 +36,7 @@ return function(TestEZ)
             str = "teststring",
         }
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.shallowEqual, value2))
+        assert(pcall(expectation.to.shallowEqual, value2))
 
         local value3 = {
             num = ARBITRARY_NUMBER,
@@ -61,7 +61,7 @@ return function(TestEZ)
             key = reference
         }
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.shallowEqual, value2))
+        assert(pcall(expectation.to.shallowEqual, value2))
 
         local value3 = {
             key = referenceCopy

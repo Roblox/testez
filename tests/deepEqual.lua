@@ -9,10 +9,10 @@ return function(TestEZ)
         local value1 = ARBITRARY_NUMBER
         local value2 = ARBITRARY_NUMBER
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = "teststring"
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
@@ -21,10 +21,10 @@ return function(TestEZ)
         local value1 = {2, 3, 4}
         local value2 = {2, 3, 4}
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = {3, 4, 2}
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
@@ -39,14 +39,14 @@ return function(TestEZ)
             str = "teststring",
         }
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = {
             num = ARBITRARY_NUMBER,
             str = "differentstring",
         }
 
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
@@ -65,7 +65,7 @@ return function(TestEZ)
             },
         }
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = {
             num = ARBITRARY_NUMBER,
@@ -74,7 +74,7 @@ return function(TestEZ)
             },
         }
 
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
@@ -118,7 +118,7 @@ return function(TestEZ)
         }
 
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = {
             {
@@ -139,7 +139,7 @@ return function(TestEZ)
             },
         }
 
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
@@ -183,7 +183,7 @@ return function(TestEZ)
         }
 
         local expectation = Expectation.new(value1)
-        assert(not pcall(expectation.deepEqual, value2))
+        assert(not pcall(expectation.to.deepEqual, value2))
         assert(pcall(expectation.never.to.deepEqual, value2))
     end
 
@@ -192,15 +192,31 @@ return function(TestEZ)
         local value1 = {2, 3, 4, key = "value"}
         local value2 = {2, 3, 4, ["key"] = "value"}
         local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.to.deepEqual, value2))
 
         local value3 = {2, 3, 4, ["wrongkey"] = "value"}
-        assert(not pcall(expectation.deepEqual, value3))
+        assert(not pcall(expectation.to.deepEqual, value3))
         assert(pcall(expectation.never.to.deepEqual, value3))
 
         local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
-        assert(not pcall(expectation.deepEqual, value4))
+        assert(not pcall(expectation.to.deepEqual, value4))
         assert(pcall(expectation.never.to.deepEqual, value4))
+    end
+
+    -- Works when RHS has more keys
+    do
+        local value1 = {
+            aKey = "val1",
+            anotherKey = "val2",
+        }
+        local value2 = {
+            aKey = "val1",
+            anotherKey = "val2",
+            aThirdKey = "val3",
+        }
+        local expectation = Expectation.new(value1)
+        assert(not pcall(expectation.to.deepEqual, value2))
+        assert(pcall(expectation.never.to.deepEqual, value2))
     end
 
     -- Takes into account metatables, if desired
@@ -214,7 +230,7 @@ return function(TestEZ)
             num = DIFFERENT_ARBITRARY_NUMBER,
         }
         local expectation1 = Expectation.new(value1)
-        assert(not pcall(expectation1.deepEqual, value2))
+        assert(not pcall(expectation1.to.deepEqual, value2))
         assert(pcall(expectation1.never.to.deepEqual, value2))
 
         -- Compare based only on strUsedForComparison
@@ -226,9 +242,9 @@ return function(TestEZ)
         setmetatable(value1, mt)
         setmetatable(value2, mt)
         local expectation2 = Expectation.new(value1)
-        assert(pcall(expectation2.deepEqual, value2))
+        assert(pcall(expectation2.to.deepEqual, value2))
 
-        assert(not pcall(expectation1.deepEqual, value2, true))
+        assert(not pcall(expectation1.to.deepEqual, value2, true))
         assert(pcall(expectation1.never.to.deepEqual, value2, true))
     end
 
@@ -262,10 +278,10 @@ return function(TestEZ)
         }
         -- value1 and value2 are deeply equal, but are not shallowly equal at a depth of 3...
         local expectation1 = Expectation.new(value1)
-        assert(not pcall(expectation1.deepEqual, value2, false, 3))
+        assert(not pcall(expectation1.to.deepEqual, value2, false, 3))
         assert(pcall(expectation1.never.to.deepEqual, value2, false, 3))
-        -- ... but are equal at a depth of 10
-        assert(pcall(expectation1.deepEqual, value2, false, 10))
+        -- ... but are equal at a maximum depth of 10
+        assert(pcall(expectation1.to.deepEqual, value2, false, 10))
     end
 
     -- A variety of weird edge cases
@@ -273,13 +289,13 @@ return function(TestEZ)
         local value1 = {}
         local value2 = {}
         local expectation1 = Expectation.new(value1)
-        assert(pcall(expectation1.deepEqual, value2))
+        assert(pcall(expectation1.to.deepEqual, value2))
     end
     do
         local value1 = {{{}}}
         local value2 = {{}}
         local expectation1 = Expectation.new(value1)
-        assert(not pcall(expectation1.deepEqual, value2))
+        assert(not pcall(expectation1.to.deepEqual, value2))
         assert(pcall(expectation1.never.to.deepEqual, value2))
     end
     -- Shallow compare on keys
@@ -298,13 +314,13 @@ return function(TestEZ)
         local value1 = nil
         local value2 = nil
         local expectation1 = Expectation.new(value1)
-        assert(pcall(expectation1.deepEqual, value2))
+        assert(pcall(expectation1.to.deepEqual, value2))
     end
     do
         local value1 = 2
         local value2 = "2"
         local expectation1 = Expectation.new(value1)
-        assert(not pcall(expectation1.deepEqual, value2))
+        assert(not pcall(expectation1.to.deepEqual, value2))
         assert(pcall(expectation1.never.to.deepEqual, value2))
     end
 

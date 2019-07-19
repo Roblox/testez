@@ -37,7 +37,7 @@ return function(TestEZ)
             str = "teststring",
         }
         local expectation = Expectation.new(value1)
-        assert(not pcall(expectation.deepEqual, value2))
+        assert(pcall(expectation.deepEqual, value2))
 
         local value3 = {
             num = ARBITRARY_NUMBER,
@@ -83,7 +83,7 @@ return function(TestEZ)
 
         local value3 = {2, 3, 4, ["wrongkey"] = "value"}
         assert(not pcall(expectation.deepEqual, value3))
-
+        
         local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
         assert(not pcall(expectation.deepEqual, value4))
     end

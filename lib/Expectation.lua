@@ -203,9 +203,14 @@ function Expectation:equal(otherValue)
 	return self
 end
 
-local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
+local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, path)
+	-- If TableUtilities.CheckListConsistency(t) would fail, then we can't really give a path or anything.
+	-- If we have just (nested) lists, then we can try to pretty print.
+	-- If we have nested tables, then we can try to give a path to the objects that are different.
 	local avoidLoops = {}
-	local function recurse(t1, t2, recursionsLeft)
+	local function recurse(t1, t2, recursionsLeft, p)
+		local tryToOutputPath = p ~= nil
+
 		-- Out of recursions. We'll just use == and warn.
 		if recursionsLeft <= 0 then
 			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
@@ -247,6 +252,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 			local v2 = t2[k1]
 			if type(k1) == "table" then
 				-- We have to match the key from t1 with a key from t2.
+				-- At this point, we should give up with trying to give a path.
 				local ok = false
 				for i, tk in ipairs(t2tablekeys) do
 					-- We must check that the keys AND values match. Otherwise we will try again.
@@ -268,7 +274,13 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 				end
 				-- t2 also has that key. We must now check that the associated values are equal.
 				t2keys[k1] = nil
-				if not recurse(v1, v2, recursionsLeft - 1) then
+				if (tryToOutputPath) then
+					p = p .. " -> " .. tostring(k1)
+				end
+				if not recurse(v1, v2, recursionsLeft - 1, p) then
+					if (tryToOutputPath) then
+						print("Different values at " .. p)
+					end
 					return false
 				end
 			end
@@ -279,7 +291,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 		end
 		return true
 	end
-	return recurse(o1, o2, remainingRecursions)
+	return recurse(o1, o2, remainingRecursions, path)
 end
 
 --[[
@@ -289,7 +301,7 @@ end
 ]]
 function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth)
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, "")
 
 	local message = formatMessage(self.successCondition,
 		("Expected value %q (%s), got %q (%s) instead"):format(
@@ -310,6 +322,31 @@ function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	return self
 end
 
+--[[
+	Assert that our expectation value is shallowly equal to another value
+	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
+]]
+function Expectation:shallowEqual(otherValue, ignoreMetatables)
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, 1)
+
+	local message = formatMessage(self.successCondition,
+		("Expected value %q (%s), got %q (%s) instead"):format(
+			tostring(otherValue),
+			type(otherValue),
+			tostring(self.value),
+			type(self.value)
+		),
+		("Expected anything but value %q (%s)"):format(
+			tostring(otherValue),
+			type(otherValue)
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
 
 --[[
 	Assert that our expectation value is equal to another value within some

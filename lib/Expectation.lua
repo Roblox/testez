@@ -207,6 +207,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 	-- If TableUtilities.CheckListConsistency(t) would fail, then we can't really give a path or anything.
 	-- If we have just (nested) lists, then we can try to pretty print.
 	-- If we have nested tables, then we can try to give a path to the objects that are different.
+	local stopPrinting = false
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft, p)
 		local tryToOutputPath = p ~= nil
@@ -274,12 +275,14 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 				end
 				-- t2 also has that key. We must now check that the associated values are equal.
 				t2keys[k1] = nil
-				if (tryToOutputPath) then
-					p = p .. " -> " .. tostring(k1)
+				local newPath = p
+				if tryToOutputPath then
+					newPath = newPath .. " -> " .. tostring(k1)
 				end
-				if not recurse(v1, v2, recursionsLeft - 1, p) then
-					if (tryToOutputPath) then
-						print("Different values at " .. p)
+				if not recurse(v1, v2, recursionsLeft - 1, newPath) then
+					if tryToOutputPath and not stopPrinting then
+						print("Different values at " .. newPath)
+						stopPrinting = true
 					end
 					return false
 				end

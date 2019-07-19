@@ -83,7 +83,7 @@ return function(TestEZ)
 
         local value3 = {2, 3, 4, ["wrongkey"] = "value"}
         assert(not pcall(expectation.deepEqual, value3))
-        
+
         local value4 = {2, 3, 4, ["key"] = "wrongvalue"}
         assert(not pcall(expectation.deepEqual, value4))
     end

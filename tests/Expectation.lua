@@ -135,7 +135,7 @@ return function(TestEZ)
             },
         }
 
-        assert(not pcall(expectation.deepEqual, value2))
+        assert(not pcall(expectation.deepEqual, value3))
     end
 
     -- Works for tables that are different in multiple locations

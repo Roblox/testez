@@ -276,7 +276,9 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 				else
 					-- t1 has a key which t2 doesn't have, fail.
 					if v2 == nil then
-						savedWarningMessage = "LHS has a key that RHS does not have at " .. p
+						if tryToOutputPath and not stopPrinting then
+							savedWarningMessage = "LHS has a key that RHS does not have at " .. p
+						end
 						return false
 					end
 					-- t2 also has that key. We must now check that the associated values are equal.
@@ -288,7 +290,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 					if not recurse(v1, v2, recursionsLeft - 1, newPath) then
 						if tryToOutputPath and not stopPrinting then
 							local warningMessage = "Different values at " .. newPath
-							if recursionsLeft == 1 then
+							if recursionsLeft == 1 and not shallow then
 								warningMessage = warningMessage .. ". Beware that this may be because maximum recursive depth was reached."
 							end
 							savedWarningMessage = warningMessage
@@ -300,7 +302,9 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			end
 			-- t2 has a key which t1 doesn't have, fail.
 			if next(t2keys) then
-				savedWarningMessage = "RHS has a key that LHS does not have at " .. p
+				if tryToOutputPath and not stopPrinting then
+					savedWarningMessage = "RHS has a key that LHS does not have at " .. p
+				end
 				return false
 			end
 			return true

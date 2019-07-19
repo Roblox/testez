@@ -205,7 +205,7 @@ function Expectation:equal(otherValue)
 end
 
 local function _pathify(obj)
-	if type(k1) == "string" then
+	if type(obj) == "string" then
 		return "\"[" .. tostring(obj) .. "\"]"
 	else
 		return "[" .. tostring(obj) .. "]"
@@ -257,7 +257,6 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			t2keys[k] = true
 		end
 
-		local newPath = p
 
 		-- Iterate over t1's keys
 		for k1, v1 in pairs(t1) do
@@ -272,6 +271,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			end
 			-- t2 also has that key. We must now check that the associated values are equal.
 			t2keys[k1] = nil
+			local newPath = p
 			newPath = newPath .. _pathify(k1)
 			if not recurse(v1, v2, recursionsLeft - 1, newPath) then
 				if not stopPrinting then

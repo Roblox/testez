@@ -203,34 +203,6 @@ return function(TestEZ)
         assert(pcall(expectation.never.to.deepEqual, value3))
     end
 
-    -- Works for tables as keys
-    do
-        local tableKey1 = {
-            key = "value"
-        }
-        local tableKey2 = {
-            key = "value"
-        }
-        local value1 = {
-            [tableKey1] = ARBITRARY_NUMBER,
-        }
-        local value2 = {
-            [tableKey2] = ARBITRARY_NUMBER,
-        }
-        local expectation = Expectation.new(value1)
-        assert(pcall(expectation.deepEqual, value2))
-
-        local tableKey3 = {
-            key = "differentvalue",
-        }
-        local value3 = {
-            [tableKey3] = ARBITRARY_NUMBER,
-        }
-
-        assert(not pcall(expectation.deepEqual, value3))
-        assert(pcall(expectation.never.to.deepEqual, value3))
-    end
-
     -- Takes into account metatables, if desired
     do
         local value1 = {
@@ -309,6 +281,7 @@ return function(TestEZ)
         assert(not pcall(expectation1.deepEqual, value2))
         assert(pcall(expectation1.never.to.deepEqual, value2))
     end
+    -- Shallow compare on keys
     do
         local value1 = {
             [{}] = {{}}
@@ -317,13 +290,7 @@ return function(TestEZ)
             [{}] = {{}}
         }
         local expectation1 = Expectation.new(value1)
-        assert(pcall(expectation1.deepEqual, value2))
-
-        local value3 = {
-            [{}] = {{1}}
-        }
-        assert(not pcall(expectation1.deepEqual, value3))
-        assert(pcall(expectation1.never.to.deepEqual, value3))
+        assert(pcall(expectation1.never.to.deepEqual, value2))
     end
     do
         local value1 = nil

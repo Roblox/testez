@@ -312,6 +312,7 @@ end
 function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
 	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, "")
+					== self.successCondition
 
 	local message = formatMessage(self.successCondition,
 		("Expected value %q (%s), got %q (%s) instead"):format(
@@ -338,7 +339,7 @@ end
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 ]]
 function Expectation:shallowEqual(otherValue, ignoreMetatables)
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, 1)
+	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, 1) == self.successCondition
 
 	local message = formatMessage(self.successCondition,
 		("Expected value %q (%s), got %q (%s) instead"):format(

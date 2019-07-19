@@ -93,6 +93,7 @@ function Expectation.new(value)
 	self.throw = bindSelf(self, self.throw)
 	self.near = bindSelf(self, self.near)
 	self.deepEqual = bindSelf(self, self.deepEqual)
+	self.shallowEqual = bindSelf(self, self.shallowEqual)
 
 	return self
 end

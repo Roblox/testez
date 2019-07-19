@@ -347,7 +347,7 @@ end
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 ]]
 function Expectation:shallowEqual(otherValue, ignoreMetatables)
-	local equal, warningMessage = _equalityWrapper(self.value, otherValue, ignoreMetatables, 1)
+	local equal, warningMessage = _equalityWrapper(self.value, otherValue, ignoreMetatables, 1, true)
 	local result = equal == self.successCondition
 
 	local message = formatMessage(self.successCondition,

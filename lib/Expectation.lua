@@ -307,7 +307,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 		end
 		return recurse(o1, o2, remainingRecursions, path)
 	end
-	return _deepEqualHelper(lhs, rhs, maxRecursiveDepth), savedWarningMessage
+	return _deepEqualHelper(lhs, rhs, maxRecursiveDepth, ""), savedWarningMessage
 end
 
 --[[

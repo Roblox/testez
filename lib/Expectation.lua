@@ -335,7 +335,8 @@ function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 end
 
 --[[
-	Assert that our expectation value is shallowly equal to another value
+	Assert that our expectation value is shallowly equal to another value, checking that they have the same
+	key-value pairs (if they are tables)
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 ]]
 function Expectation:shallowEqual(otherValue, ignoreMetatables)

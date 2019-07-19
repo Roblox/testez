@@ -276,7 +276,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 				else
 					-- t1 has a key which t2 doesn't have, fail.
 					if v2 == nil then
-						savedWarningMessage = "LHS has a key that RHS does not have at " .. path
+						savedWarningMessage = "LHS has a key that RHS does not have at " .. p
 						return false
 					end
 					-- t2 also has that key. We must now check that the associated values are equal.
@@ -300,7 +300,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			end
 			-- t2 has a key which t1 doesn't have, fail.
 			if next(t2keys) then
-				savedWarningMessage = "RHS has a key that LHS does not have at " .. path
+				savedWarningMessage = "RHS has a key that LHS does not have at " .. p
 				return false
 			end
 			return true

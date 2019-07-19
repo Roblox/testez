@@ -278,6 +278,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 					if v2 == nil then
 						if tryToOutputPath and not stopPrinting then
 							savedWarningMessage = "LHS has a key that RHS does not have at " .. p
+							stopPrinting = true
 						end
 						return false
 					end
@@ -304,6 +305,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 			if next(t2keys) then
 				if tryToOutputPath and not stopPrinting then
 					savedWarningMessage = "RHS has a key that LHS does not have at " .. p
+					stopPrinting = true
 				end
 				return false
 			end

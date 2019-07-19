@@ -279,7 +279,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 						if tryToOutputPath and not stopPrinting then
 							savedWarningMessage = "LHS has a key that RHS does not have at " .. p
 							stopPrinting = true
-							print(savedWarningMessage .. " point 1")
+							--print(savedWarningMessage .. " point 1")
 						end
 						return false
 					end
@@ -297,7 +297,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 							end
 							savedWarningMessage = warningMessage
 							stopPrinting = true
-							print(savedWarningMessage .. " point 2")
+							--print(savedWarningMessage .. " point 2")
 						end
 						return false
 					end
@@ -308,7 +308,7 @@ local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, s
 				if tryToOutputPath and not stopPrinting then
 					savedWarningMessage = "RHS has a key that LHS does not have at " .. p
 					stopPrinting = true
-					print(savedWarningMessage .. " point 3")
+					--print(savedWarningMessage .. " point 3")
 				end
 				return false
 			end

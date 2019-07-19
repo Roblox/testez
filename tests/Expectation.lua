@@ -128,6 +128,7 @@ return function(TestEZ)
         local expectation1 = Expectation.new(value1)
         assert(not pcall(expectation1.deepEqual, value2))
 
+        -- Compare based only on strUsedForComparison
         local mt = {
             __eq = function(lhs, rhs)
                 return lhs.strUsedForComparison == rhs.strUsedForComparison

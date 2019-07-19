@@ -206,31 +206,32 @@ end
 local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft)
+		-- Out of recursions. We'll just use == and warn.
 		if recursionsLeft <= 0 then
 			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
 			return t1 == t2
 		end
-		-- compare value types
+
 		if type(t1) ~= type(t2) then
 			return false
 		end
 
-		-- Base case: compare simple values
 		if type(t1) ~= "table" then
 			return t1 == t2
 		end
-		-- Alternatively, use mt equality
+
+		-- Use overloaded equality if we have it and it's specified that we should.
 		local mt = getmetatable(t1)
 		if not ignoreMetatables and mt and mt.__eq then
 			return t1 == t2
 		end
 
-		-- Now, on to tables.
-		-- First, let's avoid looping forever.
+		-- Avoid looping forever.
 		if avoidLoops[t1] then
 			return avoidLoops[t1] == t2
 		end
 		avoidLoops[t1] = t2
+
 		-- Copy keys from t2
 		local t2keys = {}
 		local t2tablekeys = {}
@@ -240,14 +241,17 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 			end
 			t2keys[k] = true
 		end
-		-- Let's iterate keys from t1
+
+		-- Iterate over t1's keys
 		for k1, v1 in pairs(t1) do
 			local v2 = t2[k1]
 			if type(k1) == "table" then
-				-- if key is a table, we need to find an equivalent one.
+				-- We have to match the key from t1 with a key from t2.
 				local ok = false
 				for i, tk in ipairs(t2tablekeys) do
+					-- We must check that the keys AND values match. Otherwise we will try again.
 					if _deepEqualHelper(k1, tk, ignoreMetatables, recursionsLeft - 1) and recurse(v1, t2[tk], recursionsLeft - 1) then
+						-- We've already "used up" the key from t2: it's no longer available to match with any key from t1.
 						table.remove(t2tablekeys, i)
 						t2keys[tk] = nil
 						ok = true
@@ -262,13 +266,14 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions)
 				if v2 == nil then
 					return false
 				end
+				-- t2 also has that key. We must now check that the associated values are equal.
 				t2keys[k1] = nil
 				if not recurse(v1, v2, recursionsLeft - 1) then
 					return false
 				end
 			end
 		end
-		-- if t2 has a key which t1 doesn't have, fail.
+		-- t2 has a key which t1 doesn't have, fail.
 		if next(t2keys) then
 			return false
 		end

@@ -204,104 +204,110 @@ function Expectation:equal(otherValue)
 	return self
 end
 
-local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, path)
-	local stopPrinting = false
-	if path == nil then
-		stopPrinting = true
-	end
-	local avoidLoops = {}
-	local function recurse(t1, t2, recursionsLeft, p)
-		local tryToOutputPath = p ~= nil
+local function _equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, shallow)
+	local savedWarningMessage = ""
+	local stopPrinting = false -- Flipped as soon as we find an inequality
 
-		-- Out of recursions. We'll just use == and warn.
-		if recursionsLeft <= 0 then
-			warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
-			return t1 == t2
-		end
+	local function _deepEqualHelper(o1, o2, remainingRecursions, path)
+		local avoidLoops = {}
+		local function recurse(t1, t2, recursionsLeft, p)
+			local tryToOutputPath = p ~= nil
 
-		if type(t1) ~= type(t2) then
-			return false
-		end
-
-		if type(t1) ~= "table" then
-			return t1 == t2
-		end
-
-		-- Use overloaded equality if we have it and it's specified that we should.
-		local mt = getmetatable(t1)
-		if not ignoreMetatables and mt and mt.__eq then
-			return t1 == t2
-		end
-
-		-- Avoid looping forever.
-		if avoidLoops[t1] then
-			return avoidLoops[t1] == t2
-		end
-		avoidLoops[t1] = t2
-
-		-- Copy keys from t2
-		local t2keys = {}
-		local t2tablekeys = {}
-		for k, _ in pairs(t2) do
-			if type(k) == "table" then
-				table.insert(t2tablekeys, k)
+			-- Out of recursions. We'll just use == and warn.
+			if recursionsLeft <= 0 then
+				if not shallow then
+					warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
+				end
+				return t1 == t2
 			end
-			t2keys[k] = true
-		end
 
-		-- Iterate over t1's keys
-		for k1, v1 in pairs(t1) do
-			local v2 = t2[k1]
-			if type(k1) == "table" then
-				-- We have to match the key from t1 with a key from t2.
-				-- At this point, we should give up with trying to give a path.
-				local ok = false
-				for i, tk in ipairs(t2tablekeys) do
-					-- We must check that the keys AND values match. Otherwise we will try again.
-					-- We don't send in path, so path gets set to nil and we don't try and print, since it is not possible to print a
-					-- path through a table with tables for keys.
-					if _deepEqualHelper(k1, tk, ignoreMetatables, recursionsLeft - 1) and recurse(v1, t2[tk], recursionsLeft - 1) then
-						-- We've already "used up" the key from t2: it's no longer available to match with any key from t1.
-						table.remove(t2tablekeys, i)
-						t2keys[tk] = nil
-						ok = true
-						break
-					end
+			if type(t1) ~= type(t2) then
+				return false
+			end
+
+			if type(t1) ~= "table" then
+				return t1 == t2
+			end
+
+			-- Use overloaded equality if we have it and it's specified that we should.
+			local mt = getmetatable(t1)
+			if not ignoreMetatables and mt and mt.__eq then
+				return t1 == t2
+			end
+
+			-- Avoid looping forever.
+			if avoidLoops[t1] then
+				return avoidLoops[t1] == t2
+			end
+			avoidLoops[t1] = t2
+
+			-- Copy keys from t2
+			local t2keys = {}
+			local t2tablekeys = {}
+			for k, _ in pairs(t2) do
+				if type(k) == "table" then
+					table.insert(t2tablekeys, k)
 				end
-				if not ok then
-					return false
-				end
-			else
-				-- t1 has a key which t2 doesn't have, fail.
-				if v2 == nil then
-					return false
-				end
-				-- t2 also has that key. We must now check that the associated values are equal.
-				t2keys[k1] = nil
-				local newPath = p
-				if tryToOutputPath then
-					newPath = newPath .. " -> " .. tostring(k1)
-				end
-				if not recurse(v1, v2, recursionsLeft - 1, newPath) then
-					if tryToOutputPath and not stopPrinting then
-						local warningMessage = "Different values at " .. newPath
-						if recursionsLeft == 1 then
-							warningMessage = warningMessage .. ". Beware that this may be because maximum recursive depth was reached."
+				t2keys[k] = true
+			end
+
+			-- Iterate over t1's keys
+			for k1, v1 in pairs(t1) do
+				local v2 = t2[k1]
+				if type(k1) == "table" then
+					-- We have to match the key from t1 with a key from t2.
+					-- At this point, we should give up with trying to give a path.
+					local ok = false
+					for i, tk in ipairs(t2tablekeys) do
+						-- We must check that the keys AND values match. Otherwise we will try again.
+						-- We don't send in path, so path gets set to nil and we don't try and print, since it is not possible to print a
+						-- path through a table with tables for keys.
+						if _deepEqualHelper(k1, tk, recursionsLeft - 1) and recurse(v1, t2[tk], recursionsLeft - 1) then
+							-- We've already "used up" the key from t2: it's no longer available to match with any key from t1.
+							table.remove(t2tablekeys, i)
+							t2keys[tk] = nil
+							ok = true
+							break
 						end
-						print(warningMessage)
-						stopPrinting = true
 					end
-					return false
+					if not ok then
+						return false, nil
+					end
+				else
+					-- t1 has a key which t2 doesn't have, fail.
+					if v2 == nil then
+						savedWarningMessage = "LHS has a key that RHS does not have at " .. path
+						return false
+					end
+					-- t2 also has that key. We must now check that the associated values are equal.
+					t2keys[k1] = nil
+					local newPath = p
+					if tryToOutputPath then
+						newPath = newPath .. " -> " .. tostring(k1)
+					end
+					if not recurse(v1, v2, recursionsLeft - 1, newPath) then
+						if tryToOutputPath and not stopPrinting then
+							local warningMessage = "Different values at " .. newPath
+							if recursionsLeft == 1 then
+								warningMessage = warningMessage .. ". Beware that this may be because maximum recursive depth was reached."
+							end
+							savedWarningMessage = warningMessage
+							stopPrinting = true
+						end
+						return false
+					end
 				end
 			end
+			-- t2 has a key which t1 doesn't have, fail.
+			if next(t2keys) then
+				savedWarningMessage = "RHS has a key that LHS does not have at " .. path
+				return false
+			end
+			return true
 		end
-		-- t2 has a key which t1 doesn't have, fail.
-		if next(t2keys) then
-			return false
-		end
-		return true
+		return recurse(o1, o2, remainingRecursions, path)
 	end
-	return recurse(o1, o2, remainingRecursions, path)
+	return _deepEqualHelper(lhs, rhs, maxRecursiveDepth), savedWarningMessage
 end
 
 --[[
@@ -311,20 +317,12 @@ end
 ]]
 function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth, "")
-					== self.successCondition
+	local equal, warningMessage = _equalityWrapper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth)
+	local result = equal == self.successCondition
 
 	local message = formatMessage(self.successCondition,
-		("Expected value %q (%s), got %q (%s) instead"):format(
-			tostring(otherValue),
-			type(otherValue),
-			tostring(self.value),
-			type(self.value)
-		),
-		("Expected anything but value %q (%s)"):format(
-			tostring(otherValue),
-			type(otherValue)
-		)
+		warningMessage,
+		"Expected there to be some difference, but the objects were deeply equal."
 	)
 
 	assertLevel(result, message, 3)
@@ -339,19 +337,12 @@ end
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 ]]
 function Expectation:shallowEqual(otherValue, ignoreMetatables)
-	local result = _deepEqualHelper(self.value, otherValue, ignoreMetatables, 1) == self.successCondition
+	local equal, warningMessage = _equalityWrapper(self.value, otherValue, ignoreMetatables, 1)
+	local result = equal == self.successCondition
 
 	local message = formatMessage(self.successCondition,
-		("Expected value %q (%s), got %q (%s) instead"):format(
-			tostring(otherValue),
-			type(otherValue),
-			tostring(self.value),
-			type(self.value)
-		),
-		("Expected anything but value %q (%s)"):format(
-			tostring(otherValue),
-			type(otherValue)
-		)
+		warningMessage,
+		"Expected there to be some difference, but the objects were shallowly equal."
 	)
 
 	assertLevel(result, message, 3)

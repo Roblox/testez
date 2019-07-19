@@ -2,7 +2,6 @@ return function(TestEZ)
     local Expectation = TestEZ.Expectation
 
     local ARBITRARY_NUMBER = 5
-    local DIFFERENT_ARBITRARY_NUMBER = ARBITRARY_NUMBER + 1
 
     -- Works with primitives
     do

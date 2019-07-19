@@ -288,7 +288,7 @@ local function _deepEqualHelper(o1, o2, ignoreMetatables, remainingRecursions, p
 					if tryToOutputPath and not stopPrinting then
 						local warningMessage = "Different values at " .. newPath
 						if recursionsLeft == 1 then
-							warningMessage = warningMessage .. "\nBeware that this may be because maximum recursive depth was reached."
+							warningMessage = warningMessage .. ". Beware that this may be because maximum recursive depth was reached."
 						end
 						print(warningMessage)
 						stopPrinting = true

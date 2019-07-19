@@ -74,6 +74,113 @@ return function(TestEZ)
         assert(not pcall(expectation.deepEqual, value3))
     end
 
+    -- Works for multi-deep table where some "levels" of the table are lists and some are dictionaries
+    do
+        local value1 = {
+            {
+                str = "value",
+                innerTable1 = {
+                    innerKey1 = {
+                        innerInnerTable = { 1, 2, 3 },
+                        innerInnerKey = "innerInnerValue"
+                    },
+                    innerKey2 = {
+                        innerInnerNum = 5,
+                    },
+                    innerNum = 1,
+                }
+            },
+            {
+                str = "value",
+            },
+        }
+        local value2 = {
+            {
+                str = "value",
+                innerTable1 = {
+                    innerKey1 = {
+                        innerInnerTable = { 1, 2, 3 },
+                        innerInnerKey = "innerInnerValue"
+                    },
+                    innerKey2 = {
+                        innerInnerNum = 5,
+                    },
+                    innerNum = 1,
+                }
+            },
+            {
+                str = "value",
+            },
+        }
+
+        local expectation = Expectation.new(value1)
+        assert(pcall(expectation.deepEqual, value2))
+
+        local value3 = {
+            {
+                str = "value",
+                innerTable1 = {
+                    innerKey1 = {
+                        innerInnerTable = { 1, 10000, 3 },
+                        innerInnerKey = "innerInnerValue"
+                    },
+                    innerKey2 = {
+                        innerInnerNum = 5,
+                    },
+                    innerNum = 1,
+                }
+            },
+            {
+                str = "value",
+            },
+        }
+
+        assert(not pcall(expectation.deepEqual, value2))
+    end
+
+    -- Works for tables that are different in multiple locations
+    do
+        local value1 = {
+            {
+                str = "value",
+                innerTable1 = {
+                    innerKey1 = {
+                        innerInnerTable = { 1, 2, 3 },
+                        innerInnerKey = "innerInnerValue"
+                    },
+                    innerKey2 = {
+                        innerInnerNum = 5,
+                    },
+                    innerNum = 1,
+                }
+            },
+            {
+                str = "value",
+            },
+        }
+        local value2 = {
+            {
+                str = "value",
+                innerTable1 = {
+                    innerKey1 = {
+                        innerInnerTable = { 1, 2, 3 },
+                        innerInnerKey = "differentInnerInnerValue"
+                    },
+                    innerKey2 = {
+                        innerInnerNum = 5,
+                    },
+                    innerNum = 100000,
+                }
+            },
+            {
+                str = "value",
+            },
+        }
+
+        local expectation = Expectation.new(value1)
+        assert(not pcall(expectation.deepEqual, value2))
+    end
+
     -- Works for mixed list/dictionary tables
     do
         local value1 = {2, 3, 4, key = "value"}

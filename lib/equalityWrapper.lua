@@ -16,8 +16,15 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
 	end
 	if type(lhs) == "table" then
 		rhsAddress = tostring(rhs)
-	end
-
+    end
+    if type(lhs) ~= "table" and type(rhs) ~= "table" then
+        -- We can stop now and give helpful information if necessary
+        local equalityResult = lhs == rhs
+        if not equalityResult then
+            return equalityResult, "LHS has value " .. tostring(lhs) .. " and RHS has value " .. tostring(rhs)
+        end
+        return equalityResult, ""
+    end
 
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft, p)

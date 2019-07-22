@@ -199,7 +199,6 @@ function Expectation:equal(otherValue)
 			type(otherValue)
 		)
 	)
-	print(message)
 
 	assertLevel(result, message, 3)
 	self:_resetModifiers()

@@ -220,7 +220,6 @@ function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
 		warningMessage,
 		"Expected there to be some difference, but the values were deeply equal."
 	)
-	print(self.value, otherValue, result, message)
 
 	assertLevel(result, message, 3)
 	self:_resetModifiers()
@@ -241,7 +240,6 @@ function Expectation:shallowEqual(otherValue, ignoreMetatables)
 		warningMessage,
 		"Expected there to be some difference, but the values were shallowly equal."
 	)
-	print(self.value, otherValue, result, message)
 
 	assertLevel(result, message, 3)
 	self:_resetModifiers()

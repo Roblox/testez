@@ -27,7 +27,7 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
             warningMessage = "LHS has value " .. tostring(lhs) .. " and RHS has value " .. tostring(rhs)
         end
         if not sameType then
-            warningMessage = warningMessage .. " different types: LHS " .. type(lhs) .. " and RHS " .. type(rhs)
+            warningMessage = warningMessage .. ", different types: LHS " .. type(lhs) .. " and RHS " .. type(rhs)
         end
         return equalityResult, warningMessage
     end

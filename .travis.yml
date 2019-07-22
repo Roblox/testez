@@ -2,6 +2,10 @@
 language: python
 sudo: false
 
+branches:
+  only:
+    - master
+
 env:
   - LUA="lua=5.1"
 

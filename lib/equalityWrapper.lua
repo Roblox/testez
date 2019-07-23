@@ -16,21 +16,21 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
 	end
 	if type(lhs) == "table" then
 		rhsAddress = tostring(rhs)
-    end
-    if type(lhs) ~= "table" and type(rhs) ~= "table" then
-        -- We can stop now and give helpful information if necessary
-        local equalityResult = lhs == rhs
-        local sameType = type(lhs) == type(rhs)
-        -- Check if different types to avoid confusing error messages that fail to distinguish between 2 and "2"
-        local warningMessage = ""
-        if not equalityResult then
-            warningMessage = "LHS has value " .. tostring(lhs) .. " and RHS has value " .. tostring(rhs)
-        end
-        if not sameType then
-            warningMessage = warningMessage .. ", different types: LHS " .. type(lhs) .. " and RHS " .. type(rhs)
-        end
-        return equalityResult, warningMessage
-    end
+	end
+	if type(lhs) ~= "table" and type(rhs) ~= "table" then
+		-- We can stop now and give helpful information if necessary
+		local equalityResult = lhs == rhs
+		local sameType = type(lhs) == type(rhs)
+		-- Check if different types to avoid confusing error messages that fail to distinguish between 2 and "2"
+		local warningMessage = ""
+		if not equalityResult then
+			warningMessage = "LHS has value " .. tostring(lhs) .. " and RHS has value " .. tostring(rhs)
+		end
+		if not sameType then
+			warningMessage = warningMessage .. ", different types: LHS " .. type(lhs) .. " and RHS " .. type(rhs)
+		end
+		return equalityResult, warningMessage
+	end
 
 	local avoidLoops = {}
 	local function recurse(t1, t2, recursionsLeft, p)

@@ -4,7 +4,6 @@ local Expectation = require(TestEZ.Expectation)
 return {
     ["it should succeed if an empty function is expected to never throw"] = function()
         local function shouldNotThrow()
-            return
         end
 
         local expect = Expectation.new(shouldNotThrow)
@@ -47,7 +46,6 @@ return {
     end,
     ["it should fail if an empty function is expected to throw"] = function()
         local function shouldNotThrow()
-            return
         end
 
         local expect = Expectation.new(shouldNotThrow)

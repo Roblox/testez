@@ -73,7 +73,6 @@ local errorMessages = {}
 
 -- Unit tests are expected to load individual files relative to themselves
 for _, testModule in ipairs(unitTests) do
-	print('loading', testModule)
 	local tests = habitat:require(testModule)
 
 	for name, testFunction in pairs(tests) do

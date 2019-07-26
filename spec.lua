@@ -54,20 +54,6 @@ local function findUnitTests(container, foundTests)
 	foundTests = foundTests or {}
 
 	for _, child in ipairs(container:GetChildren()) do
-		if child.Name:match("%.spec$") then
-			table.insert(foundTests, child)
-		end
-
-		findUnitTests(child, foundTests)
-	end
-
-	return foundTests
-end
-
-local function findIntegrationTests(container, foundTests)
-	foundTests = foundTests or {}
-
-	for _, child in ipairs(container:GetChildren()) do
 		if child:IsA("ModuleScript") then
 			table.insert(foundTests, child)
 		end
@@ -79,7 +65,7 @@ local function findIntegrationTests(container, foundTests)
 end
 
 -- Run all unit tests, which are located in .spec.lua files next to the source
-local unitTests = findUnitTests(root.TestEZ)
+local unitTests = findUnitTests(root.TestEZTests)
 print("Running unit tests...")
 local failureCount = 0
 local successCount = 0
@@ -87,6 +73,7 @@ local errorMessages = {}
 
 -- Unit tests are expected to load individual files relative to themselves
 for _, testModule in ipairs(unitTests) do
+	print('loading', testModule)
 	local tests = habitat:require(testModule)
 
 	for name, testFunction in pairs(tests) do
@@ -105,15 +92,6 @@ print(("Unit tests: %d passed, %d failed\n"):format(successCount, failureCount))
 if failureCount > 0 then
 	print(table.concat(errorMessages, "\n\n"))
 	os.exit(1)
-end
-
--- Run all integration tests, which are located in the 'tests' folder
-local integrationTests = findIntegrationTests(root.TestEZTests)
-print(("Running %d integration tests..."):format(#integrationTests))
-
--- Integration tests should be passed the root TestEZ object
-for _, test in ipairs(integrationTests) do
-	habitat:require(test)(habitat:require(root.TestEZ))
 end
 
 print("All tests passed.")

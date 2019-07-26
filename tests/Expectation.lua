@@ -1,4 +1,5 @@
-local Expectation = require(script.Parent.Expectation)
+local TestEZ = script.Parent.Parent.TestEZ
+local Expectation = require(TestEZ.Expectation)
 
 return {
     ["it should succeed if an empty function is expected to never throw"] = function()

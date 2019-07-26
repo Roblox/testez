@@ -211,9 +211,8 @@ end
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 	maxRecursiveDepth specifies how many levels should be recurisvely traversed before reverting to ==.
 ]]
-function Expectation:deepEqual(otherValue, ignoreMetatables, maxRecursiveDepth)
-	maxRecursiveDepth = maxRecursiveDepth or DEFAULT_MAXIMUM_RECURSIVE_DEPTH
-	local equalityResult, warningMessage = equalityWrapper(self.value, otherValue, ignoreMetatables, maxRecursiveDepth)
+function Expectation:deepEqual(otherValue, ignoreMetatables)
+	local equalityResult, warningMessage = equalityWrapper(self.value, otherValue, ignoreMetatables)
 	local result = equalityResult == self.successCondition
 
 	local message = formatMessage(self.successCondition,
@@ -233,7 +232,7 @@ end
 	ignoreMetatables specifies that if an overloaded equality operator is provided, it will be ignored.
 ]]
 function Expectation:shallowEqual(otherValue, ignoreMetatables)
-	local equalityResult, warningMessage = equalityWrapper(self.value, otherValue, ignoreMetatables, 1, true)
+	local equalityResult, warningMessage = equalityWrapper(self.value, otherValue, ignoreMetatables, true)
 	local result = equalityResult == self.successCondition
 
 	local message = formatMessage(self.successCondition,

@@ -248,42 +248,6 @@ return function(TestEZ)
         assert(pcall(expectation1.never.to.deepEqual, value2, true))
     end
 
-    -- Takes into account maximum recursive depth
-    do
-        local value1 = {
-            inner1 = {
-                inner2 = {
-                    inner3 = {
-                        inner4 = {
-                            inner5 = {
-                                key = "value"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        local value2 = {
-            inner1 = {
-                inner2 = {
-                    inner3 = {
-                        inner4 = {
-                            inner5 = {
-                                key = "value"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        -- value1 and value2 are deeply equal, but are not shallowly equal at a depth of 3...
-        local expectation1 = Expectation.new(value1)
-        assert(not pcall(expectation1.to.deepEqual, value2, false, 3))
-        assert(pcall(expectation1.never.to.deepEqual, value2, false, 3))
-        -- ... but are equal at a maximum depth of 10
-        assert(pcall(expectation1.to.deepEqual, value2, false, 10))
-    end
-
     -- A variety of weird edge cases
     do
         local value1 = {}

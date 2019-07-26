@@ -7,7 +7,7 @@ local function _pathify(obj)
 	end
 end
 
-local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, shallow)
+local function equalityWrapper(lhs, rhs, ignoreMetatables, shallow)
 	local savedWarningMessage = ""
 	local stopPrinting = false -- Flipped as soon as we find an inequality
 	local lhsAddress, rhsAddress
@@ -31,17 +31,14 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
 		end
 		return equalityResult, warningMessage
 	end
-
+	local recursedOnce = false
 	local avoidLoops = {}
-	local function recurse(t1, t2, recursionsLeft, p)
+	local function recurse(t1, t2, p)
 
-		-- Out of recursions. We'll just use == and warn.
-		if recursionsLeft <= 0 then
-			if not shallow then
-				warn("Reached maximal recursive depth on deep equality check. Reverting to == for check.\n")
-			end
+		if shallow and recursedOnce then
 			return t1 == t2
 		end
+		recursedOnce = true
 
 		if type(t1) ~= type(t2) then
 			return false
@@ -92,12 +89,9 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
 			t2keys[k1] = nil
 			local newPath = p
 			newPath = newPath .. _pathify(k1)
-			if not recurse(v1, v2, recursionsLeft - 1, newPath) then
+			if not recurse(v1, v2, newPath) then
 				if not stopPrinting then
 					local warningMessage = "Different values at " .. newPath
-					if recursionsLeft == 1 and not shallow then
-						warningMessage = warningMessage .. ". Beware that this may be because maximum recursive depth was reached."
-					end
 					savedWarningMessage = warningMessage
 					stopPrinting = true
 				end
@@ -118,7 +112,7 @@ local function equalityWrapper(lhs, rhs, ignoreMetatables, maxRecursiveDepth, sh
 		end
 		return true
 	end
-	local equalityResult = recurse(lhs, rhs, maxRecursiveDepth, "")
+	local equalityResult = recurse(lhs, rhs, "")
 	return equalityResult, savedWarningMessage
 end
 

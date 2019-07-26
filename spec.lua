@@ -96,7 +96,7 @@ for _, testModule in ipairs(unitTests) do
 			successCount = successCount + 1
 		else
 			failureCount = failureCount + 1
-			table.insert(errorMessages, message)
+			table.insert(errorMessages, ("Test: %s\nError: %s"):format(name, message))
 		end
 	end
 end

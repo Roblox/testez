@@ -1,69 +1,64 @@
 local Expectation = require(script.Parent.Expectation)
 
-local tests = {}
+return {
+    ["it should succeed if an empty function is expected to never throw"] = function()
+        local function shouldNotThrow()
+            return
+        end
 
-tests["it should succeed if an empty function is expected to never throw"] = function()
-    local function shouldNotThrow()
-        return
-    end
+        local expect = Expectation.new(shouldNotThrow)
 
-    local expect = Expectation.new(shouldNotThrow)
+        local success = pcall(function()
+            expect.never:throw()
+        end)
 
-    local success = pcall(function()
-        expect.never:throw()
-    end)
+        assert(success, "should succeed")
+    end,
+    ["it should succeed if a throwing function is expected to throw"] = function()
+        local function shouldThrow()
+            error("oof")
+        end
 
-    assert(success, "should succeed")
-end
+        local expect = Expectation.new(shouldThrow)
 
-tests["it should succeed if a throwing function is expected to throw"] = function()
-    local function shouldThrow()
-        error("oof")
-    end
+        local success = pcall(function()
+            expect:throw()
+        end)
 
-    local expect = Expectation.new(shouldThrow)
+        assert(success, "should succeed")
+    end,
+    ["it should fail if a throwing function is expected to never throw"] = function()
+        local function shouldThrow()
+            error("oof")
+        end
 
-    local success = pcall(function()
-        expect:throw()
-    end)
+        local expect = Expectation.new(shouldThrow)
 
-    assert(success, "should succeed")
-end
+        local success, message = pcall(function()
+            expect.never:throw()
+        end)
 
-tests["it should fail if a throwing function is expected to never throw"] = function()
-    local function shouldThrow()
-        error("oof")
-    end
+        assert(not success, "should fail")
+        assert(
+            message:match("Expected function to succeed, but it threw an error:"),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["it should fail if an empty function is expected to throw"] = function()
+        local function shouldNotThrow()
+            return
+        end
 
-    local expect = Expectation.new(shouldThrow)
+        local expect = Expectation.new(shouldNotThrow)
 
-    local success, message = pcall(function()
-        expect.never:throw()
-    end)
+        local success, message = pcall(function()
+            expect:throw()
+        end)
 
-    assert(not success, "should fail")
-    assert(
-        message:match("Expected function to succeed, but it threw an error:"),
-        ("Error message does not match:\n%s\n"):format(message)
-    )
-end
-
-tests["it should fail if an empty function is expected to throw"] = function()
-    local function shouldNotThrow()
-        return
-    end
-
-    local expect = Expectation.new(shouldNotThrow)
-
-    local success, message = pcall(function()
-        expect:throw()
-    end)
-
-    assert(not success, "should fail")
-    assert(
-        message:match("Expected function to throw an error, but it did not."),
-        ("Error message does not match:\n%s\n"):format(message)
-    )
-end
-
-return tests
+        assert(not success, "should fail")
+        assert(
+            message:match("Expected function to throw an error, but it did not."),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+}

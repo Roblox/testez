@@ -80,11 +80,31 @@ end
 
 -- Run all unit tests, which are located in .spec.lua files next to the source
 local unitTests = findUnitTests(root.TestEZ)
-print(("Running %d unit tests..."):format(#unitTests))
+print("Running unit tests...")
+local failureCount = 0
+local successCount = 0
+local errorMessages = {}
 
 -- Unit tests are expected to load individual files relative to themselves
-for _, test in ipairs(unitTests) do
-	habitat:require(test)()
+for _, testModule in ipairs(unitTests) do
+	local tests = habitat:require(testModule)
+
+	for name, testFunction in pairs(tests) do
+		local success, message = pcall(testFunction)
+
+		if success then
+			successCount = successCount + 1
+		else
+			failureCount = failureCount + 1
+			table.insert(errorMessages, message)
+		end
+	end
+end
+
+print(("Unit tests: %d passed, %d failed\n"):format(successCount, failureCount))
+if failureCount > 0 then
+	print(table.concat(errorMessages, "\n\n"))
+	os.exit(1)
 end
 
 -- Run all integration tests, which are located in the 'tests' folder

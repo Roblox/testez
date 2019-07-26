@@ -248,6 +248,26 @@ return function(TestEZ)
         assert(pcall(expectation1.never.to.deepEqual, value2, true))
     end
 
+    -- Handles self-reference case
+    do
+        local value1 = {
+            irrelevantKey = ARBITRARY_NUMBER,
+        }
+        value1["key"] = value1
+        local value2 = {
+            irrelevantKey = ARBITRARY_NUMBER,
+        }
+        value2["key"] = value2
+        local expectation = Expectation.new(value1)
+        assert(pcall(expectation.to.deepEqual, value2))
+
+        local value3 = {}
+        value3["key"] = value3
+
+        assert(not pcall(expectation.to.deepEqual, value3, true))
+        assert(pcall(expectation.never.to.deepEqual, value3, true))
+    end
+
     -- A variety of weird edge cases
     do
         local value1 = {}

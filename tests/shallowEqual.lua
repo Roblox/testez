@@ -67,7 +67,27 @@ return function(TestEZ)
             key = referenceCopy
         }
         assert(pcall(expectation.never.to.shallowEqual, value3))
-
     end
+
+     -- Handles self-reference case
+     do
+        local value1 = {
+            irrelevantKey = ARBITRARY_NUMBER,
+        }
+        value1["key"] = value1
+        local value2 = {
+            irrelevantKey = ARBITRARY_NUMBER,
+        }
+        value2["key"] = value2
+        local expectation = Expectation.new(value1)
+        assert(pcall(expectation.to.shallowEqual, value2))
+
+        local value3 = {}
+        value3["key"] = value3
+
+        assert(not pcall(expectation.to.shallowEqual, value3, true))
+        assert(pcall(expectation.never.to.shallowEqual, value3, true))
+    end
+
 end
 

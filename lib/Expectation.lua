@@ -20,11 +20,6 @@ local equalityWrapper = require(script.Parent.equalityWrapper)
 local Expectation = {}
 
 --[[
-	Default depth for deepEqual to recurse to before doing shallow comparisons
-]]
-local DEFAULT_MAXIMUM_RECURSIVE_DEPTH = 10
-
---[[
 	These keys don't do anything except make expectations read more cleanly
 ]]
 local SELF_KEYS = {

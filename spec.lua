@@ -54,20 +54,6 @@ local function findUnitTests(container, foundTests)
 	foundTests = foundTests or {}
 
 	for _, child in ipairs(container:GetChildren()) do
-		if child.Name:match("%.spec$") then
-			table.insert(foundTests, child)
-		end
-
-		findUnitTests(child, foundTests)
-	end
-
-	return foundTests
-end
-
-local function findIntegrationTests(container, foundTests)
-	foundTests = foundTests or {}
-
-	for _, child in ipairs(container:GetChildren()) do
 		if child:IsA("ModuleScript") then
 			table.insert(foundTests, child)
 		end
@@ -79,21 +65,32 @@ local function findIntegrationTests(container, foundTests)
 end
 
 -- Run all unit tests, which are located in .spec.lua files next to the source
-local unitTests = findUnitTests(root.TestEZ)
-print(("Running %d unit tests..."):format(#unitTests))
+local unitTests = findUnitTests(root.TestEZTests)
+print("Running unit tests...")
+local failureCount = 0
+local successCount = 0
+local errorMessages = {}
 
 -- Unit tests are expected to load individual files relative to themselves
-for _, test in ipairs(unitTests) do
-	habitat:require(test)()
+for _, testModule in ipairs(unitTests) do
+	local tests = habitat:require(testModule)
+
+	for name, testFunction in pairs(tests) do
+		local success, message = pcall(testFunction)
+
+		if success then
+			successCount = successCount + 1
+		else
+			failureCount = failureCount + 1
+			table.insert(errorMessages, ("Test: %s\nError: %s"):format(name, message))
+		end
+	end
 end
 
--- Run all integration tests, which are located in the 'tests' folder
-local integrationTests = findIntegrationTests(root.TestEZTests)
-print(("Running %d integration tests..."):format(#integrationTests))
-
--- Integration tests should be passed the root TestEZ object
-for _, test in ipairs(integrationTests) do
-	habitat:require(test)(habitat:require(root.TestEZ))
+print(("Unit tests: %d passed, %d failed\n"):format(successCount, failureCount))
+if failureCount > 0 then
+	print(table.concat(errorMessages, "\n\n"))
+	os.exit(1)
 end
 
 print("All tests passed.")

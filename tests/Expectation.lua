@@ -2,6 +2,13 @@ local TestEZ = script.Parent.Parent.TestEZ
 local Expectation = require(TestEZ.Expectation)
 
 return {
+    ["it should fail if expect is given more than one argument"] = function()
+        local success = pcall(function()
+            Expectation.new(true, true)
+        end)
+
+        assert(not success, "should fail")
+    end,
     ["it should succeed if an empty function is expected to never throw"] = function()
         local function shouldNotThrow()
         end

@@ -36,9 +36,9 @@ end
 function TestBootstrap:getModules(root)
 	local modules = {}
 
-	if isSpecScript(current) then
-		local method = require(current)
-		local path = getPath(current, root)
+	if isSpecScript(root) then
+		local method = require(root)
+		local path = getPath(root, root)
 
 		table.insert(modules, {
 			method = method,
@@ -46,10 +46,10 @@ function TestBootstrap:getModules(root)
 		})
 	end
 
-	for _, child in ipairs(current:GetDescendants()) do
-		if isSpecScript(current) then
-			local method = require(current)
-			local path = getPath(current, root)
+	for _, child in ipairs(root:GetDescendants()) do
+		if isSpecScript(child) then
+			local method = require(child)
+			local path = getPath(child, root)
 
 			table.insert(modules, {
 				method = method,

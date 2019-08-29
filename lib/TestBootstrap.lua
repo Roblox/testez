@@ -33,9 +33,8 @@ end
 --[[
 	Find all the ModuleScripts in this tree that are tests.
 ]]
-function TestBootstrap:getModules(root, modules, current)
-	modules = modules or {}
-	current = current or root
+function TestBootstrap:getModules(root)
+	local modules = {}
 
 	if isSpecScript(current) then
 		local method = require(current)
@@ -47,8 +46,16 @@ function TestBootstrap:getModules(root, modules, current)
 		})
 	end
 
-	for _, child in ipairs(current:GetChildren()) do
-		self:getModules(root, modules, child)
+	for _, child in ipairs(current:GetDescendants()) do
+		if isSpecScript(current) then
+			local method = require(current)
+			local path = getPath(current, root)
+
+			table.insert(modules, {
+				method = method,
+				path = path
+			})
+		end
 	end
 
 	table.sort(modules, function(a, b)

@@ -72,9 +72,7 @@ end
 --[[
 	Create a new expectation
 ]]
-function Expectation.new(value, ...)
-	assert(select("#", ...) == 0, "expect takes only a single argument")
-
+function Expectation.new(value)
 	local self = {
 		value = value,
 		successCondition = true,

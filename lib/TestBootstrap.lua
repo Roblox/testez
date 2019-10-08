@@ -95,9 +95,13 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 
 	local startTime = tick()
 
-	local modules
+	local modules = {}
 	for _, subRoot in ipairs(roots) do
-		modules = self:getModules(subRoot, modules)
+		local newModules = self:getModules(subRoot)
+
+		for _, newModule in ipairs(newModules) do
+			table.insert(modules, newModule)
+		end
 	end
 
 	local afterModules = tick()

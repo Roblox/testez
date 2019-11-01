@@ -1,4 +1,5 @@
-name = "TestEZ"
+[package]
+name = "roblox/testez"
 author = "Roblox"
 license = "Apache2"
 content_root = "lib"

@@ -1,4 +1,8 @@
-return function(TestEZ)
-	assert(typeof(TestEZ) == "table")
-	assert(typeof(TestEZ.run) == "function")
-end
+local TestEZ = require(script.Parent.Parent.TestEZ)
+
+return {
+	function()
+		assert(typeof(TestEZ) == "table")
+		assert(typeof(TestEZ.run) == "function")
+	end,
+}

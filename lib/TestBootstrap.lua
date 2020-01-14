@@ -33,13 +33,12 @@ end
 --[[
 	Find all the ModuleScripts in this tree that are tests.
 ]]
-function TestBootstrap:getModules(root, modules, current)
-	modules = modules or {}
-	current = current or root
+function TestBootstrap:getModules(root)
+	local modules = {}
 
-	if isSpecScript(current) then
-		local method = require(current)
-		local path = getPath(current, root)
+	if isSpecScript(root) then
+		local method = require(root)
+		local path = getPath(root, root)
 
 		table.insert(modules, {
 			method = method,
@@ -47,8 +46,16 @@ function TestBootstrap:getModules(root, modules, current)
 		})
 	end
 
-	for _, child in ipairs(current:GetChildren()) do
-		self:getModules(root, modules, child)
+	for _, child in ipairs(root:GetDescendants()) do
+		if isSpecScript(child) then
+			local method = require(child)
+			local path = getPath(child, root)
+
+			table.insert(modules, {
+				method = method,
+				path = path
+			})
+		end
 	end
 
 	table.sort(modules, function(a, b)
@@ -80,6 +87,7 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 	local showTimingInfo = otherOptions["showTimingInfo"] or false
 	local noXpcallByDefault = otherOptions["noXpcallByDefault"] or false
 	local testNamePattern = otherOptions["testNamePattern"]
+	local extraEnvironment = otherOptions["extraEnvironment"] or {}
 
 	if type(roots) ~= "table" then
 		error(("Bad argument #1 to TestBootstrap:run. Expected table, got %s"):format(typeof(roots)), 2)
@@ -87,14 +95,18 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 
 	local startTime = tick()
 
-	local modules
+	local modules = {}
 	for _, subRoot in ipairs(roots) do
-		modules = self:getModules(subRoot, modules)
+		local newModules = self:getModules(subRoot)
+
+		for _, newModule in ipairs(newModules) do
+			table.insert(modules, newModule)
+		end
 	end
 
 	local afterModules = tick()
 
-	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern)
+	local plan = TestPlanner.createPlan(modules, noXpcallByDefault, testNamePattern, extraEnvironment)
 	local afterPlan = tick()
 
 	local results = TestRunner.runPlan(plan)

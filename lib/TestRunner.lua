@@ -47,6 +47,55 @@ end
 	session to store all of the results.
 ]]
 function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noXpcall)
+	-- We prefer xpcall, but yielding doesn't work from xpcall.
+	-- As a workaround, you can mark nodes as "not xpcallable"
+	local call = noXpcall and pcall or xpcall
+
+	local function runCallback(callback, always, messagePrefix)
+		local success = true
+		local errorMessage
+		-- Any code can check RUNNING_GLOBAL to fork behavior based on
+		-- whether a test is running. We use this to avoid accessing
+		-- protected APIs; it's a workaround that will go away someday.
+		_G[RUNNING_GLOBAL] = true
+
+		-- Skip over any further callbacks for this node if one of them has failed already
+		if not always and success == false then
+			return
+		end
+
+		messagePrefix = messagePrefix or ""
+
+		local testEnvironment = getfenv(callback)
+
+		for key, value in pairs(TestRunner.environment) do
+			testEnvironment[key] = value
+		end
+
+		testEnvironment.fail = function(message)
+			if message == nil then
+				message = "fail() was called."
+			end
+
+			success = false
+			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
+		end
+
+		local nodeSuccess, nodeResult = call(callback, function(message)
+			return messagePrefix .. message .. "\n" .. debug.traceback()
+		end)
+
+		-- If a node threw an error, we prefer to use that message over
+		-- one created by fail() if it was set.
+		if not nodeSuccess then
+			success = false
+			errorMessage = nodeResult
+		end
+
+		_G[RUNNING_GLOBAL] = nil
+
+		return success, errorMessage
+	end
 
 	lifecycleHooks:pushHooksFrom(planNode)
 
@@ -58,80 +107,29 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 				childResultNode.status = TestEnum.TestStatus.Skipped
 			else
 				if tryStack:size() > 0 and tryStack:getBack().isOk == false then
+
 					childResultNode.status = TestEnum.TestStatus.Failure
 					table.insert(childResultNode.errors,
 						string.format("%q failed without trying, because test case %q failed",
 							childPlanNode.phrase, tryStack:getBack().failedNode.phrase))
 				else
-					-- Errors can be set either via `error` propagating upwards or
-					-- by a test calling fail([message]).
 					local success = true
 					local errorMessage
-
-					-- We prefer xpcall, but yielding doesn't work from xpcall.
-					-- As a workaround, you can mark nodes as "not xpcallable"
-					local call = noXpcall and pcall or xpcall
-
-					-- Any code can check RUNNING_GLOBAL to fork behavior based on
-					-- whether a test is running. We use this to avoid accessing
-					-- protected APIs; it's a workaround that will go away someday.
-					_G[RUNNING_GLOBAL] = true
-
-					local function runCallback(callback, always, messagePrefix)
-
-						-- Skip over any further callbacks for this node if one of them has failed already
-						if not always and success == false then
-							return
-						end
-
-						messagePrefix = messagePrefix or ""
-
-						local testEnvironment = getfenv(callback)
-
-						for key, value in pairs(TestRunner.environment) do
-							testEnvironment[key] = value
-						end
-
-						testEnvironment.fail = function(message)
-							if message == nil then
-								message = "fail() was called."
-							end
-
-							success = false
-							errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
-						end
-
-						local nodeSuccess, nodeResult = call(callback, function(message)
-							return messagePrefix .. message .. "\n" .. debug.traceback()
-						end)
-
-						-- If a node threw an error, we prefer to use that message over
-						-- one created by fail() if it was set.
-						if not nodeSuccess then
-							success = false
-							errorMessage = nodeResult
-						end
-					end
-
 					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
-						runCallback(hook, false, 'beforeAll hook: ')
+						success, errorMessage = runCallback(hook, false, 'beforeAll hook: ')
 					end
 
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
-						runCallback(hook, false, 'before each hook: ')
+						success, errorMessage = runCallback(hook, false, 'before each hook: ')
 					end
 
-					runCallback(childPlanNode.callback)
+					-- Errors can be set either via `error` propagating upwards or
+					-- by a test calling fail([message]).
+					success, errorMessage = runCallback(childPlanNode.callback)
 
 					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
-						runCallback(hook, true, 'after each hook: ')
+						success, errorMessage = runCallback(hook, true, 'after each hook: ')
 					end
-
-					for _, hook in pairs(lifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)) do
-						runCallback(hook, true, 'afterAll hook: ')
-					end
-
-					_G[RUNNING_GLOBAL] = nil
 
 					if success then
 						childResultNode.status = TestEnum.TestStatus.Success
@@ -179,6 +177,10 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 		end
 
 		session:popNode()
+	end
+
+	for _, hook in pairs(lifecycleHooks:getAfterAllHooks()) do
+		runCallback(hook, true, 'afterAll hook: ')
 	end
 
 	lifecycleHooks:popHooks()

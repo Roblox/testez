@@ -60,12 +60,8 @@ function LifecycleHooks:getPendingBeforeHooks()
 	return self:_getAndClearPendingHooks(TestEnum.NodeType.BeforeAll)
 end
 
-function LifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)
-
-	assert(childPlanNode ~= nil)
-
-	if self._stack:size() > 0 and childPlanNode == self._stack:getBack().lastTestNodeAtLevel then
-
+function LifecycleHooks:getAfterAllHooks()
+	if self._stack:size() > 0 then
 		return self:_getAndClearPendingHooks(TestEnum.NodeType.AfterAll)
 	else
 		return {}
@@ -87,6 +83,20 @@ function LifecycleHooks:getHooksInStackOrder(key)
 	return hooks
 end
 
+function LifecycleHooks:getHooksInReverseStackOrder(key)
+
+	assert(key ~= nil)
+
+	local hooks = {}
+	for _, level in ipairs(self._stack.data) do
+		for _, hook in ipairs(level[key]) do
+			table.insert(hooks, 1, hook)
+		end
+	end
+
+	return hooks
+end
+
 function LifecycleHooks:getBeforeEachHooks()
 
 	return self:getHooksInStackOrder(TestEnum.NodeType.BeforeEach)
@@ -94,7 +104,7 @@ end
 
 function LifecycleHooks:getAfterEachHooks()
 
-	return self:getHooksInStackOrder(TestEnum.NodeType.AfterEach)
+	return self:getHooksInReverseStackOrder(TestEnum.NodeType.AfterEach)
 end
 
 --[[
@@ -118,7 +128,6 @@ function LifecycleHooks:_getAndClearPendingHooks(key)
 	end
 
 end
-
 
 function LifecycleHooks:_getBackOfStack()
 
@@ -156,7 +165,11 @@ function LifecycleHooks:_getHooksOfTypeIncludingUncalledAtCurrentLevel(childNode
 	end
 
 	for _, hook in pairs(self:_getHooksOfType(childNodes, type)) do
-		table.insert(hooks, hook)
+		if type == TestEnum.NodeType.AfterAll then
+			table.insert(hooks, 1, hook)
+		else
+			table.insert(hooks, hook)
+		end
 	end
 
 	return hooks

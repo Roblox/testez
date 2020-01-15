@@ -48,52 +48,6 @@ local function runTestPlan(testPlan)
 end
 
 return {
-	["lifecycle failures should fail test node"] = function()
-		local function failLifecycleCase(hookType)
-			local itWasRun = false
-			local results = runTestPlan(function(insertLifecycleEvent)
-
-				if hookType == "beforeAll" then
-					beforeAll(function()
-						error("this is an error")
-					end)
-				end
-
-				if hookType == "beforeEach" then
-					beforeEach(function()
-						error("this is an error")
-					end)
-				end
-
-				if hookType == "afterEach" then
-					afterEach(function()
-						error("this is an error")
-					end)
-				end
-
-				if hookType == "afterAll" then
-					afterAll(function()
-						error("this is an error")
-					end)
-				end
-
-				it("runs root", function()
-					itWasRun = true
-				end)
-			end)
-
-			assert(results.failureCount == 1, string.format("Expected %s failure to fail test run", hookType))
-
-			if hookType:find("before") then
-				-- if before* hooks fail, our test node should not run
-				assert(itWasRun == false, "it node was ran despite failure on run: " .. hookType)
-			end
-		end
-
-		failLifecycleCase("beforeAll")
-		failLifecycleCase("beforeEach")
-		failLifecycleCase("afterEach")
-	end,
 	["should run lifecycle methods in single-level"] = function()
 		local results, lifecycleOrder = runTestPlan(function(insertLifecycleEvent)
 			beforeAll(function()
@@ -228,5 +182,51 @@ return {
 			"2 - test again",
 		})
 		expectNoFailures(results)
+	end,
+	["lifecycle failures should fail test node"] = function()
+		local function failLifecycleCase(hookType)
+			local itWasRun = false
+			local results = runTestPlan(function(insertLifecycleEvent)
+
+				if hookType == "beforeAll" then
+					beforeAll(function()
+						error("this is an error")
+					end)
+				end
+
+				if hookType == "beforeEach" then
+					beforeEach(function()
+						error("this is an error")
+					end)
+				end
+
+				if hookType == "afterEach" then
+					afterEach(function()
+						error("this is an error")
+					end)
+				end
+
+				if hookType == "afterAll" then
+					afterAll(function()
+						error("this is an error")
+					end)
+				end
+
+				it("runs root", function()
+					itWasRun = true
+				end)
+			end)
+
+			assert(results.failureCount == 1, string.format("Expected %s failure to fail test run", hookType))
+
+			if hookType:find("before") then
+				-- if before* hooks fail, our test node should not run
+				assert(itWasRun == false, "it node was ran despite failure on run: " .. hookType)
+			end
+		end
+
+		failLifecycleCase("beforeAll")
+		failLifecycleCase("beforeEach")
+		failLifecycleCase("afterEach")
 	end,
 }

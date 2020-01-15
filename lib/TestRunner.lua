@@ -59,11 +59,6 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 		-- protected APIs; it's a workaround that will go away someday.
 		_G[RUNNING_GLOBAL] = true
 
-		-- Skip over any further callbacks for this node if one of them has failed already
-		if not always and success == false then
-			return
-		end
-
 		messagePrefix = messagePrefix or ""
 
 		local testEnvironment = getfenv(callback)
@@ -113,22 +108,31 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 						string.format("%q failed without trying, because test case %q failed",
 							childPlanNode.phrase, tryStack:getBack().failedNode.phrase))
 				else
-					local success = true
-					local errorMessage
-					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
-						success, errorMessage = runCallback(hook, false, 'beforeAll hook: ')
-					end
-
-					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
-						success, errorMessage = runCallback(hook, false, 'before each hook: ')
-					end
-
 					-- Errors can be set either via `error` propagating upwards or
 					-- by a test calling fail([message]).
-					success, errorMessage = runCallback(childPlanNode.callback)
+					local success, errorMessage = true, nil
+
+					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
+						if success then
+							success, errorMessage = runCallback(hook, false, 'beforeAll hook: ')
+						end
+					end
+
+
+					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
+						if success then
+							success, errorMessage = runCallback(hook, false, 'before each hook: ')
+						end
+					end
+
+					if success then
+						success, errorMessage = runCallback(childPlanNode.callback)
+					end
 
 					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
-						success, errorMessage = runCallback(hook, true, 'after each hook: ')
+						if success then
+							success, errorMessage = runCallback(hook, true, 'after each hook: ')
+						end
 					end
 
 					if success then

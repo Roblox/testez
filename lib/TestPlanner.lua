@@ -109,16 +109,15 @@ function TestPlanner.createEnvironment(builder, extraEnvironment)
 	local lifecyclePhaseId = 0
 
 	local lifecycleHooks = {
-		[TestEnum.NodeType.BeforeAll] = 'beforeAll',
-		[TestEnum.NodeType.AfterAll] = 'afterAll',
-		[TestEnum.NodeType.BeforeEach] = 'beforeEach',
-		[TestEnum.NodeType.AfterEach] = 'afterEach'
+		[TestEnum.NodeType.BeforeAll] = "beforeAll",
+		[TestEnum.NodeType.AfterAll] = "afterAll",
+		[TestEnum.NodeType.BeforeEach] = "beforeEach",
+		[TestEnum.NodeType.AfterEach] = "afterEach"
 	}
 
-	for nodeType, name in pairs(lifecycleHooks)
-	do
+	for nodeType, name in pairs(lifecycleHooks) do
 		env[name] = function(callback)
-			local node = builder:pushNode(name .. '_' .. tostring(lifecyclePhaseId), nodeType)
+			local node = builder:pushNode(name .. "_" .. tostring(lifecyclePhaseId), nodeType)
 			lifecyclePhaseId = lifecyclePhaseId + 1
 
 			node.callback = callback

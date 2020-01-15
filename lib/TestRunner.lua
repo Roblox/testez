@@ -114,14 +114,14 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 
 					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
 						if success then
-							success, errorMessage = runCallback(hook, false, 'beforeAll hook: ')
+							success, errorMessage = runCallback(hook, false, "beforeAll hook: ")
 						end
 					end
 
 
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
 						if success then
-							success, errorMessage = runCallback(hook, false, 'before each hook: ')
+							success, errorMessage = runCallback(hook, false, "before each hook: ")
 						end
 					end
 
@@ -131,7 +131,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 
 					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
 						if success then
-							success, errorMessage = runCallback(hook, true, 'after each hook: ')
+							success, errorMessage = runCallback(hook, true, "after each hook: ")
 						end
 					end
 
@@ -184,7 +184,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 	end
 
 	for _, hook in pairs(lifecycleHooks:getAfterAllHooks()) do
-		runCallback(hook, true, 'afterAll hook: ')
+		runCallback(hook, true, "afterAll hook: ")
 	end
 
 	lifecycleHooks:popHooks()

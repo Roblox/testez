@@ -1,74 +1,103 @@
-return function(TestEZ)
+return {
+	["should run lifecycle methods"] = function()
+		local TestEZ = require(script.Parent.Parent.TestEZ)
 
-	local beforeXCalls = 0
-	local afterXCalls = 0
+		local lifecycleOrder = {}
+		local function insertLifecycleEvent(lifecycleString)
+			table.insert(lifecycleOrder, lifecycleString)
+		end
+		local function lifecycleOrderMatches(array)
+			-- shallow equals between lifecycleOrder and passed array
+			for index, value in ipairs(lifecycleOrder) do
+				if array[index] ~= value then
+					return false
+				end
+			end
 
-	local beforeYCalls = 0
-	local beforeZCalls = 0
+			for index, value in ipairs(array) do
+				if lifecycleOrder[index] ~= value then
+					return false
+				end
+			end
 
-	local beforeEachCalls = 0
-	local afterEachCalls = 0
+			return true
+		end
+		local function arrayToString(array)
+			return table.concat(array, "\n\t")
+		end
 
-	local plan = TestEZ.TestPlanner.createPlan({
-		{
-		method = function()
-			before(function()
-				print("run before")
-				beforeXCalls = beforeXCalls + 1
-			end)
-
-			after(function()
-				print("run after")
-				afterXCalls = afterXCalls + 1
-			end)
-
-			beforeEach(function()
-				print("run beforeEach")
-				beforeEachCalls = beforeEachCalls + 1
-			end)
-
-			afterEach(function()
-				print("run afterEach")
-				afterEachCalls = afterEachCalls + 1
-			end)
-
-			it("runs", function()
-				print("run it")
-			end)
-
-			describe('myTests', function()
-
-				before(function()
-					print("run beforeZ")
-					beforeZCalls = beforeZCalls + 1
+		local plan = TestEZ.TestPlanner.createPlan({
+			{
+			method = function()
+				beforeAll(function()
+					insertLifecycleEvent("1 - beforeAll")
 				end)
 
-				it("runs", function()
-					print("run it")
+				afterAll(function()
+					insertLifecycleEvent("1 - afterAll")
 				end)
 
-				describe('no tests', function()
-					before(function()
-						beforeYCalls = beforeYCalls + 1
+				beforeEach(function()
+					insertLifecycleEvent("1 - beforeEach")
+				end)
+
+				afterEach(function()
+					insertLifecycleEvent("1 - afterEach")
+				end)
+
+				it("runs root", function()
+					insertLifecycleEvent("1 - test")
+				end)
+
+				describe("nestedDescribe", function()
+					beforeAll(function()
+						insertLifecycleEvent("2 - beforeAll")
+					end)
+
+					afterAll(function()
+						insertLifecycleEvent("2 - afterAll")
+					end)
+
+					beforeEach(function()
+						insertLifecycleEvent("2 - beforeEach")
+					end)
+
+					afterEach(function()
+						insertLifecycleEvent("2 - afterEach")
+					end)
+
+					it("runs", function()
+						insertLifecycleEvent("2 - test")
+					end)
+
+					describe("no tests", function()
+						before(function()
+							insertLifecycleEvent("3 - beforeAll")
+						end)
 					end)
 				end)
-			end)
-		end,
-		path = {'lifecycleHooksTest'}
-	}
-	})
+			end,
+			path = {'lifecycleHooksTest'}
+		}
+		})
 
-	local results = TestEZ.TestRunner.runPlan(plan)
+		local results = TestEZ.TestRunner.runPlan(plan)
 
-	assert(beforeXCalls == 1)
-	assert(afterXCalls == 1)
+		assert(lifecycleOrderMatches({
+			"1 - beforeAll",
+			"1 - beforeEach",
+			"1 - test",
+			"1 - afterEach",
+			"2 - beforeAll",
+			"1 - beforeEach",
+			"2 - beforeEach",
+			"2 - test",
+			"2 - afterEach",
+			"1 - afterEach",
+			"2 - afterAll",
+			"1 - afterAll",
+		}), string.format("lifecycle order did not match expected order.\nGot: {\n\t%s\n}", arrayToString(lifecycleOrder)))
 
-	assert(beforeYCalls == 0)
-	assert(beforeZCalls == 1)
-
-	assert(beforeEachCalls == 2)
-	assert(afterEachCalls == 2)
-	print(results:visualize())
-
-	assert(results.failureCount == 0)
-end
+		assert(results.failureCount == 0)
+	end,
+}

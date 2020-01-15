@@ -13,7 +13,7 @@ function LifecycleHooks.new()
 end
 
 --[[
-	Pushes uncalled before and after hooks back up the stack
+	Pushes uncalled beforeAll and afterAll hooks back up the stack
 ]]
 function LifecycleHooks:popHooks()
 
@@ -30,8 +30,8 @@ function LifecycleHooks:popHooks()
 		back[type] = popped[type]
 	end
 
-	pushHooksUp(TestEnum.NodeType.Before)
-	pushHooksUp(TestEnum.NodeType.After)
+	pushHooksUp(TestEnum.NodeType.BeforeAll)
+	pushHooksUp(TestEnum.NodeType.AfterAll)
 end
 
 function LifecycleHooks:pushHooksFrom(planNode)
@@ -48,8 +48,8 @@ function LifecycleHooks:pushHooksFrom(planNode)
 
 	self._stack:push({
 		lastTestNodeAtLevel = lastTestNodeAtLevel,
-		[TestEnum.NodeType.Before] = self:_getHooksOfTypeIncludingUncalledAtCurrentLevel(planNode.children, TestEnum.NodeType.Before),
-		[TestEnum.NodeType.After] = self:_getHooksOfTypeIncludingUncalledAtCurrentLevel(planNode.children, TestEnum.NodeType.After),
+		[TestEnum.NodeType.BeforeAll] = self:_getHooksOfTypeIncludingUncalledAtCurrentLevel(planNode.children, TestEnum.NodeType.BeforeAll),
+		[TestEnum.NodeType.AfterAll] = self:_getHooksOfTypeIncludingUncalledAtCurrentLevel(planNode.children, TestEnum.NodeType.AfterAll),
 		[TestEnum.NodeType.BeforeEach] = self:_getHooksOfType(planNode.children, TestEnum.NodeType.BeforeEach),
 		[TestEnum.NodeType.AfterEach] = self:_getHooksOfType(planNode.children, TestEnum.NodeType.AfterEach),
 	})
@@ -57,7 +57,7 @@ end
 
 function LifecycleHooks:getPendingBeforeHooks()
 
-	return self:_getAndClearPendingHooks(TestEnum.NodeType.Before)
+	return self:_getAndClearPendingHooks(TestEnum.NodeType.BeforeAll)
 end
 
 function LifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)
@@ -66,7 +66,7 @@ function LifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)
 
 	if self._stack:size() > 0 and childPlanNode == self._stack:getBack().lastTestNodeAtLevel then
 
-		return self:_getAndClearPendingHooks(TestEnum.NodeType.After)
+		return self:_getAndClearPendingHooks(TestEnum.NodeType.AfterAll)
 	else
 		return {}
 	end
@@ -139,7 +139,7 @@ function LifecycleHooks:_getHooksOfType(nodes, type)
 end
 
 --[[
-	Transfers uncalled before and after hooks down the stack
+	Transfers uncalled beforeAll and afterAll hooks down the stack
 ]]
 function LifecycleHooks:_getHooksOfTypeIncludingUncalledAtCurrentLevel(childNodes, type)
 	local currentBack = self:_getBackOfStack()

@@ -14,8 +14,8 @@ TestEnum.NodeType = {
 	Try = "Try",
 	Describe = "Describe",
 	It = "It",
-	Before = "Before",
-	After = "After",
+	BeforeAll = "BeforeAll",
+	AfterAll = "AfterAll",
 	BeforeEach = "BeforeEach",
 	AfterEach = "AfterEach"
 }

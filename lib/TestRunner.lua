@@ -114,7 +114,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 					end
 
 					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
-						runCallback(hook, false, 'before hook: ')
+						runCallback(hook, false, 'beforeAll hook: ')
 					end
 
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
@@ -128,7 +128,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 					end
 
 					for _, hook in pairs(lifecycleHooks:getAfterHooksIfLastTestNodeAtLevel(childPlanNode)) do
-						runCallback(hook, true, 'after hook: ')
+						runCallback(hook, true, 'afterAll hook: ')
 					end
 
 					_G[RUNNING_GLOBAL] = nil

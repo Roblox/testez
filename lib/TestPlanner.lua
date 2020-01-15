@@ -105,12 +105,12 @@ function TestPlanner.createEnvironment(builder, extraEnvironment)
 		builder:popNode()
 	end
 
-	-- Incrementing counter used to ensure that before, after, beforeEach, afterEach have unique phrases
+	-- Incrementing counter used to ensure that beforeAll, afterAll, beforeEach, afterEach have unique phrases
 	local lifecyclePhaseId = 0
 
 	local lifecycleHooks = {
-		[TestEnum.NodeType.Before] = 'before',
-		[TestEnum.NodeType.After] = 'after',
+		[TestEnum.NodeType.BeforeAll] = 'beforeAll',
+		[TestEnum.NodeType.AfterAll] = 'afterAll',
 		[TestEnum.NodeType.BeforeEach] = 'beforeEach',
 		[TestEnum.NodeType.AfterEach] = 'afterEach'
 	}

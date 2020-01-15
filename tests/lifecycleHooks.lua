@@ -1,21 +1,16 @@
 local TestEZ = require(script.Parent.Parent.TestEZ)
 
-local lifecycleOrder = {}
-local function insertLifecycleEvent(lifecycleString)
-	table.insert(lifecycleOrder, lifecycleString)
-end
-
-local function expectLifecycleOrder(array)
-	local function lifecycleOrderMatches()
+local function expectShallowEquals(array1, array2)
+	local function shallowEquals()
 		-- shallow equals between lifecycleOrder and passed array
-		for index, value in ipairs(lifecycleOrder) do
-			if array[index] ~= value then
+		for index, value in ipairs(array1) do
+			if array2[index] ~= value then
 				return false
 			end
 		end
 
-		for index, value in ipairs(array) do
-			if lifecycleOrder[index] ~= value then
+		for index, value in ipairs(array2) do
+			if array1[index] ~= value then
 				return false
 			end
 		end
@@ -24,26 +19,34 @@ local function expectLifecycleOrder(array)
 	end
 
 	assert(
-		lifecycleOrderMatches(),
-		string.format("lifecycle order did not match expected order.\nGot: {\n\t%s\n}", table.concat(array, "\n\t"))
+		shallowEquals(),
+		string.format("lifecycle order did not match expected order.\nGot: {\n\t%s\n}", table.concat(array1, "\n\t"))
 	)
 end
 
 local function runTestPlan(testPlan)
-	lifecycleOrder = {}
+	local lifecycleOrder = {}
+	local function insertLifecycleEvent(lifecycleString)
+		table.insert(lifecycleOrder, lifecycleString)
+	end
+
 	local plan = TestEZ.TestPlanner.createPlan({
 		{
-			method = testPlan,
+			method = function()
+				testPlan(insertLifecycleEvent)
+			end,
 			path = {'lifecycleHooksTest'}
 		}
 	})
 
-	return TestEZ.TestRunner.runPlan(plan)
+	local results = TestEZ.TestRunner.runPlan(plan)
+	assert(results.failureCount == 0)
+	return lifecycleOrder
 end
 
 return {
 	["should run lifecycle methods in single-level"] = function()
-		local results = runTestPlan(function()
+		local lifecycleOrder = runTestPlan(function(insertLifecycleEvent)
 			beforeAll(function()
 				insertLifecycleEvent("1 - beforeAll")
 			end)
@@ -65,18 +68,16 @@ return {
 			end)
 		end)
 
-		expectLifecycleOrder({
+		expectShallowEquals(lifecycleOrder, {
 			"1 - beforeAll",
 			"1 - beforeEach",
 			"1 - test",
 			"1 - afterEach",
 			"1 - afterAll",
 		})
-
-		assert(results.failureCount == 0)
 	end,
 	["should run lifecycle methods in order in nested trees"] = function()
-		local results = runTestPlan(function()
+		local lifecycleOrder = runTestPlan(function(insertLifecycleEvent)
 			beforeAll(function()
 				insertLifecycleEvent("1 - beforeAll")
 			end)
@@ -119,14 +120,14 @@ return {
 				end)
 
 				describe("no tests", function()
-					before(function()
+					beforeAll(function()
 						insertLifecycleEvent("3 - beforeAll")
 					end)
 				end)
 			end)
 		end)
 
-		expectLifecycleOrder({
+		expectShallowEquals(lifecycleOrder, {
 			"1 - beforeAll",
 			"1 - beforeEach",
 			"1 - test",
@@ -140,11 +141,9 @@ return {
 			"2 - afterAll",
 			"1 - afterAll",
 		})
-
-		assert(results.failureCount == 0)
 	end,
 	["beforeAll should only run once per describe block"] = function()
-		local results = runTestPlan(function()
+		local lifecycleOrder = runTestPlan(function(insertLifecycleEvent)
 			beforeAll(function()
 				insertLifecycleEvent("1 - beforeAll")
 			end)
@@ -168,14 +167,12 @@ return {
 			end)
 		end)
 
-		expectLifecycleOrder({
+		expectShallowEquals(lifecycleOrder, {
 			"1 - beforeAll",
 			"1 - test",
 			"2 - beforeAll",
 			"2 - test",
 			"2 - test again",
 		})
-
-		assert(results.failureCount == 0)
 	end,
 }

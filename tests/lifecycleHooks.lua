@@ -128,6 +128,7 @@ return {
 		expectNoFailures(results)
 	end,
 	["should run lifecycle methods in order in nested trees"] = function()
+		-- follows spec from jest https://jestjs.io/docs/en/setup-teardown#scoping
 		local results, lifecycleOrder = runTestPlan(function(insertLifecycleEvent)
 			beforeAll(function()
 				insertLifecycleEvent("1 - beforeAll")

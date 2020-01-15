@@ -118,7 +118,6 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 						end
 					end
 
-
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
 						if success then
 							success, errorMessage = runCallback(hook, false, "before each hook: ")

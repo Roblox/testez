@@ -120,7 +120,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 
 					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
 						if success then
-							success, errorMessage = runCallback(hook, false, "before each hook: ")
+							success, errorMessage = runCallback(hook, false, "beforeEach hook: ")
 						end
 					end
 
@@ -130,7 +130,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 
 					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
 						if success then
-							success, errorMessage = runCallback(hook, true, "after each hook: ")
+							success, errorMessage = runCallback(hook, true, "afterEach hook: ")
 						end
 					end
 

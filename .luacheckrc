@@ -18,8 +18,12 @@ stds.testez = {
 	},
 }
 
-std = "lua51+roblox+testez"
+std = "lua51+roblox"
 
 ignore = {
 	"212", -- Unused argument, which triggers on unused 'self' too
+}
+
+files["tests/lifecycleHooks.lua"] = {
+	std = "+testez",
 }

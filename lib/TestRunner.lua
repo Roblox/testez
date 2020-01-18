@@ -92,6 +92,41 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 		return success, errorMessage
 	end
 
+	local function runNode(childPlanNode)
+		-- Errors can be set either via `error` propagating upwards or
+		-- by a test calling fail([message]).
+
+		for _, hook in pairs(lifecycleHooks:getPendingBeforeAllHooks()) do
+			local success, errorMessage = runCallback(hook, false, "beforeAll hook: ")
+			if not success then
+				return false, errorMessage
+			end
+		end
+
+		for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
+			local success, errorMessage = runCallback(hook, false, "beforeEach hook: ")
+			if not success then
+				return false, errorMessage
+			end
+		end
+
+		do
+			local success, errorMessage = runCallback(childPlanNode.callback)
+			if not success then
+				return false, errorMessage
+			end
+		end
+
+		for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
+			local success, errorMessage = runCallback(hook, true, "afterEach hook: ")
+			if not success then
+				return false, errorMessage
+			end
+		end
+
+		return true, nil
+	end
+
 	lifecycleHooks:pushHooksFrom(planNode)
 
 	for _, childPlanNode in ipairs(planNode.children) do
@@ -108,31 +143,7 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 						string.format("%q failed without trying, because test case %q failed",
 							childPlanNode.phrase, tryStack:getBack().failedNode.phrase))
 				else
-					-- Errors can be set either via `error` propagating upwards or
-					-- by a test calling fail([message]).
-					local success, errorMessage = true, nil
-
-					for _, hook in pairs(lifecycleHooks:getPendingBeforeHooks()) do
-						if success then
-							success, errorMessage = runCallback(hook, false, "beforeAll hook: ")
-						end
-					end
-
-					for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
-						if success then
-							success, errorMessage = runCallback(hook, false, "beforeEach hook: ")
-						end
-					end
-
-					if success then
-						success, errorMessage = runCallback(childPlanNode.callback)
-					end
-
-					for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
-						if success then
-							success, errorMessage = runCallback(hook, true, "afterEach hook: ")
-						end
-					end
+					local success, errorMessage = runNode(childPlanNode)
 
 					if success then
 						childResultNode.status = TestEnum.TestStatus.Success
@@ -184,6 +195,8 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 
 	for _, hook in pairs(lifecycleHooks:getAfterAllHooks()) do
 		runCallback(hook, true, "afterAll hook: ")
+		-- errors in an afterAll hook are currently not caught
+		-- or attributed to a set of child nodes
 	end
 
 	lifecycleHooks:popHooks()

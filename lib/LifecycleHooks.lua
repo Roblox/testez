@@ -75,7 +75,7 @@ function LifecycleHooks:pushHooksFrom(planNode)
 	})
 end
 
-function LifecycleHooks:getPendingBeforeHooks()
+function LifecycleHooks:getPendingBeforeAllHooks()
 	return self:_getAndClearPendingHooks(TestEnum.NodeType.BeforeAll)
 end
 

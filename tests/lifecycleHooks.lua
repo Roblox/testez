@@ -2,7 +2,6 @@ local TestEZ = require(script.Parent.Parent.TestEZ)
 
 local function expectShallowEquals(array1, array2)
 	local function shallowEquals()
-		-- shallow equals between lifecycleOrder and passed array
 		for index, value in ipairs(array1) do
 			if array2[index] ~= value then
 				return false
@@ -18,10 +17,13 @@ local function expectShallowEquals(array1, array2)
 		return true
 	end
 
-	assert(
-		shallowEquals(),
-		string.format("lifecycle order did not match expected order.\nGot: {\n\t%s\n}", table.concat(array1, "\n\t"))
-	)
+	if not shallowEquals() then
+		error(string.format(
+			"Expected: {\n\t%s\n}.\nGot: {\n\t%s\n}",
+			table.concat(array2, "\n\t"),
+			table.concat(array1, "\n\t")
+		))
+	end
 end
 
 local function expectNoFailures(results)

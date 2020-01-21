@@ -28,6 +28,7 @@ local completed, result = xpcall(function()
 
 	local testModules = findUnitTests(ReplicatedStorage.TestEZTests)
 
+	local totalCount = 0
 	local failureCount = 0
 	local successCount = 0
 	local errorMessages = {}
@@ -39,6 +40,7 @@ local completed, result = xpcall(function()
 
 		for testName, testFunction in pairs(tests) do
 			local success, message = pcall(testFunction)
+			totalCount = totalCount + 1
 
 			if success then
 				print(string.format("  [PASS] %s", testName))
@@ -52,6 +54,9 @@ local completed, result = xpcall(function()
 			end
 		end
 	end
+
+	print()
+	print(string.format("%s tests run: %s passed, %s failed", totalCount, successCount, failureCount))
 
 	if #errorMessages > 0 then
 		print()

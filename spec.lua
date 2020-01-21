@@ -1,5 +1,5 @@
 local LOAD_MODULES = {
-	{"lib", "TestEZ"},
+	{"src", "TestEZ"},
 	{"tests", "TestEZTests"},
 }
 

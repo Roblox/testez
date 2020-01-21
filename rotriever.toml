@@ -2,5 +2,5 @@
 name = "roblox/testez"
 author = "Roblox"
 license = "Apache2"
-content_root = "lib"
+content_root = "src"
 version = "0.1.0"

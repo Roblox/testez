@@ -1,3 +1,14 @@
+# Test places and build artifacts
+/*.rbxlx
+/*.rbxl
+/*.rbxmx
+/*.rbxm
+
+# LuaCov reports
 /luacov.*
+
+# MkDocs build output
 /site
+
+# Lua installation from HereRocks
 /lua_install

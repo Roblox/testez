@@ -23,4 +23,4 @@ install:
 
 script:
   - luacheck src tests
-  - lua spec.lua
+  - lua test/lemur.lua

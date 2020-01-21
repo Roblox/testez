@@ -1,7 +1,7 @@
 *In the future, TestEZ will have pre-built model files for use within Roblox without other tools.*
 
 ### Method 1: Rojo (Roblox)
-* Copy the `lib` directory into your codebase
+* Copy the `src` directory into your codebase
 * Rename the folder to `TestEZ`
 * Use [Rojo](https://github.com/LPGhatguy/rojo) to sync the files into a place
 

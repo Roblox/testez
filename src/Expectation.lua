@@ -16,6 +16,7 @@
 ]]
 
 local Expectation = {}
+local extensions = {}
 
 --[[
 	These keys don't do anything except make expectations read more cleanly
@@ -103,6 +104,10 @@ function Expectation.__index(self, key)
 		newExpectation.successCondition = not self.successCondition
 
 		return newExpectation
+	end
+
+	if extensions[key] then
+		return bindSelf(self, extensions[key])
 	end
 
 	-- Fall back to methods provided by Expectation
@@ -251,7 +256,7 @@ end
 
 function Expectation.extend(matchers)
 	for name, implementation in pairs(matchers) do
-		Expectation[name] = function(self, ...)
+		extensions[name] = function(self, ...)
 			local result = implementation(self.value, ...)
 			local pass = result.pass == self.successCondition
 

@@ -80,12 +80,12 @@ return {
 
         do
             -- foo match (normal)
-            local success = pcall(function()
+            local success, message = pcall(function()
                 local expect = Expectation.new(100)
                 return expect:foo(100)
             end)
 
-            assert(success == true, "foo should not fail if the values are the same")
+            assert(success == true, "foo should not fail if the values are the same. " .. tostring(message))
         end
 
         do

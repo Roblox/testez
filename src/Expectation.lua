@@ -249,7 +249,7 @@ function Expectation:throw()
 	return self
 end
 
-function Expectation.extend(matchers, a, b)
+function Expectation.extend(matchers)
 	for name, implementation in pairs(matchers) do
 		Expectation[name] = function(self, ...)
 			local result = implementation(self.value, ...)

@@ -131,5 +131,41 @@ return {
 
             assert(success == true, "should use the last expectation")
         end
+
+        -- test subsequent extends
+        Expectation.extend({
+            bar = function(received)
+                local pass = received == "bar"
+                if pass then
+                    return {
+                        pass = true,
+                        message = "Expected anything but bar"
+                    }
+                else
+                    return {
+                        pass = false,
+                        message = "Expected bar",
+                    }
+                end
+            end,
+        })
+
+        do
+            local success = pcall(function()
+                local expect = Expectation.new("bar")
+                return expect:bar()
+            end)
+
+            assert(success == true, "should add new matcher on second extend call")
+        end
+
+        do
+            local success = pcall(function()
+                local expect = Expectation.new(0)
+                return expect:foo(0)
+            end)
+
+            assert(success == true, "should not overwrite previous extend call")
+        end
     end,
 }

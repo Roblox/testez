@@ -249,4 +249,17 @@ function Expectation:throw()
 	return self
 end
 
+function Expectation.extend(matchers, a, b)
+	for name, implementation in pairs(matchers) do
+		Expectation[name] = function(self, ...)
+			local result = implementation(self.value, ...)
+			local pass = result.pass == self.successCondition
+
+			assertLevel(pass, result.message, 3)
+			self:_resetModifiers()
+			return self
+		end
+	end
+end
+
 return Expectation

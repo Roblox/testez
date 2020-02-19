@@ -14,12 +14,12 @@ TestEZ.Expectation.extend({
 		if pass then
 			return {
 				pass = true,
-				message = ("Expected %s not to be divisible by %s"):format(receivedValue, expectedValue)
+				message = ("Expected %s to be divisible by %s"):format(receivedValue, expectedValue)
 			}
 		else
 			return {
 				pass = false,
-				message = ("Expected %s to be divisible by %s"):format(receivedValue, expectedValue)
+				message = ("Expected %s not to be divisible by %s"):format(receivedValue, expectedValue)
 			}
 		end
 	end

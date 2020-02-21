@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        rust_version: [stable, "1.40.0"]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: rojo-rbx/setup-foreman
+      with:
+        version: "^0.5.0"
+
+    - name: Install dependencies
+      run: foreman install

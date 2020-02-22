@@ -21,6 +21,11 @@ local function getPath(module, root)
 	local path = {}
 	local last = module
 
+	if last.Name == "init.spec" then
+		-- Use the directory's node for init.spec files.
+		last = last.Parent
+	end
+
 	while last ~= nil and last ~= root do
 		table.insert(path, stripSpecSuffix(last.Name))
 		last = last.Parent

@@ -31,14 +31,6 @@ jobs:
     - name: Report tool versions
       run: rojo --version
 
-    - uses: rojo-rbx/setup-foreman@v1
-      with:
-        version: "^0.6.0"
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Report tool versions
-      run: rojo --version
-
     - name: Build
       run: cargo build --locked --verbose
       env:

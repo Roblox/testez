@@ -25,7 +25,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: testez-cli-win64
-        path: target/release/testez-cli.exe
+        path: target/release/testez.exe
 
   macos:
     runs-on: macos-latest
@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: testez-cli-macos
-        path: target/release/testez-cli
+        path: target/release/testez
 
   linux:
     runs-on: ubuntu-latest
@@ -74,4 +74,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: testez-cli-linux
-        path: target/release/testez-cli
+        path: target/release/testez

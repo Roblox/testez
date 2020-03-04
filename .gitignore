@@ -1,3 +1,6 @@
 /luacov.*
 /site
 /lua_install
+
+# Cargo build output
+/target

@@ -1,10 +1,10 @@
 [package]
 name = "testez-cli"
-description = "CLI for TestEZ, a test framework for Roblox Lua"
-version = "0.1.0"
+description = "CLI for TestEZ, a test framework for Roblox"
+version = "0.2.0"
 authors = ["Lucien Greathouse <lgreathouse@roblox.com>"]
 edition = "2018"
-
+homepage = "https://github.com/Roblox/testez"
 readme = "README.md"
 
 build = "build.rs"

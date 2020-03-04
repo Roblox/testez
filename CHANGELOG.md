@@ -1,6 +1,8 @@
 # TestEZ Changelog
 
-## Current master
+## Unreleased Changes
+
+## 0.2.0 (2020-03-04)
 * Added support for init.spec.lua. Code in this file is treated as belonging to the directory's node in the test tree. This allows for lifecycle hooks to be attached to all files in a directory.
 * Added TestEZ CLI, a Rust tool that bundles TestEZ and Lemur, and can run tests via Lemur or Roblox-CLI ([#61](https://github.com/Roblox/testez/pull/61))
 

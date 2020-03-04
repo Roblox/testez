@@ -1,7 +1,7 @@
 <h1 align="center">TestEZ</h1>
 <div align="center">
-	<a href="https://travis-ci.org/Roblox/testez">
-		<img src="https://api.travis-ci.org/Roblox/testez.svg?branch=master" alt="Travis-CI Build Status" />
+	<a href="https://github.com/Roblox/testez/actions?query=workflow%3ACI">
+		<img src="https://github.com/Roblox/testez/workflows/CI/badge.svg" alt="GitHub Actions Build Status" />
 	</a>
 	<a href="https://roblox.github.io/testez">
 		<img src="https://img.shields.io/badge/docs-website-green.svg" alt="Documentation" />

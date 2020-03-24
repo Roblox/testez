@@ -10,5 +10,5 @@
 # MkDocs build output
 /site
 
-# Lua installation from HereRocks
-/lua_install
+# Cargo build output
+/target

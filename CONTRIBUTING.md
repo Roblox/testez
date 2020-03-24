@@ -19,19 +19,29 @@ To get started working on TestEZ, you'll need:
 * [Luacheck](https://github.com/mpeterv/luacheck) (`luarocks install luacheck`)
 * [LuaCov](https://keplerproject.github.io/luacov) (`luarocks install luacov`)
 
-Once you have all of these installed, you can run `lua bin/install-dependencies.lua` script to grab a couple additional local dependencies automatically.
+Make sure to clone the repository with submodules. You can do that to your existing repository with:
+
+```sh
+git submodule update --init
+```
 
 Finally, you can run all of TestEZ's tests with:
 
 ```sh
-lua spec.lua
+lua test/lemur.lua
 ```
 
 Or, to generate a LuaCov coverage report:
 
 ```sh
-lua -lluacov spec.lua
+lua -lluacov test/lemur.lua
 luacov
+```
+
+If you're an engineer at Roblox, you can skip this setup and use Roblox-CLI. Make sure it's on your `PATH` and that you have a production Roblox Studio installation. You can then run:
+
+```sh
+./test/roblox-cli.sh
 ```
 
 ## Pull Requests

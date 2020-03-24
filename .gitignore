@@ -1,6 +1,14 @@
+# Test places and build artifacts
+/*.rbxlx
+/*.rbxl
+/*.rbxmx
+/*.rbxm
+
+# LuaCov reports
 /luacov.*
+
+# MkDocs build output
 /site
-/lua_install
 
 # Cargo build output
 /target

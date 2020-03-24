@@ -31,7 +31,7 @@ jobs:
 
     - name: Test
       run: |
-        lua -lluacov spec.lua
+        lua -lluacov test/lemur.lua
         luacheck src tests
 
     # luacov-coveralls default settings do not function on GitHub Actions.

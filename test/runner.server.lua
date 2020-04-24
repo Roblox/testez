@@ -13,7 +13,7 @@ local function findUnitTests(container, foundTests)
 	foundTests = foundTests or {}
 
 	for _, child in ipairs(container:GetChildren()) do
-		if child:IsA("ModuleScript") then
+		if child:IsA("ModuleScript") and not string.match(child.Name, ".*%.spec$") then
 			table.insert(foundTests, child)
 		end
 

@@ -1,3 +1,4 @@
+-- luacheck: globals describe it
 return function()
 	describe("should pass", function()
 		it("passing", function()

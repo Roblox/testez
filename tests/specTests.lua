@@ -17,12 +17,12 @@ end
 
 local tests = {}
 for _, child in ipairs(passing:GetChildren()) do
-	tests[child.Name] = function()
+	tests["Passing tests pass: " .. child.Name] = function()
 		check(child, true)
 	end
 end
 for _, child in ipairs(failing:GetChildren()) do
-	tests[child.Name] = function()
+	tests["Failing tests fail: " .. child.Name] = function()
 		check(child, false)
 	end
 end

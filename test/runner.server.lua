@@ -16,8 +16,6 @@ local function findUnitTests(container, foundTests)
 		if child:IsA("ModuleScript") then
 			table.insert(foundTests, child)
 		end
-
-		findUnitTests(child, foundTests)
 	end
 
 	return foundTests

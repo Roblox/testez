@@ -84,19 +84,6 @@ function TestPlanner.createEnvironment(builder, extraEnvironment)
 		builder:popNode()
 	end
 
-	function env.try(phrase, callback)
-		local node = builder:pushNode(phrase, TestEnum.NodeType.Try)
-
-		local ok, err = pcall(callback)
-
-		-- loadError on a TestPlan node is an automatic failure
-		if not ok then
-			node.loadError = err
-		end
-
-		builder:popNode()
-	end
-
 	function env.it(phrase, callback)
 		local node = builder:pushNode(phrase, TestEnum.NodeType.It)
 

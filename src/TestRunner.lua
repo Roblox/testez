@@ -28,7 +28,6 @@ end
 ]]
 function TestRunner.runPlan(plan)
 	local session = TestSession.new(plan)
-	local tryStack = Stack.new()
 	local lifecycleHooks = LifecycleHooks.new()
 
 	local exclusiveNodes = plan:findNodes(function(node)
@@ -37,7 +36,7 @@ function TestRunner.runPlan(plan)
 
 	session.hasFocusNodes = #exclusiveNodes > 0
 
-	TestRunner.runPlanNode(session, plan, tryStack, lifecycleHooks)
+	TestRunner.runPlanNode(session, plan, lifecycleHooks)
 
 	return session:finalize()
 end
@@ -46,7 +45,7 @@ end
 	Run the given test plan node and its descendants, using the given test
 	session to store all of the results.
 ]]
-function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noXpcall)
+function TestRunner.runPlanNode(session, planNode, lifecycleHooks, noXpcall)
 	-- We prefer xpcall, but yielding doesn't work from xpcall.
 	-- As a workaround, you can mark nodes as "not xpcallable"
 	local call = noXpcall and pcall or xpcall
@@ -136,27 +135,17 @@ function TestRunner.runPlanNode(session, planNode, tryStack, lifecycleHooks, noX
 			if session:shouldSkip() then
 				childResultNode.status = TestEnum.TestStatus.Skipped
 			else
-				if tryStack:size() > 0 and tryStack:getBack().isOk == false then
+				local success, errorMessage = runNode(childPlanNode)
 
-					childResultNode.status = TestEnum.TestStatus.Failure
-					table.insert(childResultNode.errors,
-						string.format("%q failed without trying, because test case %q failed",
-							childPlanNode.phrase, tryStack:getBack().failedNode.phrase))
+				if success then
+					childResultNode.status = TestEnum.TestStatus.Success
 				else
-					local success, errorMessage = runNode(childPlanNode)
-
-					if success then
-						childResultNode.status = TestEnum.TestStatus.Success
-					else
-						childResultNode.status = TestEnum.TestStatus.Failure
-						table.insert(childResultNode.errors, errorMessage)
-					end
+					childResultNode.status = TestEnum.TestStatus.Failure
+					table.insert(childResultNode.errors, errorMessage)
 				end
 			end
-		elseif childPlanNode.type == TestEnum.NodeType.Describe or childPlanNode.type == TestEnum.NodeType.Try then
-			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:push({isOk = true, failedNode = nil}) end
-			TestRunner.runPlanNode(session, childPlanNode, tryStack, lifecycleHooks, childPlanNode.HACK_NO_XPCALL)
-			if childPlanNode.type == TestEnum.NodeType.Try then tryStack:pop() end
+		elseif childPlanNode.type == TestEnum.NodeType.Describe then
+			TestRunner.runPlanNode(session, childPlanNode, lifecycleHooks, childPlanNode.HACK_NO_XPCALL)
 
 			local status = TestEnum.TestStatus.Success
 

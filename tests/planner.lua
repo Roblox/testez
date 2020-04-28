@@ -18,31 +18,31 @@ local function verifyPlan(plan, expected, notSkip)
 	local pass = true
 	local message = ""
 
-	for _, e in pairs(expected) do
+	for _, exp in ipairs(expected) do
 		local ok = false
-		for _, g in pairs(nodeNames) do
-			if e == g then
+		for _, got in ipairs(nodeNames) do
+			if exp == got then
 				ok = true
 				break
 			end
 		end
 		if not ok then
 			pass = false
-			message = message .. string.format("expected name '%s' not found, ", e)
+			message = message .. string.format("expected name '%s' not found, ", exp)
 		end
 	end
 
-	for _, g in pairs(nodeNames) do
+	for _, got in ipairs(nodeNames) do
 		local ok = false
-		for _, e in pairs(expected) do
-			if e == g then
+		for _, exp in ipairs(expected) do
+			if exp == got then
 				ok = true
 				break
 			end
 		end
 		if not ok then
 			pass = false
-			message = message .. string.format("additional name '%s' found, ", g)
+			message = message .. string.format("additional name '%s' found, ", got)
 		end
 	end
 

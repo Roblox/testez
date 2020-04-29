@@ -27,13 +27,14 @@ end
 --[[
 	Calls the given callback on all nodes in the tree, traversed depth-first.
 ]]
-function TestPlan:visitAllNodes(callback, root)
+function TestPlan:visitAllNodes(callback, root, level)
 	root = root or self
+	level = level or 0
 
 	for _, child in ipairs(root.children) do
-		callback(child)
+		callback(child, level)
 
-		self:visitAllNodes(callback, child)
+		self:visitAllNodes(callback, child, level + 1)
 	end
 end
 
@@ -69,25 +70,15 @@ end
 	Visualizes the test plan in a simple format, suitable for debugging the test
 	plan's structure.
 ]]
-function TestPlan:visualize(root, level)
-	root = root or self
-	level = level or 0
-
+function TestPlan:visualize()
 	local buffer = {}
-
-	for _, child in ipairs(root.children) do
-		if child.type == TestEnum.NodeType.It then
-			table.insert(buffer, (" "):rep(3 * level) .. child.phrase)
+	self:visitAllNodes(function(node, level)
+		if node.type == TestEnum.NodeType.It then
+			table.insert(buffer, (" "):rep(3 * level) .. node.phrase)
 		else
-			table.insert(buffer, (" "):rep(3 * level) .. child.phrase)
+			table.insert(buffer, (" "):rep(3 * level) .. node.phrase)
 		end
-
-		if #child.children > 0 then
-			local text = self:visualize(child, level + 1)
-			table.insert(buffer, text)
-		end
-	end
-
+	end)
 	return table.concat(buffer, "\n")
 end
 
@@ -95,18 +86,13 @@ end
 	Gets a list of all nodes in the tree for which the given callback returns
 	true.
 ]]
-function TestPlan:findNodes(callback, results, node)
-	node = node or self
-	results = results or {}
-
-	for _, childNode in ipairs(node.children) do
-		if callback(childNode) then
-			table.insert(results, childNode)
+function TestPlan:findNodes(callback)
+	local results = {}
+	self:visitAllNodes(function(node)
+		if callback(node) then
+			table.insert(results, node)
 		end
-
-		self:findNodes(callback, results, childNode)
-	end
-
+	end)
 	return results
 end
 

@@ -192,19 +192,6 @@ function TestPlanner.createEnvironment(builder, extraEnvironment)
 	env.fdescribe = env.describeFOCUS
 	env.xdescribe = env.describeSKIP
 
-	function env.include(...)
-		local args = {...}
-		local method, path
-		if #args == 1 then
-			method = args[1]
-			path = {}
-		elseif #args == 2 then
-			method = args[2]
-			path = {args[1]}
-		end
-		buildPlan(builder, {path = path, method = method}, env)
-	end
-
 	return env
 end
 

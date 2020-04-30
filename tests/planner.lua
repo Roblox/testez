@@ -78,7 +78,7 @@ return {
 	end,
 	["it should skip tests that don't match the filter"] = function()
 		local modules = TestBootstrap:getModules(testRoot)
-		local plan = TestPlanner.createPlan(modules, false, "test2")
+		local plan = TestPlanner.createPlan(modules, "test2")
 		assert(verifyPlan(plan, {
 			"planning a test2",
 			"planning b test2 test3", -- Gets focus because only its parent is skip

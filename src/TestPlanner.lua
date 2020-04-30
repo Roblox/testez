@@ -157,21 +157,6 @@ function TestPlanner.createEnvironment(builder, extraEnvironment)
 		currentNode.modifier = TestEnum.NodeModifier.Skip
 	end
 
-	--[[
-		These method is intended to disable the use of xpcall when running
-		nodes contained in the same node that this function is called in.
-		This is because xpcall breaks badly if the method passed yields.
-
-		This function is intended to be hideous and seldom called.
-
-		Once xpcall is able to yield, this function is obsolete.
-	]]
-	function env.HACK_NO_XPCALL()
-		local currentNode = builder:getCurrentNode()
-
-		currentNode.HACK_NO_XPCALL = true
-	end
-
 	env.step = env.it
 
 	env.fit = env.itFOCUS
@@ -188,9 +173,8 @@ end
 	These functions should call a combination of `describe` and `it` (and their
 	variants), which will be turned into a test plan to be executed.
 ]]
-function TestPlanner.createPlan(specFunctions, noXpcallByDefault, testNamePattern, extraEnvironment)
+function TestPlanner.createPlan(specFunctions, testNamePattern, extraEnvironment)
 	local builder = TestPlanBuilder.new()
-	builder.noXpcallByDefault = noXpcallByDefault
 	builder.testNamePattern = testNamePattern
 	local env = TestPlanner.createEnvironment(builder, extraEnvironment)
 

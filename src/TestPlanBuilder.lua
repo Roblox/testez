@@ -21,7 +21,6 @@ function TestPlanBuilder.new()
 	local self = {
 		plan = TestPlan.new(),
 		nodeStack = {},
-		noXpcallByDefault = false,
 		testNamePattern = nil,
 	}
 
@@ -82,7 +81,6 @@ function TestPlanBuilder:pushNode(phrase, nodeType, nodeModifier)
 			useNode.modifier = TestEnum.NodeModifier.Skip
 		end
 	end
-	useNode.HACK_NO_XPCALL = self.noXpcallByDefault
 
 	return useNode
 end

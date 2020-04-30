@@ -73,11 +73,7 @@ end
 function TestPlan:visualize()
 	local buffer = {}
 	self:visitAllNodes(function(node, level)
-		if node.type == TestEnum.NodeType.It then
-			table.insert(buffer, (" "):rep(3 * level) .. node.phrase)
-		else
-			table.insert(buffer, (" "):rep(3 * level) .. node.phrase)
-		end
+		table.insert(buffer, (" "):rep(3 * level) .. node.phrase)
 	end)
 	return table.concat(buffer, "\n")
 end

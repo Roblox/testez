@@ -2,6 +2,7 @@
 
 ## Unreleased Changes
 * Remove the Try node type.
+* Remove the `include` global function.
 
 ## 0.2.0 (2020-03-04)
 * Added support for init.spec.lua. Code in this file is treated as belonging to the directory's node in the test tree. This allows for lifecycle hooks to be attached to all files in a directory.

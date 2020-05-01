@@ -133,8 +133,6 @@ function TestEnvironment.new(builder, extraEnvironment)
 		currentNode.HACK_NO_XPCALL = true
 	end
 
-	env.step = env.it
-
 	env.fit = env.itFOCUS
 	env.xit = env.itSKIP
 	env.fdescribe = env.describeFOCUS

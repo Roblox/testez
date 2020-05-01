@@ -1,7 +1,8 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
-* Remove the Try node type.
+* Remove the `try` node type.
+  * Remove the `step` alias for `it` since that's meant for use with `try`.
 * Remove the `include` global function.
 
 ## 0.2.0 (2020-03-04)

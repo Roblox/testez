@@ -128,9 +128,8 @@ function TestEnvironment.new(builder, extraEnvironment)
 		Once xpcall is able to yield, this function is obsolete.
 	]]
 	function env.HACK_NO_XPCALL()
-		local currentNode = builder:getCurrentNode()
-
-		currentNode.HACK_NO_XPCALL = true
+		warn("HACK_NO_XPCALL is deprecated. It is now safe to yield in an " ..
+			"xpcall, so this is no longer necessary. It can be safely deleted.")
 	end
 
 	env.fit = env.itFOCUS

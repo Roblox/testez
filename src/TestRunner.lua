@@ -44,11 +44,7 @@ end
 	Run the given test plan node and its descendants, using the given test
 	session to store all of the results.
 ]]
-function TestRunner.runPlanNode(session, planNode, lifecycleHooks, noXpcall)
-	-- We prefer xpcall, but yielding doesn't work from xpcall.
-	-- As a workaround, you can mark nodes as "not xpcallable"
-	local call = noXpcall and pcall or xpcall
-
+function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 	local function runCallback(callback, always, messagePrefix)
 		local success = true
 		local errorMessage
@@ -74,7 +70,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks, noXpcall)
 			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
 		end
 
-		local nodeSuccess, nodeResult = call(callback, function(message)
+		local nodeSuccess, nodeResult = xpcall(callback, function(message)
 			return messagePrefix .. message .. "\n" .. debug.traceback()
 		end)
 
@@ -144,7 +140,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks, noXpcall)
 				end
 			end
 		elseif childPlanNode.type == TestEnum.NodeType.Describe then
-			TestRunner.runPlanNode(session, childPlanNode, lifecycleHooks, childPlanNode.HACK_NO_XPCALL)
+			TestRunner.runPlanNode(session, childPlanNode, lifecycleHooks)
 
 			local status = TestEnum.TestStatus.Success
 

@@ -48,9 +48,8 @@ end
 	These functions should call a combination of `describe` and `it` (and their
 	variants), which will be turned into a test plan to be executed.
 ]]
-function TestPlanner.createPlan(specFunctions, noXpcallByDefault, testNamePattern, extraEnvironment)
+function TestPlanner.createPlan(specFunctions, testNamePattern, extraEnvironment)
 	local builder = TestPlanBuilder.new()
-	builder.noXpcallByDefault = noXpcallByDefault
 	builder.testNamePattern = testNamePattern
 	local env = TestEnvironment.new(builder, extraEnvironment)
 

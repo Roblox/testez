@@ -1,3 +1,5 @@
+-- luacheck: globals describe it
+
 return function()
 	describe("multiple it blocks with the same description", function()
 		it("only the last runs", function()

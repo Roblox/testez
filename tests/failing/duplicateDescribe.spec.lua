@@ -2,13 +2,13 @@
 
 return function()
 	describe("with the same description", function()
-		it("should not run this", function()
-			error("this won't happen")
+		it("should run this", function()
+			error("this won't get overwritten")
 		end)
 	end)
 
 	describe("with the same description", function()
-		it("should only run this test", function()
+		it("should also run this", function()
 		end)
 	end)
 end

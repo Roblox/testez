@@ -62,6 +62,11 @@ return {
 			"planning b test1",
 			"planning b test2",
 			"planning b test2 test3",
+			"planning d",
+			"planning d test4",
+			"planning d test4 test5",
+			"planning d test4 test6",
+			"planning d test4 test7",
 		}))
 	end,
 	["it should mark skipped tests as skipped"] = function()
@@ -74,6 +79,11 @@ return {
 			"planning b",
 			"planning b test1",
 			"planning b test2 test3", -- This isn't marked skip, its parent is
+			"planning d",
+			"planning d test4",
+			"planning d test4 test5",
+			"planning d test4 test6",
+			"planning d test4 test7",
 		}, true))
 	end,
 	["it should skip tests that don't match the filter"] = function()

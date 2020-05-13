@@ -1,3 +1,4 @@
+-- luacheck: globals describe it expect
 return function()
 	local function helper()
 		expect(1).to.never.equal(2)

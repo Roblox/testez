@@ -6,6 +6,7 @@
 ]]
 
 local TestEnum = require(script.Parent.TestEnum)
+local Expectation = require(script.Parent.Expectation)
 
 local function newEnvironment(currentNode, extraEnvironment)
 	local env = {}
@@ -108,6 +109,8 @@ local function newEnvironment(currentNode, extraEnvironment)
 	env.xit = env.itSKIP
 	env.fdescribe = env.describeFOCUS
 	env.xdescribe = env.describeSKIP
+
+	env.expect = Expectation.new
 
 	return env
 end

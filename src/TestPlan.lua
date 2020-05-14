@@ -115,11 +115,6 @@ local function newEnvironment(currentNode, extraEnvironment)
 	return env
 end
 
-local TestNode = {}
-TestNode.__index = TestNode
-
-
-
 local TestPlan = {}
 TestPlan.__index = TestPlan
 

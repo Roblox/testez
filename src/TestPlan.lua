@@ -115,8 +115,12 @@ local function newEnvironment(currentNode, extraEnvironment)
 	return env
 end
 
-local TestPlan = {}
+local TestNode = {}
+TestNode.__index = TestNode
 
+
+
+local TestPlan = {}
 TestPlan.__index = TestPlan
 
 --[[
@@ -147,6 +151,14 @@ function TestPlan.new(testNamePattern, extraEnvironment)
 	end
 
 	function Node:addChild(phrase, nodeType, nodeModifier)
+		if nodeType == TestEnum.NodeType.It then
+			for _, child in pairs(self.children) do
+				if child.phrase == phrase then
+					error("Duplicate it block found: " .. child:getFullName())
+				end
+			end
+		end
+
 		if testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
 			local name = self:getFullName() .. " " .. phrase
 			if name:match(testNamePattern) then

@@ -2,7 +2,7 @@
 	Represents a tree of tests that have been loaded but not necessarily
 	executed yet.
 
-	TestPlan objects are produced by TestPlanner and TestPlanBuilder.
+	TestPlan objects are produced by TestPlanner.
 ]]
 
 local TestEnum = require(script.Parent.TestEnum)

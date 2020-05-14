@@ -92,13 +92,8 @@ local function newEnvironment(currentNode, extraEnvironment)
 	end
 
 	--[[
-		These method is intended to disable the use of xpcall when running
-		nodes contained in the same node that this function is called in.
-		This is because xpcall breaks badly if the method passed yields.
-
-		This function is intended to be hideous and seldom called.
-
-		Once xpcall is able to yield, this function is obsolete.
+		This function is deprecated. Calling it is a no-op beyond generating a
+		warning.
 	]]
 	function env.HACK_NO_XPCALL()
 		warn("HACK_NO_XPCALL is deprecated. It is now safe to yield in an " ..
@@ -118,10 +113,11 @@ end
 local TestNode = {}
 TestNode.__index = TestNode
 
-local TestPlan = {}
-
-TestPlan.__index = TestPlan
-
+--[[
+	Create a new test node. A pointer to the test plan, a phrase to describe it
+	and the type of node it is are required. The modifier is option and will be
+	None if left blank.
+]]
 function TestNode.new(plan, phrase, nodeType, nodeModifier)
 	nodeModifier = nodeModifier or TestEnum.NodeModifier.None
 
@@ -153,6 +149,9 @@ function TestNode:addChild(phrase, nodeType, nodeModifier)
 	return child
 end
 
+--[[
+	Join the names of all the nodes back to the parent.
+]]
 function TestNode:getFullName()
 	if self.parent and self.parent.getFullName then
 		local parentPhrase = self.parent:getFullName()
@@ -163,6 +162,10 @@ function TestNode:getFullName()
 	return self.phrase
 end
 
+--[[
+	Expand a node by setting its callback environment and then calling it. Any
+	further it and describe calls within the callback will be added to the tree.
+]]
 function TestNode:expand()
 	local originalEnv = getfenv(self.callback)
 	local callbackEnv = setmetatable({}, { __index = originalEnv })
@@ -180,6 +183,9 @@ function TestNode:expand()
 	end
 end
 
+local TestPlan = {}
+TestPlan.__index = TestPlan
+
 --[[
 	Create a new, empty TestPlan.
 ]]
@@ -193,6 +199,9 @@ function TestPlan.new(testNamePattern, extraEnvironment)
 	return setmetatable(plan, TestPlan)
 end
 
+--[[
+	Add a new child under the test plan's root node.
+]]
 function TestPlan:addChild(phrase, nodeType, nodeModifier)
 	if self.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
 		if phrase:match(self.testNamePattern) then
@@ -208,7 +217,8 @@ function TestPlan:addChild(phrase, nodeType, nodeModifier)
 end
 
 --[[
-
+	Add a new describe node with the given method as a callback. Generates or
+	reuses all the describe nodes along the path.
 ]]
 function TestPlan:addRoot(path, method)
 	local curNode = self

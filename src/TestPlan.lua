@@ -115,9 +115,70 @@ local function newEnvironment(currentNode, extraEnvironment)
 	return env
 end
 
+local TestNode = {}
+TestNode.__index = TestNode
+
 local TestPlan = {}
 
 TestPlan.__index = TestPlan
+
+function TestNode.new(plan, phrase, nodeType, nodeModifier)
+	nodeModifier = nodeModifier or TestEnum.NodeModifier.None
+
+	local node = {
+		plan = plan,
+		phrase = phrase,
+		type = nodeType,
+		modifier = nodeModifier,
+		children = {},
+		callback = nil,
+	}
+
+	node.environment = newEnvironment(node, plan.extraEnvironment)
+	return setmetatable(node, TestNode)
+end
+
+function TestNode:addChild(phrase, nodeType, nodeModifier)
+	if self.plan.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
+		local name = self:getFullName() .. " " .. phrase
+		if name:match(self.plan.testNamePattern) then
+			nodeModifier = TestEnum.NodeModifier.Focus
+		else
+			nodeModifier = TestEnum.NodeModifier.Skip
+		end
+	end
+	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)
+	child.parent = self
+	table.insert(self.children, child)
+	return child
+end
+
+function TestNode:getFullName()
+	if self.parent and self.parent.getFullName then
+		local parentPhrase = self.parent:getFullName()
+		if parentPhrase then
+			return parentPhrase .. " " .. self.phrase
+		end
+	end
+	return self.phrase
+end
+
+function TestNode:expand()
+	local originalEnv = getfenv(self.callback)
+	local callbackEnv = setmetatable({}, { __index = originalEnv })
+	for key, value in pairs(self.environment) do
+		callbackEnv[key] = value
+	end
+	setfenv(self.callback, callbackEnv)
+
+	local success, result = xpcall(self.callback, function(err)
+		return err .. "\n" .. debug.traceback()
+	end)
+
+	if not success then
+		self.loadError = result
+	end
+end
 
 --[[
 	Create a new, empty TestPlan.
@@ -126,69 +187,8 @@ function TestPlan.new(testNamePattern, extraEnvironment)
 	local plan = {
 		children = {},
 		testNamePattern = testNamePattern,
+		extraEnvironment = extraEnvironment,
 	}
-
-	local Node = {}
-	Node.__index = Node
-
-	function Node.new(phrase, nodeType, nodeModifier)
-		nodeModifier = nodeModifier or TestEnum.NodeModifier.None
-
-		local node = {
-			phrase = phrase,
-			type = nodeType,
-			modifier = nodeModifier,
-			children = {},
-			callback = nil,
-		}
-
-		node.environment = newEnvironment(node, extraEnvironment)
-		return setmetatable(node, Node)
-	end
-
-	function Node:addChild(phrase, nodeType, nodeModifier)
-		if testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-			local name = self:getFullName() .. " " .. phrase
-			if name:match(testNamePattern) then
-				nodeModifier = TestEnum.NodeModifier.Focus
-			else
-				nodeModifier = TestEnum.NodeModifier.Skip
-			end
-		end
-		local child = Node.new(phrase, nodeType, nodeModifier)
-		child.parent = self
-		table.insert(self.children, child)
-		return child
-	end
-
-	function Node:getFullName()
-		if self.parent and self.parent.getFullName then
-			local parentPhrase = self.parent:getFullName()
-			if parentPhrase then
-				return parentPhrase .. " " .. self.phrase
-			end
-		end
-		return self.phrase
-	end
-
-	function Node:expand()
-		local originalEnv = getfenv(self.callback)
-		local callbackEnv = setmetatable({}, { __index = originalEnv })
-		for key, value in pairs(self.environment) do
-			callbackEnv[key] = value
-		end
-		setfenv(self.callback, callbackEnv)
-
-		local success, result = xpcall(self.callback, function(err)
-			return err .. "\n" .. debug.traceback()
-		end)
-
-		if not success then
-			self.loadError = result
-		end
-	end
-
-	plan.Node = Node
 
 	return setmetatable(plan, TestPlan)
 end
@@ -201,7 +201,7 @@ function TestPlan:addChild(phrase, nodeType, nodeModifier)
 			nodeModifier = TestEnum.NodeModifier.Skip
 		end
 	end
-	local child = self.Node.new(phrase, nodeType, nodeModifier)
+	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
 	child.parent = self
 	table.insert(self.children, child)
 	return child

@@ -115,8 +115,8 @@ TestNode.__index = TestNode
 
 --[[
 	Create a new test node. A pointer to the test plan, a phrase to describe it
-	and the type of node it is are required. The modifier is option and will be
-	None if left blank.
+	and the type of node it is are required. The modifier is optional and will
+	be None if left blank.
 ]]
 function TestNode.new(plan, phrase, nodeType, nodeModifier)
 	nodeModifier = nodeModifier or TestEnum.NodeModifier.None

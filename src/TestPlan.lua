@@ -128,6 +128,7 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 		modifier = nodeModifier,
 		children = {},
 		callback = nil,
+		parent = nil,
 	}
 
 	node.environment = newEnvironment(node, plan.extraEnvironment)
@@ -153,7 +154,7 @@ end
 	Join the names of all the nodes back to the parent.
 ]]
 function TestNode:getFullName()
-	if self.parent and self.parent.getFullName then
+	if self.parent then
 		local parentPhrase = self.parent:getFullName()
 		if parentPhrase then
 			return parentPhrase .. " " .. self.phrase
@@ -211,7 +212,6 @@ function TestPlan:addChild(phrase, nodeType, nodeModifier)
 		end
 	end
 	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
-	child.parent = self
 	table.insert(self.children, child)
 	return child
 end

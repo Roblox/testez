@@ -22,6 +22,13 @@ local function newEnvironment(currentNode, extraEnvironment)
 		end
 	end
 
+	function env.fail(message)
+		if not message then
+			message = "fail() was called"
+		end
+		currentNode.errorMessage = debug.traceback(message, 2)
+	end
+
 	function env.describeFOCUS(phrase, callback)
 		return env.describe(phrase, callback, TestEnum.NodeModifier.Focus)
 	end
@@ -129,6 +136,7 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 		children = {},
 		callback = nil,
 		parent = nil,
+		errorMessage = nil,
 	}
 
 	node.environment = newEnvironment(node, plan.extraEnvironment)
@@ -151,7 +159,7 @@ function TestNode:addChild(phrase, nodeType, nodeModifier)
 end
 
 --[[
-	Join the names of all the nodes back to the parent.
+	Join the names of all the nodes back to the root of the tree.
 ]]
 function TestNode:getFullName()
 	if self.parent then

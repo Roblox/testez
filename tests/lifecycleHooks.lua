@@ -133,6 +133,10 @@ return {
 					end)
 				end)
 			end)
+
+			it("runs root again", function()
+				insertLifecycleEvent("1 - another test")
+			end)
 		end)
 
 		expectShallowEquals(lifecycleOrder, {
@@ -147,6 +151,9 @@ return {
 			"2 - afterEach",
 			"1 - afterEach",
 			"2 - afterAll",
+			"1 - beforeEach",
+			"1 - another test",
+			"1 - afterEach",
 			"1 - afterAll",
 		})
 		expectNoFailures(results)

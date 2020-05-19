@@ -11,38 +11,33 @@ local function verifyPlan(plan, expected, notSkip)
 	end)
 
 	local nodeNames = {}
-	for _, node in pairs(nodes) do
-		table.insert(nodeNames, node:getFullName())
+	for _, node in ipairs(nodes) do
+		local name = node:getFullName()
+		if nodeNames[name] then
+			nodeNames[name] = nodeNames[name] + 1
+		else
+			nodeNames[name] = 1
+		end
+	end
+
+	for _, name in ipairs(expected) do
+		if nodeNames[name] then
+			nodeNames[name] = nodeNames[name] - 1
+		else
+			nodeNames[name] = -1
+		end
 	end
 
 	local pass = true
 	local message = ""
 
-	for _, exp in ipairs(expected) do
-		local ok = false
-		for _, got in ipairs(nodeNames) do
-			if exp == got then
-				ok = true
-				break
-			end
-		end
-		if not ok then
+	for name, count in pairs(nodeNames) do
+		if count < 0 then
 			pass = false
-			message = message .. string.format("expected name '%s' not found, ", exp)
-		end
-	end
-
-	for _, got in ipairs(nodeNames) do
-		local ok = false
-		for _, exp in ipairs(expected) do
-			if exp == got then
-				ok = true
-				break
-			end
-		end
-		if not ok then
+			message = message .. string.format("expected name [%s] not found, ", name)
+		elseif count > 0 then
 			pass = false
-			message = message .. string.format("additional name '%s' found, ", got)
+			message = message .. string.format("additional name [%s] found, ", name)
 		end
 	end
 
@@ -66,6 +61,8 @@ return {
 			"planning d test4",
 			"planning d test4 test5",
 			"planning d test4 test6",
+			"planning d test4",  -- Order doesn't actually matter for this test.
+			"planning d test4 test5",
 			"planning d test4 test7",
 		}))
 	end,
@@ -83,6 +80,8 @@ return {
 			"planning d test4",
 			"planning d test4 test5",
 			"planning d test4 test6",
+			"planning d test4",  -- Order doesn't actually matter for this test.
+			"planning d test4 test5",
 			"planning d test4 test7",
 		}, true))
 	end,

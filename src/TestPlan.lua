@@ -2,7 +2,7 @@
 	Represents a tree of tests that have been loaded but not necessarily
 	executed yet.
 
-	TestPlan objects are produced by TestPlanner and TestPlanBuilder.
+	TestPlan objects are produced by TestPlanner.
 ]]
 
 local TestEnum = require(script.Parent.TestEnum)
@@ -92,13 +92,8 @@ local function newEnvironment(currentNode, extraEnvironment)
 	end
 
 	--[[
-		These method is intended to disable the use of xpcall when running
-		nodes contained in the same node that this function is called in.
-		This is because xpcall breaks badly if the method passed yields.
-
-		This function is intended to be hideous and seldom called.
-
-		Once xpcall is able to yield, this function is obsolete.
+		This function is deprecated. Calling it is a no-op beyond generating a
+		warning.
 	]]
 	function env.HACK_NO_XPCALL()
 		warn("HACK_NO_XPCALL is deprecated. It is now safe to yield in an " ..
@@ -115,6 +110,88 @@ local function newEnvironment(currentNode, extraEnvironment)
 	return env
 end
 
+local TestNode = {}
+TestNode.__index = TestNode
+
+--[[
+	Create a new test node. A pointer to the test plan, a phrase to describe it
+	and the type of node it is are required. The modifier is optional and will
+	be None if left blank.
+]]
+function TestNode.new(plan, phrase, nodeType, nodeModifier)
+	nodeModifier = nodeModifier or TestEnum.NodeModifier.None
+
+	local node = {
+		plan = plan,
+		phrase = phrase,
+		type = nodeType,
+		modifier = nodeModifier,
+		children = {},
+		callback = nil,
+		parent = nil,
+	}
+
+	node.environment = newEnvironment(node, plan.extraEnvironment)
+	return setmetatable(node, TestNode)
+end
+
+function TestNode:addChild(phrase, nodeType, nodeModifier)
+	if nodeType == TestEnum.NodeType.It then
+		for _, child in pairs(self.children) do
+			if child.phrase == phrase then
+				error("Duplicate it block found: " .. child:getFullName())
+			end
+		end
+	end
+
+	if self.plan.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
+		local name = self:getFullName() .. " " .. phrase
+		if name:match(self.plan.testNamePattern) then
+			nodeModifier = TestEnum.NodeModifier.Focus
+		else
+			nodeModifier = TestEnum.NodeModifier.Skip
+		end
+	end
+	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)
+	child.parent = self
+	table.insert(self.children, child)
+	return child
+end
+
+--[[
+	Join the names of all the nodes back to the parent.
+]]
+function TestNode:getFullName()
+	if self.parent then
+		local parentPhrase = self.parent:getFullName()
+		if parentPhrase then
+			return parentPhrase .. " " .. self.phrase
+		end
+	end
+	return self.phrase
+end
+
+--[[
+	Expand a node by setting its callback environment and then calling it. Any
+	further it and describe calls within the callback will be added to the tree.
+]]
+function TestNode:expand()
+	local originalEnv = getfenv(self.callback)
+	local callbackEnv = setmetatable({}, { __index = originalEnv })
+	for key, value in pairs(self.environment) do
+		callbackEnv[key] = value
+	end
+	setfenv(self.callback, callbackEnv)
+
+	local success, result = xpcall(self.callback, function(err)
+		return err .. "\n" .. debug.traceback()
+	end)
+
+	if not success then
+		self.loadError = result
+	end
+end
+
 local TestPlan = {}
 TestPlan.__index = TestPlan
 
@@ -125,81 +202,15 @@ function TestPlan.new(testNamePattern, extraEnvironment)
 	local plan = {
 		children = {},
 		testNamePattern = testNamePattern,
+		extraEnvironment = extraEnvironment,
 	}
-
-	local Node = {}
-	Node.__index = Node
-
-	function Node.new(phrase, nodeType, nodeModifier)
-		nodeModifier = nodeModifier or TestEnum.NodeModifier.None
-
-		local node = {
-			phrase = phrase,
-			type = nodeType,
-			modifier = nodeModifier,
-			children = {},
-			callback = nil,
-		}
-
-		node.environment = newEnvironment(node, extraEnvironment)
-		return setmetatable(node, Node)
-	end
-
-	function Node:addChild(phrase, nodeType, nodeModifier)
-		if nodeType == TestEnum.NodeType.It then
-			for _, child in pairs(self.children) do
-				if child.phrase == phrase then
-					error("Duplicate it block found: " .. child:getFullName())
-				end
-			end
-		end
-
-		if testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-			local name = self:getFullName() .. " " .. phrase
-			if name:match(testNamePattern) then
-				nodeModifier = TestEnum.NodeModifier.Focus
-			else
-				nodeModifier = TestEnum.NodeModifier.Skip
-			end
-		end
-		local child = Node.new(phrase, nodeType, nodeModifier)
-		child.parent = self
-		table.insert(self.children, child)
-		return child
-	end
-
-	function Node:getFullName()
-		if self.parent and self.parent.getFullName then
-			local parentPhrase = self.parent:getFullName()
-			if parentPhrase then
-				return parentPhrase .. " " .. self.phrase
-			end
-		end
-		return self.phrase
-	end
-
-	function Node:expand()
-		local originalEnv = getfenv(self.callback)
-		local callbackEnv = setmetatable({}, { __index = originalEnv })
-		for key, value in pairs(self.environment) do
-			callbackEnv[key] = value
-		end
-		setfenv(self.callback, callbackEnv)
-
-		local success, result = xpcall(self.callback, function(err)
-			return err .. "\n" .. debug.traceback()
-		end)
-
-		if not success then
-			self.loadError = result
-		end
-	end
-
-	plan.Node = Node
 
 	return setmetatable(plan, TestPlan)
 end
 
+--[[
+	Add a new child under the test plan's root node.
+]]
 function TestPlan:addChild(phrase, nodeType, nodeModifier)
 	if self.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
 		if phrase:match(self.testNamePattern) then
@@ -208,14 +219,14 @@ function TestPlan:addChild(phrase, nodeType, nodeModifier)
 			nodeModifier = TestEnum.NodeModifier.Skip
 		end
 	end
-	local child = self.Node.new(phrase, nodeType, nodeModifier)
-	child.parent = self
+	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
 	table.insert(self.children, child)
 	return child
 end
 
 --[[
-
+	Add a new describe node with the given method as a callback. Generates or
+	reuses all the describe nodes along the path.
 ]]
 function TestPlan:addRoot(path, method)
 	local curNode = self

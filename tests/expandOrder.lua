@@ -44,7 +44,6 @@ return {
 
 					-- luacheck: globals afterAll
 					afterAll(function()
-						print("!!!!!!!!!!!!!")
 						initialized = false
 					end)
 				end,

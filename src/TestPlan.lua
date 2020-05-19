@@ -175,9 +175,7 @@ function TestNode:expand()
 	end
 	setfenv(self.callback, callbackEnv)
 
-	local success, result = xpcall(self.callback, function(err)
-		return err .. "\n" .. debug.traceback()
-	end)
+	local success, result = xpcall(self.callback, debug.traceback)
 
 	if not success then
 		self.loadError = result

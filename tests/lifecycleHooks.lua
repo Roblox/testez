@@ -39,6 +39,10 @@ local function runTestPlan(testPlan)
 	local plan = TestEZ.TestPlanner.createPlan({
 		{
 			method = function()
+				-- This function environment hack is needed because the testPlan
+				-- function is not defined or required from within a test. This
+				-- shouldn't come up in real tests.
+				setfenv(testPlan, getfenv())
 				testPlan(insertLifecycleEvent)
 			end,
 			path = {'lifecycleHooksTest'}

@@ -135,15 +135,20 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 	return setmetatable(node, TestNode)
 end
 
-function TestNode:addChild(phrase, nodeType, nodeModifier)
-	if self.plan.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-		local name = self:getFullName() .. " " .. phrase
-		if name:match(self.plan.testNamePattern) then
-			nodeModifier = TestEnum.NodeModifier.Focus
+local function getModifier(name, pattern, modifier)
+	if pattern and (modifier == nil or modifier == TestEnum.NodeModifier.None) then
+		if name:match(pattern) then
+			return TestEnum.NodeModifier.Focus
 		else
-			nodeModifier = TestEnum.NodeModifier.Skip
+			return TestEnum.NodeModifier.Skip
 		end
 	end
+	return modifier
+end
+
+function TestNode:addChild(phrase, nodeType, nodeModifier)
+	local childName = self:getFullName() .. " " .. phrase
+	nodeModifier = getModifier(childName, self.plan.testNamePattern, nodeModifier)
 	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)
 	child.parent = self
 	table.insert(self.children, child)
@@ -202,13 +207,7 @@ end
 	Add a new child under the test plan's root node.
 ]]
 function TestPlan:addChild(phrase, nodeType, nodeModifier)
-	if self.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-		if phrase:match(self.testNamePattern) then
-			nodeModifier = TestEnum.NodeModifier.Focus
-		else
-			nodeModifier = TestEnum.NodeModifier.Skip
-		end
-	end
+	nodeModifier = getModifier(phrase, self.testNamePattern, nodeModifier)
 	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
 	table.insert(self.children, child)
 	return child

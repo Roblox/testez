@@ -33,7 +33,7 @@ local function newEnvironment(currentNode, extraEnvironment)
 	function env.describe(phrase, callback, nodeModifier)
 		local node = currentNode:addChild(phrase, TestEnum.NodeType.Describe, nodeModifier)
 		node.callback = callback
-		node:expand()
+		--node:expand()
 		return node
 	end
 
@@ -135,6 +135,9 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 	return setmetatable(node, TestNode)
 end
 
+--[[
+	Add a child to this node, applying the test name pattern in the process.
+]]
 function TestNode:addChild(phrase, nodeType, nodeModifier)
 	if self.plan.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
 		local name = self:getFullName() .. " " .. phrase
@@ -164,10 +167,14 @@ function TestNode:getFullName()
 end
 
 --[[
-	Expand a node by setting its callback environment and then calling it. Any
-	further it and describe calls within the callback will be added to the tree.
+	Expand a node by setting its callback environment and then calling it. Only
+	expands this one node.
 ]]
 function TestNode:expand()
+	if not self.callback then
+		return
+	end
+
 	local originalEnv = getfenv(self.callback)
 	local callbackEnv = setmetatable({}, { __index = originalEnv })
 	for key, value in pairs(self.environment) do
@@ -240,7 +247,17 @@ function TestPlan:addRoot(path, method)
 	end
 
 	curNode.callback = method
-	curNode:expand()
+end
+
+--[[
+	Expands all describe nodes, leaving the plan in a runnable state.
+]]
+function TestPlan:finalize()
+	self:visitAllNodes(function(node)
+		if node.type == TestEnum.NodeType.Describe then
+			node:expand()
+		end
+	end)
 end
 
 --[[

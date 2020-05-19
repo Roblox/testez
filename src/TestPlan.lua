@@ -22,25 +22,39 @@ local function newEnvironment(currentNode, extraEnvironment)
 		end
 	end
 
+	local function addChild(phrase, callback, nodeType, nodeModifier)
+		local node = currentNode:addChild(phrase, nodeType, nodeModifier)
+		node.callback = callback
+		return node
+	end
+
 	function env.describeFOCUS(phrase, callback)
-		return env.describe(phrase, callback, TestEnum.NodeModifier.Focus)
+		addChild(phrase, callback, TestEnum.NodeType.Describe, TestEnum.NodeModifier.Focus)
 	end
 
 	function env.describeSKIP(phrase, callback)
-		return env.describe(phrase, callback, TestEnum.NodeModifier.Skip)
+		addChild(phrase, callback, TestEnum.NodeType.Describe, TestEnum.NodeModifier.Skip)
 	end
 
 	function env.describe(phrase, callback, nodeModifier)
-		local node = currentNode:addChild(phrase, TestEnum.NodeType.Describe, nodeModifier)
-		node.callback = callback
-		--node:expand()
-		return node
+		addChild(phrase, callback, TestEnum.NodeType.Describe, TestEnum.NodeModifier.None)
+	end
+
+	function env.itFOCUS(phrase, callback)
+		addChild(phrase, callback, TestEnum.NodeType.It, TestEnum.NodeModifier.Focus)
+	end
+
+	function env.itSKIP(phrase, callback)
+		addChild(phrase, callback, TestEnum.NodeType.It, TestEnum.NodeModifier.Skip)
+	end
+
+	function env.itFIXME(phrase, callback)
+		local node = addChild(phrase, callback, TestEnum.NodeType.It, TestEnum.NodeModifier.Skip)
+		warn("FIXME: broken test", node:getFullName())
 	end
 
 	function env.it(phrase, callback, nodeModifier)
-		local node = currentNode:addChild(phrase, TestEnum.NodeType.It, nodeModifier)
-		node.callback = callback
-		return node
+		addChild(phrase, callback, TestEnum.NodeType.It, TestEnum.NodeModifier.None)
 	end
 
 	-- Incrementing counter used to ensure that beforeAll, afterAll, beforeEach, afterEach have unique phrases
@@ -55,26 +69,9 @@ local function newEnvironment(currentNode, extraEnvironment)
 
 	for nodeType, name in pairs(lifecycleHooks) do
 		env[name] = function(callback)
-			local node = currentNode:addChild(name .. "_" .. tostring(lifecyclePhaseId), nodeType)
+			addChild(name .. "_" .. tostring(lifecyclePhaseId), callback, nodeType, TestEnum.NodeModifier.None)
 			lifecyclePhaseId = lifecyclePhaseId + 1
-
-			node.callback = callback
-			return node
 		end
-	end
-
-	function env.itFOCUS(phrase, callback)
-		return env.it(phrase, callback, TestEnum.NodeModifier.Focus)
-	end
-
-	function env.itSKIP(phrase, callback)
-		return env.it(phrase, callback, TestEnum.NodeModifier.Skip)
-	end
-
-	function env.itFIXME(phrase, callback)
-		local node = env.it(phrase, callback, TestEnum.NodeModifier.Skip)
-		warn("FIXME: broken test", node:getFullName())
-		return node
 	end
 
 	function env.FIXME(optionalMessage)
@@ -135,18 +132,20 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 	return setmetatable(node, TestNode)
 end
 
---[[
-	Add a child to this node, applying the test name pattern in the process.
-]]
-function TestNode:addChild(phrase, nodeType, nodeModifier)
-	if self.plan.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-		local name = self:getFullName() .. " " .. phrase
-		if name:match(self.plan.testNamePattern) then
-			nodeModifier = TestEnum.NodeModifier.Focus
+local function getModifier(name, pattern, modifier)
+	if pattern and (modifier == nil or modifier == TestEnum.NodeModifier.None) then
+		if name:match(pattern) then
+			return TestEnum.NodeModifier.Focus
 		else
-			nodeModifier = TestEnum.NodeModifier.Skip
+			return TestEnum.NodeModifier.Skip
 		end
 	end
+	return modifier
+end
+
+function TestNode:addChild(phrase, nodeType, nodeModifier)
+	local childName = self:getFullName() .. " " .. phrase
+	nodeModifier = getModifier(childName, self.plan.testNamePattern, nodeModifier)
 	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)
 	child.parent = self
 	table.insert(self.children, child)
@@ -182,9 +181,7 @@ function TestNode:expand()
 	end
 	setfenv(self.callback, callbackEnv)
 
-	local success, result = xpcall(self.callback, function(err)
-		return err .. "\n" .. debug.traceback()
-	end)
+	local success, result = xpcall(self.callback, debug.traceback)
 
 	if not success then
 		self.loadError = result
@@ -211,13 +208,7 @@ end
 	Add a new child under the test plan's root node.
 ]]
 function TestPlan:addChild(phrase, nodeType, nodeModifier)
-	if self.testNamePattern and (nodeModifier == nil or nodeModifier == TestEnum.NodeModifier.None) then
-		if phrase:match(self.testNamePattern) then
-			nodeModifier = TestEnum.NodeModifier.Focus
-		else
-			nodeModifier = TestEnum.NodeModifier.Skip
-		end
-	end
+	nodeModifier = getModifier(phrase, self.testNamePattern, nodeModifier)
 	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
 	table.insert(self.children, child)
 	return child

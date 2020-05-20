@@ -22,6 +22,13 @@ local function newEnvironment(currentNode, extraEnvironment)
 		end
 	end
 
+	function env.fail(message)
+		if not message then
+			message = "fail() was called"
+		end
+		currentNode.errorMessage = debug.traceback(message, 2)
+	end
+
 	local function addChild(phrase, callback, nodeType, nodeModifier)
 		local node = currentNode:addChild(phrase, nodeType, nodeModifier)
 		node.callback = callback

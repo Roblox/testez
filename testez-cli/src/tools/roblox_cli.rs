@@ -1,6 +1,10 @@
 //! Interface to Roblox-CLI.
 
-use std::{path::Path, process::Command};
+use log;
+use std::{
+    path::Path,
+    process::{self, Command},
+};
 
 use roblox_install::RobloxStudio;
 
@@ -33,5 +37,10 @@ pub fn roblox_cli_run(place_path: &Path, entrypoint_path: &str, as_core_script: 
         .status()
         .expect("failed to execute Roblox-CLI; is it installed?");
 
-    assert!(status.success(), "Roblox-CLI exited with an error.");
+    if !status.success() {
+        log::error!("Roblox-CLI exited with an error");
+        process::exit(1);
+    } else {
+        process::exit(0);
+    }
 }

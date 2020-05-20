@@ -25,25 +25,36 @@ return {
 	["init.spec.lua afterAll can correctly undo changes"] = function()
 		local initialized = false
 
+		-- luacheck: globals it
 		local plan = TestEZ.TestPlanner.createPlan({
 			{
 				method = function()
-					assert(not initialized, "initialized was true in foo/a.spec")
+					print("Ad")
+					it("A", function()
+						print("Ai")
+						assert(not initialized, "initialized was true in foo/a.spec")
+					end)
 				end,
 				path = {'a.spec', 'foo'}
 			},
 			{
 				method = function()
-					assert(initialized, "initialized was false in foo/bar/b.spec")
+					print("Bd")
+					it("B", function()
+						print("Bi")
+						assert(initialized, "initialized was false in foo/bar/b.spec")
+					end)
 				end,
 				path = {'b.spec', 'bar', 'foo'}
 			},
 			{
 				method = function()
+					print("Init")
 					initialized = true
 
 					-- luacheck: globals afterAll
 					afterAll(function()
+						print("After")
 						initialized = false
 					end)
 				end,
@@ -51,13 +62,21 @@ return {
 			},
 			{
 				method = function()
-					assert(initialized, "initialized was false in foo/bar/c.spec")
+					print("Cd")
+					it("C", function()
+						print("Ci")
+						assert(initialized, "initialized was false in foo/bar/c.spec")
+					end)
 				end,
 				path = {'c.spec', 'bar', 'foo'}
 			},
 			{
 				method = function()
-					assert(not initialized, "initialized was true in foo/d.spec")
+					print("Dd")
+					it("D", function()
+						print("Di")
+						assert(not initialized, "initialized was true in foo/d.spec")
+					end)
 				end,
 				path = {'d.spec', 'foo'}
 			},

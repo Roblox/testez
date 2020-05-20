@@ -55,9 +55,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 		end
 		setfenv(callback, testEnvironment)
 
-		local nodeSuccess, nodeResult = xpcall(callback, function(message)
-			return debug.traceback(message, 2)
-		end)
+		local nodeSuccess, nodeResult = xpcall(callback, debug.traceback)
 
 		if planNode.errorMessage then
 			success = false

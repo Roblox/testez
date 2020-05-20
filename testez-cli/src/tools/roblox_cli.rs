@@ -1,6 +1,5 @@
 //! Interface to Roblox-CLI.
 
-use log;
 use std::{path::Path, process::Command};
 
 use roblox_install::RobloxStudio;

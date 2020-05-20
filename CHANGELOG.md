@@ -7,6 +7,7 @@
 * Remove `HACK_NO_XPCALL`. With recent changes to the definition of xpcall, this is no longer necessary. Since people are still using it, it will now print out a warning asking them to delete that call instead.
 * Major changes to the internals of test planning.
   * The major visible change is that `describe` and `it` blocks with duplicate descriptions will now not overwrite the earlier copies of those nodes.
+  * Duplicate `it` nodes within one `describe` will raise an error.
   * TestPlanBuilder was removed from the API.
 * Fixed a bug with how `beforeAll` and `afterAll` handled nested nodes.
 

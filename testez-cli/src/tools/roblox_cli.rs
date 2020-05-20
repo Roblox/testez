@@ -7,9 +7,6 @@ use roblox_install::RobloxStudio;
 pub fn roblox_cli_run(place_path: &Path, entrypoint_path: &str, as_core_script: bool) {
     let place_arg = place_path.to_str().unwrap();
 
-    let install = RobloxStudio::locate().expect("couldn't find Roblox Studio; is it installed?");
-    let content_path_arg = install.content_path().to_str().unwrap();
-
     log::trace!("Executing 'roblox-cli run'");
 
     let mut command = Command::new("roblox-cli");
@@ -19,9 +16,14 @@ pub fn roblox_cli_run(place_path: &Path, entrypoint_path: &str, as_core_script: 
         &place_arg,
         "--entrypoint",
         entrypoint_path,
-        "--assetFolder",
-        &content_path_arg,
     ]);
+
+    let install = RobloxStudio::locate();
+    if let Ok(install_location) = install {
+        let content_path_arg = install_location.content_path().to_str().unwrap();
+        command.arg("--assetFolder");
+        command.arg(&content_path_arg);
+    }
 
     if as_core_script {
         command.arg("--load.asRobloxScript");

@@ -8,6 +8,7 @@
 * Major changes to the internals of test planning.
   * The major visible change is that `describe` and `it` blocks with duplicate descriptions will now not overwrite the earlier copies of those nodes.
   * TestPlanBuilder was removed from the API.
+* Fixed a bug with how `beforeAll` and `afterAll` handled nested nodes.
 
 ## 0.2.0 (2020-03-04)
 * Added support for init.spec.lua. Code in this file is treated as belonging to the directory's node in the test tree. This allows for lifecycle hooks to be attached to all files in a directory.

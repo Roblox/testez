@@ -18,8 +18,7 @@ pub fn roblox_cli_run(place_path: &Path, entrypoint_path: &str, as_core_script: 
         entrypoint_path,
     ]);
 
-    let install = RobloxStudio::locate();
-    if let Ok(install_location) = install {
+    if let Ok(install_location) = RobloxStudio::locate() {
         let content_path_arg = install_location.content_path().to_str().unwrap();
         command.arg("--assetFolder");
         command.arg(&content_path_arg);

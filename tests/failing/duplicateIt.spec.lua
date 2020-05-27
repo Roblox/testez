@@ -2,12 +2,9 @@
 
 return function()
 	describe("multiple it blocks with the same description", function()
-		it("all get run", function()
+		it("should raise an error", function()
 		end)
-		it("all get run", function()
-			error("this shouldn't get overwritten")
-		end)
-		it("all get run", function()
+		it("should raise an error", function()
 		end)
 	end)
 end

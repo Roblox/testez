@@ -84,7 +84,7 @@ function LifecycleHooks:getAfterAllHooks()
 	local key = TestEnum.NodeType.AfterAll
 	local hooks = {}
 
-	local currentBack = self._stack[#self._stack] or nil
+	local currentBack = self._stack[#self._stack]
 	if currentBack then
 		for _, hook in pairs(currentBack[key]) do
 			table.insert(hooks, hook)

@@ -144,6 +144,14 @@ local function getModifier(name, pattern, modifier)
 end
 
 function TestNode:addChild(phrase, nodeType, nodeModifier)
+	if nodeType == TestEnum.NodeType.It then
+		for _, child in pairs(self.children) do
+			if child.phrase == phrase then
+				error("Duplicate it block found: " .. child:getFullName())
+			end
+		end
+	end
+
 	local childName = self:getFullName() .. " " .. phrase
 	nodeModifier = getModifier(childName, self.plan.testNamePattern, nodeModifier)
 	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)

@@ -144,16 +144,26 @@ function TestSession:shouldSkip()
 	return false
 end
 
+--[[
+	Set the current node's status to Success.
+]]
 function TestSession:setSuccess()
 	assert(#self.nodeStack > 0, "Attempting to set success status on empty stack")
 	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Success
 end
 
+--[[
+	Set the current node's status to Skipped.
+]]
 function TestSession:setSkipped()
 	assert(#self.nodeStack > 0, "Attempting to set skipped status on empty stack")
 	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Skipped
 end
 
+--[[
+	Set the current node's status to Failure and adds a message to its list of
+	errors.
+]]
 function TestSession:setError(message)
 	assert(#self.nodeStack > 0, "Attempting to set error status on empty stack")
 	local last = self.nodeStack[#self.nodeStack]
@@ -161,6 +171,11 @@ function TestSession:setError(message)
 	table.insert(last.errors, message)
 end
 
+--[[
+	Set the current node's status based on that of its children. If all children
+	are skipped, mark it as skipped. If any are fails, mark it as failed.
+	Otherwise, mark it as success.
+]]
 function TestSession:setStatusFromChildren()
 	assert(#self.nodeStack > 0, "Attempting to set status from children on empty stack")
 

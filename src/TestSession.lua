@@ -146,4 +146,47 @@ function TestSession:shouldSkip()
 	return false
 end
 
+function TestSession:setSuccess()
+	assert(#self.nodeStack > 0, "Attempting to set success status on empty stack")
+	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Success
+end
+
+function TestSession:setSkipped()
+	assert(#self.nodeStack > 0, "Attempting to set skipped status on empty stack")
+	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Skipped
+end
+
+function TestSession:setError(message)
+	assert(#self.nodeStack > 0, "Attempting to set error status on empty stack")
+	local last = self.nodeStack[#self.nodeStack]
+	last.status = TestEnum.TestStatus.Failure
+	table.insert(last.errors, message)
+end
+
+function TestSession:setStatusFromChildren()
+	assert(#self.nodeStack > 0, "Attempting to set status from children on empty stack")
+
+	local last = self.nodeStack[#self.nodeStack]
+	local status = TestEnum.TestStatus.Success
+	local skipped = true
+
+	-- If all children were skipped, then we were skipped
+	-- If any child failed, then we failed!
+	for _, child in ipairs(last.children) do
+		if child.status ~= TestEnum.TestStatus.Skipped then
+			skipped = false
+
+			if child.status == TestEnum.TestStatus.Failure then
+				status = TestEnum.TestStatus.Failure
+			end
+		end
+	end
+
+	if skipped then
+		status = TestEnum.TestStatus.Skipped
+	end
+
+	last.status = status
+end
+
 return TestSession

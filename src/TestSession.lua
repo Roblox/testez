@@ -100,8 +100,6 @@ function TestSession:pushNode(planNode)
 
 	table.insert(lastNode.children, node)
 	table.insert(self.nodeStack, node)
-
-	return node
 end
 
 --[[
@@ -109,7 +107,7 @@ end
 ]]
 function TestSession:popNode()
 	assert(#self.nodeStack > 0, "Tried to pop from an empty node stack!")
-	return table.remove(self.nodeStack, #self.nodeStack)
+	table.remove(self.nodeStack, #self.nodeStack)
 end
 
 --[[

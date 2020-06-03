@@ -17,7 +17,7 @@ return {
 	["context.foo can't be set twice"] = function()
 		local context = Context.new()
 		context.foo = "foo"
-		local success, result = pcall(function()
+		local success, _ = pcall(function()
 			context.foo = "bar"
 		end)
 		assert(not success, "Expected second context.foo to error")
@@ -42,7 +42,7 @@ return {
 		local parent = Context.new()
 		parent.foo = "foo"
 		local child = Context.new(parent)
-		local success, result = pcall(function()
+		local success, _ = pcall(function()
 			child.foo = "bar"
 		end)
 		assert(not success, "Expected setting child.foo to error")

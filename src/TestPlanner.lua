@@ -20,7 +20,8 @@ local TestPlanner = {}
 			pathStringForSorting -- a string representation of `path`, used for sorting of the test plan
 		}
 		- testNamePattern - Only tests matching this Lua pattern string will run. Pass empty or nil to run all tests
-		- extraEnvironment - Lua table holding additional functions and variables to be injected into the specification function during execution
+		- extraEnvironment - Lua table holding additional functions and variables to be injected into the specification
+							function during execution
 ]]
 function TestPlanner.createPlan(modulesList, testNamePattern, extraEnvironment)
 	local plan = TestPlan.new(testNamePattern, extraEnvironment)

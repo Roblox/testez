@@ -66,6 +66,9 @@ function TestBootstrap:getModulesImpl(root, modules, current)
 	end
 end
 
+--[[
+	Find all the ModuleScripts in this tree that are tests.
+]]
 function TestBootstrap:getModules(root)
 	local modules = {}
 

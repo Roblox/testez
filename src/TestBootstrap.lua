@@ -61,7 +61,7 @@ function TestBootstrap:getModulesImpl(root, modules, current)
 		table.insert(modules, {
 			method = method,
 			path = path,
-			pathStringLowercase = pathString:lower()
+			pathStringForSorting = pathString:lower()
 		})
 	end
 end
@@ -118,10 +118,6 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 			table.insert(modules, newModule)
 		end
 	end
-
-	table.sort(modules, function(a, b)
-		return a.pathStringLowercase < b.pathStringLowercase
-	end)
 
 	local afterModules = tick()
 

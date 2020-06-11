@@ -35,37 +35,45 @@ local function getPath(module, root)
 	return path
 end
 
---[[
-	Find all the ModuleScripts in this tree that are tests.
-]]
-function TestBootstrap:getModules(root)
-	local modules = {}
+local function toStringPath(tablePath)
+	local stringPath = ""
+	local first = true
+	for _, element in ipairs(tablePath) do
+		if first then
+			stringPath = element
+			first = false
+		else
+			stringPath = element .. " " .. stringPath
+		end
+	end
+	return stringPath
+end
 
-	if isSpecScript(root) then
-		local method = require(root)
-		local path = getPath(root, root)
+function TestBootstrap:getModulesImpl(root, modules, current)
+	modules = modules or {}
+	current = current or root
+
+	if isSpecScript(current) then
+		local method = require(current)
+		local path = getPath(current, root)
+		local pathString = toStringPath(path)
 
 		table.insert(modules, {
 			method = method,
-			path = path
+			path = path,
+			pathStringLowercase = pathString:lower()
 		})
 	end
+end
+
+function TestBootstrap:getModules(root)
+	local modules = {}
+
+	self:getModulesImpl(root, modules)
 
 	for _, child in ipairs(root:GetDescendants()) do
-		if isSpecScript(child) then
-			local method = require(child)
-			local path = getPath(child, root)
-
-			table.insert(modules, {
-				method = method,
-				path = path
-			})
-		end
+		self:getModulesImpl(root, modules, child)
 	end
-
-	table.sort(modules, function(a, b)
-		return a.path[#a.path]:lower() < b.path[#b.path]:lower()
-	end)
 
 	return modules
 end
@@ -107,6 +115,10 @@ function TestBootstrap:run(roots, reporter, otherOptions)
 			table.insert(modules, newModule)
 		end
 	end
+
+	table.sort(modules, function(a, b)
+		return a.pathStringLowercase < b.pathStringLowercase
+	end)
 
 	local afterModules = tick()
 

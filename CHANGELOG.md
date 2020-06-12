@@ -10,6 +10,7 @@
   * Duplicate `it` nodes within one `describe` will raise an error.
   * TestPlanBuilder was removed from the API.
 * Fixed a bug with how `beforeAll` and `afterAll` handled nested nodes.
+* Make tests run in a fixed order. Previously tests could run in different orders depending on which order the OS read the test files in. Now they should run in the same order in all cases.
 
 ## 0.2.0 (2020-03-04)
 * Added support for init.spec.lua. Code in this file is treated as belonging to the directory's node in the test tree. This allows for lifecycle hooks to be attached to all files in a directory.

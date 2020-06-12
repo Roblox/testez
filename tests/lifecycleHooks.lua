@@ -161,6 +161,7 @@ return {
 			"2 - test",
 			"2 - afterEach",
 			"1 - afterEach",
+			"3 - beforeAll",
 			"2 - afterAll",
 			"1 - beforeEach",
 			"1 - another test",

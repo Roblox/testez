@@ -9,6 +9,7 @@
 
 local TestEnum = require(script.Parent.TestEnum)
 local TestResults = require(script.Parent.TestResults)
+local Context = require(script.Parent.Context)
 
 local TestSession = {}
 
@@ -23,6 +24,7 @@ function TestSession.new(plan)
 	local self = {
 		results = TestResults.new(plan),
 		nodeStack = {},
+		contextStack = {},
 		hasFocusNodes = false
 	}
 
@@ -37,7 +39,7 @@ end
 ]]
 function TestSession:calculateTotals()
 	local results = self.results
-
+	print(results:visualize())
 	results.successCount = 0
 	results.failureCount = 0
 	results.skippedCount = 0
@@ -53,6 +55,10 @@ function TestSession:calculateTotals()
 				results.failureCount = results.failureCount + 1
 			elseif status == TestEnum.TestStatus.Skipped then
 				results.skippedCount = results.skippedCount + 1
+			end
+		elseif nodeType == TestEnum.NodeType.Describe then
+			if status == TestEnum.TestStatus.Failure then
+				results.failureCount = results.failureCount + 1
 			end
 		end
 	end)
@@ -95,11 +101,13 @@ end
 ]]
 function TestSession:pushNode(planNode)
 	local node = TestResults.createNode(planNode)
-
 	local lastNode = self.nodeStack[#self.nodeStack] or self.results
+	local lastContext = self.contextStack[#self.contextStack]
+	local context = Context.new(lastContext)
 
 	table.insert(lastNode.children, node)
 	table.insert(self.nodeStack, node)
+	table.insert(self.contextStack, context)
 end
 
 --[[
@@ -108,6 +116,14 @@ end
 function TestSession:popNode()
 	assert(#self.nodeStack > 0, "Tried to pop from an empty node stack!")
 	table.remove(self.nodeStack, #self.nodeStack)
+end
+
+--[[
+	Gets the Context object for the current node.
+]]
+function TestSession:getContext()
+	assert(#self.contextStack > 0, "Tried to get context from an empty stack!")
+	return self.contextStack[#self.contextStack]
 end
 
 --[[
@@ -172,6 +188,17 @@ function TestSession:setError(message)
 end
 
 --[[
+	Add a dummy child node to the current node to hold the given error. This
+	allows an otherwise empty describe node to report an error in a more natural
+	way.
+]]
+function TestSession:addDummyError(phrase, message)
+	self:pushNode({type = TestEnum.NodeType.It, phrase = phrase})
+	self:setError(message)
+	self:popNode()
+end
+
+--[[
 	Set the current node's status based on that of its children. If all children
 	are skipped, mark it as skipped. If any are fails, mark it as failed.
 	Otherwise, mark it as success.
@@ -180,6 +207,10 @@ function TestSession:setStatusFromChildren()
 	assert(#self.nodeStack > 0, "Attempting to set status from children on empty stack")
 
 	local last = self.nodeStack[#self.nodeStack]
+	if last.status == TestEnum.TestStatus.Failure then
+		return
+	end
+
 	local status = TestEnum.TestStatus.Success
 	local skipped = true
 

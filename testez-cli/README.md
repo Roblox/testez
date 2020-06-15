@@ -18,7 +18,7 @@ It can also be compiled from source in this repository. Building from source req
 cargo build
 
 # To build and install
-cargo install
+cargo install --path .
 ```
 
 ## Usage

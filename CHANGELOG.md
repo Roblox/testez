@@ -1,6 +1,8 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+
+## 0.3.0 (2020-06-12)
 * Remove the `try` node type.
   * Remove the `step` alias for `it` since that's meant for use with `try`.
 * Remove the `include` global function.
@@ -11,6 +13,7 @@
   * TestPlanBuilder was removed from the API.
 * Fixed a bug with how `beforeAll` and `afterAll` handled nested nodes.
 * Implemented alphabetical sorting of the entire test tree which provides deterministic tests execution order regardless of platform, architecture or tool used to load tests.
+* Fixed interactions with roblox-cli in TestEZ CLI.
 
 ## 0.2.0 (2020-03-04)
 * Added support for init.spec.lua. Code in this file is treated as belonging to the directory's node in the test tree. This allows for lifecycle hooks to be attached to all files in a directory.

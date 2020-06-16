@@ -39,7 +39,7 @@ end
 ]]
 function TestSession:calculateTotals()
 	local results = self.results
-	print(results:visualize())
+
 	results.successCount = 0
 	results.failureCount = 0
 	results.skippedCount = 0
@@ -55,10 +55,6 @@ function TestSession:calculateTotals()
 				results.failureCount = results.failureCount + 1
 			elseif status == TestEnum.TestStatus.Skipped then
 				results.skippedCount = results.skippedCount + 1
-			end
-		elseif nodeType == TestEnum.NodeType.Describe then
-			if status == TestEnum.TestStatus.Failure then
-				results.failureCount = results.failureCount + 1
 			end
 		end
 	end)
@@ -116,6 +112,7 @@ end
 function TestSession:popNode()
 	assert(#self.nodeStack > 0, "Tried to pop from an empty node stack!")
 	table.remove(self.nodeStack, #self.nodeStack)
+	table.remove(self.contextStack, #self.contextStack)
 end
 
 --[[
@@ -208,10 +205,6 @@ function TestSession:setStatusFromChildren()
 	assert(#self.nodeStack > 0, "Attempting to set status from children on empty stack")
 
 	local last = self.nodeStack[#self.nodeStack]
-	if last.status == TestEnum.TestStatus.Failure then
-		return
-	end
-
 	local status = TestEnum.TestStatus.Success
 	local skipped = true
 

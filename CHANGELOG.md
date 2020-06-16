@@ -2,7 +2,8 @@
 
 ## Unreleased Changes
 * Further simplify `beforeAll` handling.
-  * `beforeAll` now runs on entering the block, rather than on the first `it` encountered after entering the block. The only significant difference for the moment is that a `beforeAll` will now run even if there are no `it` blocks under it, which is now consistent with how `afterAll` worked.
+  * `beforeAll` now runs on entering the block, rather than on the first `it` encountered after entering the block. The major difference for the moment is that a `beforeAll` will now run even if there are no `it` blocks under it, which is now consistent with how `afterAll` worked.
+  * `beforeAll` and `afterAll` now report errors by creating a dummy node in the results to contain the error. Previously, errors in `afterAll` were not reported.
 
 ## 0.3.0 (2020-06-12)
 * Remove the `try` node type.

@@ -254,14 +254,6 @@ return {
 		failLifecycleCase("beforeAll")
 		failLifecycleCase("beforeEach")
 		failLifecycleCase("afterEach")
-		-- `afterAll` failure case is intentionally missing.
-		-- Currently it is not easy to attach an afterAll failure to
-		-- a particular set of childNodes without some refactoring.
-		-- Additionally, when jest afterAll hooks fail, it fails the test suite
-		-- and not any particular node which is a different flavor of failure
-		-- that TestEZ does not offer right now
-		-- Consult the following:
-		-- https://github.com/facebook/jest/issues/3266
-		-- https://github.com/facebook/jest/pull/5884
+		failLifecycleCase("afterAll")
 	end,
 }

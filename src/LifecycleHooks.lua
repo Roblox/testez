@@ -77,7 +77,7 @@ end
 function LifecycleHooks:_getHooksOfType(nodes, key)
 	local hooks = {}
 
-	for _, node in pairs(nodes) do
+	for _, node in ipairs(nodes) do
 		if node.type == key then
 			table.insert(hooks, node.callback)
 		end

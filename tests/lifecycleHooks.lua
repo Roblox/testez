@@ -142,6 +142,10 @@ return {
 					beforeAll(function()
 						insertLifecycleEvent("3 - beforeAll")
 					end)
+
+					afterAll(function()
+						insertLifecycleEvent("3 - afterAll")
+					end)
 				end)
 			end)
 
@@ -161,6 +165,8 @@ return {
 			"2 - test",
 			"2 - afterEach",
 			"1 - afterEach",
+			"3 - beforeAll",
+			"3 - afterAll",
 			"2 - afterAll",
 			"1 - beforeEach",
 			"1 - another test",

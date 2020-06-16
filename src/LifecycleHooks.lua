@@ -61,38 +61,17 @@ function LifecycleHooks:pushHooksFrom(planNode)
 end
 
 --[[
-	Get all currently uncalled beforeAll hooks, and remove them from the stack.
+	Get the beforeAll hooks from the current level.
 ]]
-function LifecycleHooks:getPendingBeforeAllHooks()
-	local key = TestEnum.NodeType.BeforeAll
-	local hooks = {}
-
-	for _, level in ipairs(self._stack) do
-		for _, hook in ipairs(level[key]) do
-			table.insert(hooks, hook)
-		end
-		level[key] = {}
-	end
-
-	return hooks
+function LifecycleHooks:getBeforeAllHooks()
+	return self._stack[#self._stack][TestEnum.NodeType.BeforeAll]
 end
 
 --[[
-	Get all uncalled afterAll hooks from the back of the stack and remove them.
+	Get the afterAll hooks from the current level.
 ]]
 function LifecycleHooks:getAfterAllHooks()
-	local key = TestEnum.NodeType.AfterAll
-	local hooks = {}
-
-	local currentBack = self._stack[#self._stack]
-	if currentBack then
-		for _, hook in pairs(currentBack[key]) do
-			table.insert(hooks, hook)
-		end
-		currentBack[key] = {}
-	end
-
-	return hooks
+	return self._stack[#self._stack][TestEnum.NodeType.AfterAll]
 end
 
 function LifecycleHooks:_getHooksOfType(nodes, key)

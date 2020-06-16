@@ -90,7 +90,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 		-- Errors can be set either via `error` propagating upwards or
 		-- by a test calling fail([message]).
 
-		for _, hook in pairs(lifecycleHooks:getBeforeEachHooks()) do
+		for _, hook in ipairs(lifecycleHooks:getBeforeEachHooks()) do
 			local success, errorMessage = runCallback(hook, "beforeEach hook: ")
 			if not success then
 				return false, errorMessage
@@ -104,7 +104,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			end
 		end
 
-		for _, hook in pairs(lifecycleHooks:getAfterEachHooks()) do
+		for _, hook in ipairs(lifecycleHooks:getAfterEachHooks()) do
 			local success, errorMessage = runCallback(hook, "afterEach hook: ")
 			if not success then
 				return false, errorMessage
@@ -116,17 +116,16 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 
 	lifecycleHooks:pushHooksFrom(planNode)
 
-	local fail = false
-	for _, hook in pairs(lifecycleHooks:getPendingBeforeAllHooks()) do
+	local halt = false
+	for _, hook in ipairs(lifecycleHooks:getBeforeAllHooks()) do
 		local success, errorMessage = runCallback(hook, "beforeAll hook: ")
 		if not success then
 			session:addDummyError("beforeAll", errorMessage)
-			session:setError(errorMessage)
-			fail = true
+			halt = true
 		end
 	end
 
-	if not fail then
+	if not halt then
 		for _, childPlanNode in ipairs(planNode.children) do
 			session:pushNode(childPlanNode)
 
@@ -158,11 +157,10 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 		end
 	end
 
-	for _, hook in pairs(lifecycleHooks:getAfterAllHooks()) do
+	for _, hook in ipairs(lifecycleHooks:getAfterAllHooks()) do
 		local success, errorMessage = runCallback(hook, "afterAll hook: ")
 		if not success then
 			session:addDummyError("afterAll", errorMessage)
-			session:setError(errorMessage)
 		end
 	end
 

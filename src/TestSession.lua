@@ -196,6 +196,7 @@ function TestSession:addDummyError(phrase, message)
 	self:pushNode({type = TestEnum.NodeType.It, phrase = phrase})
 	self:setError(message)
 	self:popNode()
+	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Failure
 end
 
 --[[

@@ -1,3 +1,5 @@
+-- luacheck: globals describe beforeAll beforeEach it expect afterEach afterAll
+
 return function()
 	describe("context is passed between lifecycle hooks and it blocks", function()
 		beforeAll(function(context)

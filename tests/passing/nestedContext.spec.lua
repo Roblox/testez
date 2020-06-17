@@ -1,3 +1,5 @@
+-- luacheck: globals describe beforeAll it expect
+
 return function()
 	describe("setting context here", function()
 		beforeAll(function(context)

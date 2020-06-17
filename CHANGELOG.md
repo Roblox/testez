@@ -1,6 +1,10 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* Further simplify `beforeAll` handling.
+  * `beforeAll` now runs on entering the block, rather than on the first `it` encountered after entering the block. The major difference for the moment is that a `beforeAll` will now run even if there are no `it` blocks under it, which is now consistent with how `afterAll` worked.
+  * `beforeAll` and `afterAll` now report errors by creating a dummy node in the results to contain the error. Previously, errors in `afterAll` were not reported.
+  * A failure in a `beforeAll` block will now halt all further test execution within its enclosing `describe` block except for any remaining `beforeAll` blocks and any `afterAll` blocks. Multiple `beforeAll` or `afterAll` blocks within one `describe` block should not count on running in any specific order. `afterAll` blocks should account for the possibility of a partially setup state when cleaning up.
 
 ## 0.3.0 (2020-06-12)
 * Remove the `try` node type.

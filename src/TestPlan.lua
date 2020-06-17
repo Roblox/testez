@@ -8,12 +8,12 @@
 local TestEnum = require(script.Parent.TestEnum)
 local Expectation = require(script.Parent.Expectation)
 
-local function newEnvironment(currentNode, extraEnvironment)
+local function newEnvironment(currentNode, parentEnvironment, extraEnvironment)
 	local env = {}
 
 	if extraEnvironment then
 		if type(extraEnvironment) ~= "table" then
-			error(("Bad argument #2 to newEnvironment. Expected table, got %s"):format(
+			error(("Bad argument #3 to newEnvironment. Expected table, got %s"):format(
 				typeof(extraEnvironment)), 2)
 		end
 
@@ -107,6 +107,10 @@ local function newEnvironment(currentNode, extraEnvironment)
 
 	env.expect = Expectation.new
 
+	function env.require(module)
+		return debug.loadmodule(module)()
+	end
+
 	return env
 end
 
@@ -131,7 +135,7 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 		parent = nil,
 	}
 
-	node.environment = newEnvironment(node, plan.extraEnvironment)
+	node.environment = newEnvironment(node, nil, plan.extraEnvironment)
 	return setmetatable(node, TestNode)
 end
 
@@ -192,6 +196,13 @@ function TestNode:expand()
 
 	if not success then
 		self.loadError = result
+	end
+
+	if typeof(result) == "function" then
+		success, result = xpcall(result, debug.traceback)
+		if not success then
+			self.loadError = result
+		end
 	end
 end
 

@@ -172,6 +172,16 @@ function TestSession:setError(message)
 end
 
 --[[
+	Add a dummy node below the current one to hold an error message.
+]]
+function TestSession:addDummyError(phrase, message)
+	self:pushNode({type = TestEnum.NodeType.It, phrase = phrase})
+	self:setError(message)
+	self:popNode()
+	self.nodeStack[#self.nodeStack].status = TestEnum.TestStatus.Failure
+end
+
+--[[
 	Set the current node's status based on that of its children. If all children
 	are skipped, mark it as skipped. If any are fails, mark it as failed.
 	Otherwise, mark it as success.

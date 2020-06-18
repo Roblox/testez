@@ -47,4 +47,10 @@ return {
 		end)
 		assert(not success, "Expected setting child.foo to error")
 	end,
+	["A child won't see changes to the parent"] = function()
+		local parent = Context.new()
+		local child = Context.new(parent)
+		parent.foo = "foo"
+		assert(child.foo == nil, string.format("Got %s, expected nil", tostring(parent.foo)))
+	end,
 }

@@ -164,7 +164,7 @@ function TestNode:addChild(phrase, nodeType, nodeModifier)
 end
 
 --[[
-	Join the names of all the nodes back to the parent.
+	Join the names of all the nodes back to the root of the tree.
 ]]
 function TestNode:getFullName()
 	if self.parent then

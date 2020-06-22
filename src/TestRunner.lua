@@ -6,20 +6,13 @@
 	state is contained inside a TestSession object.
 ]]
 
-local Expectation = require(script.Parent.Expectation)
 local TestEnum = require(script.Parent.TestEnum)
 local TestSession = require(script.Parent.TestSession)
 local LifecycleHooks = require(script.Parent.LifecycleHooks)
 
 local RUNNING_GLOBAL = "__TESTEZ_RUNNING_TEST__"
 
-local TestRunner = {
-	environment = {}
-}
-
-function TestRunner.environment.expect(...)
-	return Expectation.new(...)
-end
+local TestRunner = {}
 
 --[[
 	Runs the given TestPlan and returns a TestResults object representing the
@@ -55,30 +48,28 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 
 		messagePrefix = messagePrefix or ""
 
-		local testEnvironment = getfenv(callback)
-
-		for key, value in pairs(TestRunner.environment) do
+		local originalEnvironment = getfenv(callback)
+		local testEnvironment = setmetatable({}, { __index = originalEnvironment })
+		for key, value in pairs(planNode.environment) do
 			testEnvironment[key] = value
 		end
 
-		testEnvironment.fail = function(message)
-			if message == nil then
-				message = "fail() was called."
+		function testEnvironment.fail(message)
+			if not message then
+				message = "fail() was called"
 			end
-
+			errorMessage = debug.traceback(message, 2)
 			success = false
-			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
 		end
 
-		local nodeSuccess, nodeResult = xpcall(callback, function(message)
-			return messagePrefix .. message .. "\n" .. debug.traceback()
-		end)
+		setfenv(callback, testEnvironment)
+		local nodeSuccess, nodeResult = xpcall(callback, debug.traceback)
 
 		-- If a node threw an error, we prefer to use that message over
 		-- one created by fail() if it was set.
 		if not nodeSuccess then
 			success = false
-			errorMessage = nodeResult
+			errorMessage = messagePrefix .. nodeResult
 		end
 
 		_G[RUNNING_GLOBAL] = nil

@@ -1,4 +1,4 @@
--- luacheck: globals describe
+-- luacheck: globals describe expect
 
 return function()
 	describe("this shouldn't be able to access context", function(context)

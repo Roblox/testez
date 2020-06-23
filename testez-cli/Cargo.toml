@@ -22,7 +22,7 @@ log = "0.4.8"
 maplit = "1.0.2"
 rbx_dom_weak = "1.10.1"
 rbx_xml = "0.11.4"
-roblox_install = { git = "https://github.com/Kampfkarren/roblox-install.git" }
+roblox_install = "0.3.0"
 serde = { version = "1.0.104", features = ["derive"] }
 snafu = "0.6.2"
 structopt = { version = "0.3.8", default-features = false }

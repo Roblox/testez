@@ -5,6 +5,9 @@
   * `beforeAll` now runs on entering the block, rather than on the first `it` encountered after entering the block. The major difference for the moment is that a `beforeAll` will now run even if there are no `it` blocks under it, which is now consistent with how `afterAll` worked.
   * `beforeAll` and `afterAll` now report errors by creating a dummy node in the results to contain the error. Previously, errors in `afterAll` were not reported.
   * A failure in a `beforeAll` block will now halt all further test execution within its enclosing `describe` block except for any remaining `beforeAll` blocks and any `afterAll` blocks. Multiple `beforeAll` or `afterAll` blocks within one `describe` block should not count on running in any specific order. `afterAll` blocks should account for the possibility of a partially setup state when cleaning up.
+* Add a context object visible from lifecycle hooks and `it` blocks. This is a write-once store for whatever you need to communicate between hooks and tests. It can be ignored until you need it.
+  * In particular, you can usually just use upvalues to comminucate between hooks and tests, but that won't work if your hooks are in a separate file (e.g. `init.spec.lua`).
+  * Also, this provides a cleaner alternative to extraEnvironment for passing along helper functions to large numbers of tests as the context can be scoped to particular directories as needed.
 
 ## 0.3.0 (2020-06-12)
 * Remove the `try` node type.

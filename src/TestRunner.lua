@@ -70,9 +70,16 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
 		end
 
-		local nodeSuccess, nodeResult = xpcall(callback, function(message)
-			return messagePrefix .. message .. "\n" .. debug.traceback()
-		end)
+		local context = session:getContext()
+
+		local nodeSuccess, nodeResult = xpcall(
+			function()
+				callback(context)
+			end,
+			function(message)
+				return messagePrefix .. message .. "\n" .. debug.traceback()
+			end
+		)
 
 		-- If a node threw an error, we prefer to use that message over
 		-- one created by fail() if it was set.

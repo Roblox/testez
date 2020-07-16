@@ -1,6 +1,7 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* Remove the lifecycle hooks from the session tree. This prevents the `[?]` spam from the reporter not recognizing these nodes.
 
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.

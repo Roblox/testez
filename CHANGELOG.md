@@ -1,6 +1,7 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* Add a deprecation notice for uses of extraEnvironment.
 
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.

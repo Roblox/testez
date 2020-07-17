@@ -19,6 +19,14 @@ describe("This cheese", function()
 end)
 ```
 
+#### init.spec.lua
+
+When loading a spec file, TestEZ creates a new `describe` block for each file
+and for each folder those files are in. If the file is called `init.spec.lua`,
+TestEZ will not create a new `describe` block for it and instead attach any code
+inside to the folder's `describe` block. For more on one situation when this
+would be useful, see the section on [lifecycle hooks](#lifecycle-hooks).
+
 ### it
 ```
 it(phrase, callback)
@@ -121,3 +129,90 @@ expect(function()
 	-- I don't throw!
 end).never.to.throw()
 ```
+
+### Lifecycle hooks
+```lua
+beforeEach(callback)
+afterEach(callback)
+beforeAll(callback)
+afterAll(callback)
+```
+
+The lifecycle hooks are a collection of blocks similar to `it` blocks. They
+can be used to collect setup and teardown code into a common place.
+
+When placed in an `init.spec.lua` file, these hooks will run for all tests
+within that folder.
+
+!!! note
+	The callbacks in the lifecycle hooks are run after all `describe` blocks'
+	callbacks. Be careful not to count on setup or teardown code applying to
+	code not inside an `it` block.
+
+#### beforeEach, afterEach
+
+The callback in a `beforeEach` block will run before each `it` block within the
+current `describe` block, including those in children `describe` blocks.
+Similarly the `afterEach` block will be run after each `it` block.
+
+```lua
+describe("Some tests with common setup code", function()
+	beforeEach(function()
+		database.add(user)
+	end)
+	afterEach(function()
+		database.clear()
+	end)
+
+	describe("Some tests with a user", function()
+		it("should be deletable", function()
+			database.delete("user")
+			expect(database.get("user")).to.never.be.ok()
+		end)
+
+		it("should exist again", function()
+			expect(database.get("user")).to.be.ok()
+		end)
+	end)
+end)
+```
+
+#### beforeAll, afterAll
+
+Similarly, `beforeAll` runs the callback just before the first `it` block within
+the current `describe` block, and `afterAll` runs just after the last.
+
+### Context
+
+As mentioned, `init.spec.lua` allows code to be run as part of a directory's
+otherwise-implicit block, and the lifecycle hooks allow setup and teardown code
+to be run for all tests within a block. This does indeed mean that a hook inside
+an init file will run for all tests in that directory. While hooks within the
+same file can pass extra information along to tests via upvalues, hooks in an
+init file must use the `context`.
+
+`context` is a write-once table that is passed in to the callbacks for lifecycle
+hooks and `it` blocks. Entries in this table are only available to blocks within
+the current `describe` block. This means it's safe to add entries without
+worrying about influencing tests elsewhere in the tree.
+
+```lua
+-- init.spec.lua
+return function()
+	beforeAll(function(context)
+		context.helpers = require(script.Parent.helpers)
+	end)
+end
+
+-- test.spec.lua
+return function()
+	it("a test using a helper", function(context)
+		local user = context.helpers.makeUser(123)
+		-- ...
+	end)
+end
+```
+
+!!! note
+	Context is not available to `describe` blocks since they run before any
+	lifecycle hooks or `it` blocks.

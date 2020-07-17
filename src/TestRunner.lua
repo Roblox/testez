@@ -67,7 +67,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			end
 
 			success = false
-			errorMessage = messagePrefix .. debug.traceback(tostring(message))
+			errorMessage = messagePrefix .. debug.traceback(tostring(message), 2)
 		end
 
 		local context = session:getContext()
@@ -77,7 +77,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 				callback(context)
 			end,
 			function(message)
-				return messagePrefix .. debug.traceback(tostring(message))
+				return messagePrefix .. debug.traceback(tostring(message), 2)
 			end
 		)
 

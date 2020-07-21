@@ -5,6 +5,7 @@
 * Change the way errors are collected to call tostring on them before further processing.
   * Luau allows non-string errors, but not concatenating non-strings or passing non-strings to `debug.traceback` as a message, so TestRunner needs to do that step. This is a temporary fix as the better solution would be to retain the error in object form for as long as possible to give the reporter more to work with.
   * This also makes a slight change to what's in the traceback to eliminate the unnecessary line mentioning the error collection function.
+* Add a deprecation notice for uses of extraEnvironment.
 
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.

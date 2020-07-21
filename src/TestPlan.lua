@@ -8,12 +8,22 @@
 local TestEnum = require(script.Parent.TestEnum)
 local Expectation = require(script.Parent.Expectation)
 
-local function newEnvironment(currentNode, extraEnvironment)
+local REQUIRE_CACHE_KEY = {}
+
+local function newEnvironment(parentEnvironment, currentNode, extraEnvironment)
 	local env = {}
+
+	local requireMeta = {}
+	if parentEnvironment then
+		requireMeta = {__index = parentEnvironment[REQUIRE_CACHE_KEY]}
+	end
+
+	local requireCache = setmetatable({}, requireMeta)
+	env[REQUIRE_CACHE_KEY] = requireCache
 
 	if extraEnvironment then
 		if type(extraEnvironment) ~= "table" then
-			error(("Bad argument #2 to newEnvironment. Expected table, got %s"):format(
+			error(("Bad argument #3 to newEnvironment. Expected table, got %s"):format(
 				typeof(extraEnvironment)), 2)
 		end
 
@@ -107,6 +117,17 @@ local function newEnvironment(currentNode, extraEnvironment)
 
 	env.expect = Expectation.new
 
+	function env.require(module)
+		if not requireCache[module] then
+			local chunk = debug.loadmodule(module)
+			local originalEnv = getfenv(chunk)
+			local newEnv = setmetatable({require = env.require}, {__index = originalEnv})
+			setfenv(chunk, newEnv)
+			requireCache[module] = chunk()
+		end
+		return requireCache[module]
+	end
+
 	return env
 end
 
@@ -118,7 +139,7 @@ TestNode.__index = TestNode
 	and the type of node it is are required. The modifier is optional and will
 	be None if left blank.
 ]]
-function TestNode.new(plan, phrase, nodeType, nodeModifier)
+function TestNode.new(parent, plan, phrase, nodeType, nodeModifier)
 	nodeModifier = nodeModifier or TestEnum.NodeModifier.None
 
 	local node = {
@@ -131,7 +152,8 @@ function TestNode.new(plan, phrase, nodeType, nodeModifier)
 		parent = nil,
 	}
 
-	node.environment = newEnvironment(node, plan.extraEnvironment)
+	local parentEnvironment = parent and parent.Environment
+	node.environment = newEnvironment(parentEnvironment, node, plan.extraEnvironment)
 	return setmetatable(node, TestNode)
 end
 
@@ -157,7 +179,7 @@ function TestNode:addChild(phrase, nodeType, nodeModifier)
 
 	local childName = self:getFullName() .. " " .. phrase
 	nodeModifier = getModifier(childName, self.plan.testNamePattern, nodeModifier)
-	local child = TestNode.new(self.plan, phrase, nodeType, nodeModifier)
+	local child = self:new(self.plan, phrase, nodeType, nodeModifier)
 	child.parent = self
 	table.insert(self.children, child)
 	return child
@@ -195,6 +217,13 @@ function TestNode:expand()
 	if not success then
 		self.loadError = result
 	end
+
+	if typeof(result) == "function" then
+		success, result = xpcall(result, debug.traceback)
+		if not success then
+			self.loadError = result
+		end
+	end
 end
 
 local TestPlan = {}
@@ -226,7 +255,7 @@ end
 ]]
 function TestPlan:addChild(phrase, nodeType, nodeModifier)
 	nodeModifier = getModifier(phrase, self.testNamePattern, nodeModifier)
-	local child = TestNode.new(self, phrase, nodeType, nodeModifier)
+	local child = TestNode.new(nil, self, phrase, nodeType, nodeModifier)
 	table.insert(self.children, child)
 	return child
 end

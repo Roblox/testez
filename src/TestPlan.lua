@@ -9,21 +9,19 @@ local TestEnum = require(script.Parent.TestEnum)
 local Expectation = require(script.Parent.Expectation)
 
 local REQUIRE_CACHE_KEY = {}
+local requireCache = {}
 
 local function newEnvironment(parentEnvironment, currentNode, extraEnvironment)
 	local env = {}
 
-	local requireMeta = {}
-	if parentEnvironment then
-		requireMeta = {__index = parentEnvironment[REQUIRE_CACHE_KEY]}
-	end
-
-	local requireCache = setmetatable({}, requireMeta)
+	-- All nodes in a tree currently share a cache
+	local requireCache = parentEnvironment and parentEnvironment[REQUIRE_CACHE_KEY] or {}
 	env[REQUIRE_CACHE_KEY] = requireCache
 
 	if extraEnvironment then
 		if type(extraEnvironment) ~= "table" then
 			error(("Bad argument #3 to newEnvironment. Expected table, got %s"):format(
+
 				typeof(extraEnvironment)), 2)
 		end
 

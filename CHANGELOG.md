@@ -6,6 +6,7 @@
   * Luau allows non-string errors, but not concatenating non-strings or passing non-strings to `debug.traceback` as a message, so TestRunner needs to do that step. This is a temporary fix as the better solution would be to retain the error in object form for as long as possible to give the reporter more to work with.
   * This also makes a slight change to what's in the traceback to eliminate the unnecessary line mentioning the error collection function.
 * Add a deprecation notice for uses of extraEnvironment.
+* Guarantee that `init.spec.lua` will run before any `it` or `describe` blocks in the folder under it.
 
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.
@@ -21,7 +22,6 @@
   * Remove the `step` alias for `it` since that's meant for use with `try`.
 * Remove the `include` global function.
 * Remove `HACK_NO_XPCALL`. With recent changes to the definition of xpcall, this is no longer necessary. Since people are still using it, it will now print out a warning asking them to delete that call instead.
-* Guarantee that `init.spec.lua` will run before any `it` or `describe` blocks in the folder under it.
 * Major changes to the internals of test planning.
   * The major visible change is that `describe` and `it` blocks with duplicate descriptions will now not overwrite the earlier copies of those nodes.
   * Duplicate `it` nodes within one `describe` will raise an error.

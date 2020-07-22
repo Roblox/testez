@@ -9,7 +9,6 @@ local TestEnum = require(script.Parent.TestEnum)
 local Expectation = require(script.Parent.Expectation)
 
 local REQUIRE_CACHE_KEY = {}
-local requireCache = {}
 
 local function newEnvironment(parentEnvironment, currentNode, extraEnvironment)
 	local env = {}

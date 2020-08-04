@@ -243,15 +243,26 @@ function Expectation:throw(messageSubstring)
 		result = errorMatch
 	end
 
-	local message = formatMessage(self.successCondition,
-		("Expected function to throw an error%s, but it %s"):format(
-			messageSubstring and (" containing %q"):format(messageSubstring) or "",
-			err and ("threw %q"):format(err) or "did not throw."
-		),
-		("Expected function to succeed, but it threw an error: %s"):format(
-			tostring(err)
+	local message
+
+	if messageSubstring then
+		message = formatMessage(self.successCondition,
+			("Expected function to throw an error containing %q, but it %s"):format(
+				messageSubstring,
+				err and ("threw %q"):format(err) or "did not throw."
+			),
+			("Expected function to succeed, but it threw an error: %s"):format(
+				tostring(err)
+			)
 		)
-	)
+	else
+		message = formatMessage(self.successCondition,
+			"Expected function to throw an error, but it did not throw.",
+			("Expected function to succeed, but it threw an error: %s"):format(
+				tostring(err)
+			)
+		)
+	end
 
 	assertLevel(result, message, 3)
 	self:_resetModifiers()

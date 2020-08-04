@@ -239,8 +239,7 @@ function Expectation:throw(messageSubstring)
 	local result = ok ~= self.successCondition
 
 	if messageSubstring and not ok then
-		local errorMatch = err:find(messageSubstring, 1, true)
-		result = errorMatch
+		result = err:find(messageSubstring, 1, true) ~= nil
 	end
 
 	local message

@@ -89,7 +89,7 @@ return {
 
         assert(not success, "should fail")
         assert(
-            message:match("Expected function to throw an error containing \"foo\", but it threw \".+%.lua:%d+: oof\""),
+            message:match("Expected function to throw an error containing \"foo\", but it threw: .+%.lua:%d+: oof"),
             ("Error message does not match:\n%s\n"):format(message)
         )
     end,
@@ -105,6 +105,24 @@ return {
         end)
 
         assert(success, "should succeed")
+    end,
+    ["it should fail if a throwing function is expected to never throw a substring of the message"] = function()
+        local function shouldThrow()
+            error("foo-oof")
+        end
+
+        local expect = Expectation.new(shouldThrow)
+
+        local success, message = pcall(function()
+            expect.never:throw("oof")
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match("Expected function to never throw an error containing \"oof\", "
+                .. "but it threw: .+%.lua:%d+: foo%-oof"),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
     end,
     ["it should succeed if types match"] = function()
         local expectNumber = Expectation.new(5)

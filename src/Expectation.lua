@@ -239,7 +239,11 @@ function Expectation:throw(messageSubstring)
 	local result = ok ~= self.successCondition
 
 	if messageSubstring and not ok then
-		result = err:find(messageSubstring, 1, true) ~= nil
+		if self.successCondition then
+			result = err:find(messageSubstring, 1, true) ~= nil
+		else
+			result = err:find(messageSubstring, 1, true) == nil
+		end
 	end
 
 	local message
@@ -248,9 +252,10 @@ function Expectation:throw(messageSubstring)
 		message = formatMessage(self.successCondition,
 			("Expected function to throw an error containing %q, but it %s"):format(
 				messageSubstring,
-				err and ("threw %q"):format(err) or "did not throw."
+				err and ("threw: %s"):format(err) or "did not throw."
 			),
-			("Expected function to succeed, but it threw an error: %s"):format(
+			("Expected function to never throw an error containing %q, but it threw: %s"):format(
+				messageSubstring,
 				tostring(err)
 			)
 		)

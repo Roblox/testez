@@ -93,6 +93,18 @@ return {
             ("Error message does not match:\n%s\n"):format(message)
         )
     end,
+    ["should succeed if it doesn't fail when it was expecting to never throw with a message"] = function()
+        local function shouldNotThrow()
+        end
+
+        local expect = Expectation.new(shouldNotThrow)
+
+        local success = pcall(function()
+            expect.never:throw("foo")
+        end)
+
+        assert(success, "should succeed")
+    end,
     ["it should succeed if a throwing function is expected to throw a substring of the message"] = function()
         local function shouldThrow()
             error("foo-oof")

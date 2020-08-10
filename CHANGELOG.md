@@ -2,6 +2,10 @@
 
 ## Unreleased Changes
 
+## 0.3.2 (2020-08-10)
+* Some cleanup of the TestEZ CLI internals
+* Added the ability to pass in a string to expect.to.throw. This will search the error message for a matching substring and report a failure if it's not there.
+
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.
   * `beforeAll` now runs on entering the block, rather than on the first `it` encountered after entering the block. The major difference for the moment is that a `beforeAll` will now run even if there are no `it` blocks under it, which is now consistent with how `afterAll` worked.

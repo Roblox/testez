@@ -120,4 +120,12 @@ end).to.throw()
 expect(function()
 	-- I don't throw!
 end).never.to.throw()
+
+expect(function()
+	error("nope")
+end).to.throw("nope")
+
+expect(function()
+	error("foo")
+end).never.to.throw("bar")
 ```

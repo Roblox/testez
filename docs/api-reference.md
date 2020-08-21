@@ -81,6 +81,41 @@ This function works similarly to `FOCUS()`, except instead of marking a block as
 !!!note
 	`SKIP` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
 
+### beforeEach and afterEach
+```
+beforeEach(setup)
+afterEach(teardown)
+```
+
+These functions are respectively called before and after each `it` block in the current scope. These functions are useful for separating out boilerplate from similar tests.
+
+```lua
+local callCount = 0
+local function doIt()
+    callCount = callCount + 1
+end
+
+beforeEach(function()
+    callCount = 0
+end)
+
+afterEach(function()
+	-- a test should always be testing doIt()
+	expect(callCount > 0).to.equal(true)
+end)
+
+it("should always start over", function()
+    expect(callCount).to.equal(0)
+    doIt()
+end)
+
+it("should always have a fresh start", function()
+	expect(callCount).to.equal(0)
+	doIt()
+	doIt()
+end)
+```
+
 ### expect
 ```
 expect(value)

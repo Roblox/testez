@@ -28,7 +28,7 @@ if __LEMUR__ then
 	end
 elseif isRobloxCli then
 	platform.exit = function(statusCode)
-		ProcessService:Exit(statusCode)
+		ProcessService:ExitAsync(statusCode)
 	end
 
 	platform.error = function(message)

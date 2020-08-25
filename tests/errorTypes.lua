@@ -1,28 +1,5 @@
 local TestEZ = require(script.Parent.Parent.TestEZ)
 
-local passing = script.Parent.passing
-local failing = script.Parent.failing
-
-local function runTestPlan(testPlan)
-	local lifecycleOrder = {}
-	local function insertLifecycleEvent(lifecycleString)
-		table.insert(lifecycleOrder, lifecycleString)
-	end
-
-	local plan = TestEZ.TestPlanner.createPlan({
-		{
-			method = function()
-				setfenv(testPlan, getfenv())
-				testPlan(insertLifecycleEvent)
-			end,
-			path = {'lifecycleHooksTest'}
-		}
-	})
-
-	local results = TestEZ.TestRunner.runPlan(plan)
-	return results, lifecycleOrder
-end
-
 local function check(str, test)
 	local plan = TestEZ.TestPlanner.createPlan({
 		{

@@ -32,6 +32,6 @@ end
 ```
 
 !!! warning
-	`FOCUS` and `SKIP` are intended exclusively for development. It's not recommended that tests containing these calls are checked into version contorl.
+	`FOCUS` and `SKIP` are intended exclusively for development. It's not recommended that tests containing these calls are checked into version control.
 
-	Future versions of TeztEZ will be able to detect this when running in a CI system and fail tests to prevent that from happening.
+	Future versions of TestEZ will be able to detect this when running in a CI system and fail tests to prevent that from happening.

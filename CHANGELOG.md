@@ -1,17 +1,14 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
-<<<<<<< HEAD
 * Change the way errors are collected to call tostring on them before further processing.
   * Luau allows non-string errors, but not concatenating non-strings or passing non-strings to `debug.traceback` as a message, so TestRunner needs to do that step. This is a temporary fix as the better solution would be to retain the error in object form for as long as possible to give the reporter more to work with.
   * This also makes a slight change to what's in the traceback to eliminate the unnecessary line mentioning the error collection function.
-=======
 * Remove the lifecycle hooks from the session tree. This prevents the `[?]` spam from the reporter not recognizing these nodes.
 
 ## 0.3.2 (2020-08-10)
 * Some cleanup of the TestEZ CLI internals
 * Added the ability to pass in a string to expect.to.throw. This will search the error message for a matching substring and report a failure if it's not there.
->>>>>>> origin/master
 
 ## 0.3.1 (2020-06-22)
 * Further simplify `beforeAll` handling.

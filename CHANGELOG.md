@@ -1,6 +1,8 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+
+## 0.3.3 (2020-09-25)
 * Remove the lifecycle hooks from the session tree. This prevents the `[?]` spam from the reporter not recognizing these nodes.
 
 ## 0.3.2 (2020-08-10)

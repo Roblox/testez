@@ -23,26 +23,28 @@ local function reportNode(node, buffer, level)
 	buffer = buffer or {}
 	level = level or 0
 
-	if node.status == TestEnum.TestStatus.Skipped then
-		return buffer
-	end
+	if node.planNode.type == TestEnum.NodeType.It or node.planNode.type == TestEnum.NodeType.Describe then
+		if node.status == TestEnum.TestStatus.Skipped then
+			return buffer
+		end
 
-	local line
+		local line
 
-	if node.status ~= TestEnum.TestStatus.Success then
-		local symbol = STATUS_SYMBOLS[node.status] or UNKNOWN_STATUS_SYMBOL
+		if node.status ~= TestEnum.TestStatus.Success then
+			local symbol = STATUS_SYMBOLS[node.status] or UNKNOWN_STATUS_SYMBOL
 
-		line = ("%s[%s] %s"):format(
-			INDENT:rep(level),
-			symbol,
-			node.planNode.phrase
-		)
-	end
+			line = ("%s[%s] %s"):format(
+				INDENT:rep(level),
+				symbol,
+				node.planNode.phrase
+			)
+		end
 
-	table.insert(buffer, line)
+		table.insert(buffer, line)
 
-	for _, child in ipairs(node.children) do
-		reportNode(child, buffer, level + 1)
+		for _, child in ipairs(node.children) do
+			reportNode(child, buffer, level + 1)
+		end
 	end
 
 	return buffer

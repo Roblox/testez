@@ -87,9 +87,16 @@ return {
             expect:throw("foo")
         end)
 
+
         assert(not success, "should fail")
+        -- Make sure we state the expected error
         assert(
-            message:match("Expected function to throw an error containing \"foo\", but it threw: .+%.lua:%d+: oof"),
+            message:match("Expected function to throw an error containing \"foo\""),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+        -- Make sure we state the actual error
+        assert(
+            message:match(": oof"),
             ("Error message does not match:\n%s\n"):format(message)
         )
     end,
@@ -130,9 +137,14 @@ return {
         end)
 
         assert(not success, "should fail")
+        -- Make sure we state the expected error
         assert(
-            message:match("Expected function to never throw an error containing \"oof\", "
-                .. "but it threw: .+%.lua:%d+: foo%-oof"),
+            message:match("Expected function to never throw an error containing \"oof\""),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+        -- Make sure we state the actual error
+        assert(
+            message:match(": foo%-oof"),
             ("Error message does not match:\n%s\n"):format(message)
         )
     end,

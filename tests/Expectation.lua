@@ -87,7 +87,6 @@ return {
             expect:throw("foo")
         end)
 
-
         assert(not success, "should fail")
         -- Make sure we state the expected error
         assert(

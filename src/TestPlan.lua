@@ -107,7 +107,7 @@ local function newEnvironment(currentNode, extraEnvironment)
 
 	env.expect = setmetatable({
 		extend = function(...)
-			error(string.format("Cannot call %q from within a %q node.", "expect.extend", "describe"))
+			error("Cannot call \"expect.extend\" from within a \"describe\" node.")
 		end,
 	}, {
 		__call = function(_self, ...)

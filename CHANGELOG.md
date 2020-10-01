@@ -8,7 +8,6 @@
   * Limitations:
     * `expect.extend` cannot be called from within `describe` blocks
     * Custom matcher names cannot overwrite pre-existing matchers, including default matchers and matchers introduces from previous `expect.extend` calls.
-    * Custom matcher names may not start with "_"
 
 ## 0.3.3 (2020-09-25)
 * Remove the lifecycle hooks from the session tree. This prevents the `[?]` spam from the reporter not recognizing these nodes.

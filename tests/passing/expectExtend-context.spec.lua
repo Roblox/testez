@@ -59,6 +59,6 @@ return function()
 	end)
 
 	it("SHOULD NOT inherit from scope 1", function()
-		assert(expect("test").scope_1 == nil, "should not have scope_1")
+		assert(expect().scope_1 == nil, "should not have scope_1")
 	end)
 end

@@ -92,9 +92,9 @@ function Expectation.new(value)
 end
 
 function Expectation:extend(matchers)
-	self.matchers = matchers
+	self.matchers = matchers or {}
 
-	for name, implementation in pairs(matchers) do
+	for name, implementation in pairs(self.matchers) do
 		self[name] = bindSelf(self, function(_self, ...)
 			local result = implementation(self.value, ...)
 			local pass = result.pass == self.successCondition

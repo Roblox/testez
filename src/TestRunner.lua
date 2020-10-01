@@ -16,6 +16,18 @@ local TestRunner = {
 	environment = {}
 }
 
+local function wrapExpectContextWithPublicApi(expectationContext)
+	return setmetatable({
+		extend = function(...)
+			expectationContext:extend(...)
+		end,
+	}, {
+		__call = function(_self, ...)
+			return expectationContext:startExpectationChain(...)
+		end,
+	})
+end
+
 --[[
 	Runs the given TestPlan and returns a TestResults object representing the
 	results of the run.
@@ -33,18 +45,6 @@ function TestRunner.runPlan(plan)
 	TestRunner.runPlanNode(session, plan, lifecycleHooks)
 
 	return session:finalize()
-end
-
-local function wrapExpectContextWithPublicApi(expectationContext)
-	return setmetatable({
-		extend = function(...)
-			expectationContext:extend(...)
-		end,
-	}, {
-		__call = function(_self, ...)
-			return expectationContext:startExpectationChain(...)
-		end,
-	})
 end
 
 --[[

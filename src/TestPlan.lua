@@ -105,7 +105,15 @@ local function newEnvironment(currentNode, extraEnvironment)
 	env.fdescribe = env.describeFOCUS
 	env.xdescribe = env.describeSKIP
 
-	env.expect = Expectation.new
+	env.expect = setmetatable({
+		extend = function(...)
+			error(string.format("Cannot call %q from within a %q node.", "expect.extend", "describe"))
+		end,
+	}, {
+		__call = function(_self, ...)
+			return Expectation.new(...)
+		end,
+	})
 
 	return env
 end

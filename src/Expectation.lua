@@ -182,7 +182,7 @@ function Expectation:a(typeName)
 	return self
 end
 
--- Make alias public on lass
+-- Make alias public on class
 Expectation.an = Expectation.a
 
 --[[

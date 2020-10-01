@@ -76,7 +76,9 @@ function Expectation.new(value)
 	local self = {
 		value = value,
 		successCondition = true,
-		condition = false
+		condition = false,
+		matchers = {},
+		_boundMatchers = {},
 	}
 
 	setmetatable(self, Expectation)
@@ -91,8 +93,8 @@ function Expectation.new(value)
 	return self
 end
 
-function Expectation:checkMatcherNameCollisions(name)
-	if SELF_KEYS[name] or NEGATION_KEYS[name] or self[name] then
+function Expectation.checkMatcherNameCollisions(name)
+	if SELF_KEYS[name] or NEGATION_KEYS[name] or Expectation[name] then
 		return false
 	end
 
@@ -103,9 +105,7 @@ function Expectation:extend(matchers)
 	self.matchers = matchers or {}
 
 	for name, implementation in pairs(self.matchers) do
-		assert(name:sub(1, 1) ~= "_", string.format("Cannot write matcher %q. Matchers cannot start with %q", name, "_"))
-		assert(self:checkMatcherNameCollisions(name), string.format("Cannot overwrite matcher %q; it already exists", name))
-		self[name] = bindSelf(self, function(_self, ...)
+		self._boundMatchers[name] = bindSelf(self, function(_self, ...)
 			local result = implementation(self.value, ...)
 			local pass = result.pass == self.successCondition
 
@@ -130,6 +130,10 @@ function Expectation.__index(self, key)
 		newExpectation.successCondition = not self.successCondition
 
 		return newExpectation
+	end
+
+	if self._boundMatchers[key] then
+		return self._boundMatchers[key]
 	end
 
 	-- Fall back to methods provided by Expectation
@@ -177,6 +181,9 @@ function Expectation:a(typeName)
 
 	return self
 end
+
+-- Make alias public on lass
+Expectation.an = Expectation.a
 
 --[[
 	Assert that our expectation value is truthy

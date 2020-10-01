@@ -27,9 +27,8 @@ end
 
 function ExpectationContext:extend(config)
 	for key, value in pairs(config) do
-		if self._extensions[key] then
-			error(string.format("Cannot reassign %q in expect.extend", key))
-		end
+		assert(self._extensions[key] == nil, string.format("Cannot reassign %q in expect.extend", key))
+		assert(Expectation.checkMatcherNameCollisions(key), string.format("Cannot overwrite matcher %q; it already exists", key))
 
 		self._extensions[key] = value
 	end

@@ -1,6 +1,14 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* Added `expect.extend` which allows projects to register their own, opinionated expectations that integrates into `expect`. ([#142](https://github.com/Roblox/testez/pull/142))
+  * Modeled after [jest's implementation](https://jestjs.io/docs/en/expect#expectextendmatchers).
+  * Matchers are functions that should return an object with with two keys, boolean `pass` and a string `message`
+  * Like `context`, matchers introduced via `expect.extend` will be present on all nodes below the node that introduces the matchers.
+  * Limitations:
+    * `expect.extend` cannot be called from within `describe` blocks
+    * Custom matcher names cannot overwrite pre-existing matchers, including default matchers and matchers introduces from previous `expect.extend` calls.
+    * Custom matcher names may not start with "_"
 
 ## 0.3.3 (2020-09-25)
 * Remove the lifecycle hooks from the session tree. This prevents the `[?]` spam from the reporter not recognizing these nodes.

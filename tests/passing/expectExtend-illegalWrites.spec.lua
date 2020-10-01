@@ -1,4 +1,4 @@
--- luacheck: globals describe beforeAll expect
+-- luacheck: globals describe beforeAll expect it
 
 local noOptMatcher = function(_received, _expected)
 	return {
@@ -22,51 +22,47 @@ local runTest = function(expectedError)
 end
 
 return function()
-	describe("WITH test", function()
-
-
-		describe("attempt to overwrite default", function()
-			beforeAll(function()
-				expect.extend({
-					-- This should throw since `ok` is a default matcher
-					ok = noOptMatcher,
-				})
-			end)
-
-			it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	describe("attempt to overwrite default", function()
+		beforeAll(function()
+			expect.extend({
+				-- This should throw since `ok` is a default matcher
+				ok = noOptMatcher,
+			})
 		end)
 
-		describe("attempt to overwrite never", function()
-			beforeAll(function()
-				expect.extend({
-					-- This should throw since `never` is protected
-					never = noOptMatcher,
-				})
-			end)
+		it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	end)
 
-			it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	describe("attempt to overwrite never", function()
+		beforeAll(function()
+			expect.extend({
+				-- This should throw since `never` is protected
+				never = noOptMatcher,
+			})
 		end)
 
-		describe("attempt to overwrite self", function()
-			beforeAll(function()
-				expect.extend({
-					-- This should throw since `a` is protected
-					a = noOptMatcher,
-				})
-			end)
+		it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	end)
 
-			it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	describe("attempt to overwrite self", function()
+		beforeAll(function()
+			expect.extend({
+				-- This should throw since `a` is protected
+				a = noOptMatcher,
+			})
 		end)
 
-		describe("attempt to start with _", function()
-			beforeAll(function()
-				expect.extend({
-					-- This should throw since this starts with _
-					_fooBar = noOptMatcher,
-				})
-			end)
+		it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_OVERWRITE))
+	end)
 
-			it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_START_WITH))
+	describe("attempt to start with _", function()
+		beforeAll(function()
+			expect.extend({
+				-- This should throw since this starts with _
+				_fooBar = noOptMatcher,
+			})
 		end)
+
+		it("SHOULD fail with expected error message", runTest(ERROR_CANNOT_START_WITH))
 	end)
 end

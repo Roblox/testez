@@ -91,10 +91,20 @@ function Expectation.new(value)
 	return self
 end
 
-function Expectation:extend(extensions)
-	for key, value in pairs(extensions) do
-		self[key] = bindSelf(self, value)
+function Expectation:extend(matchers)
+	self.matchers = matchers
+
+	for name, implementation in pairs(matchers) do
+		self[name] = bindSelf(self, function(_self, ...)
+			local result = implementation(self.value, ...)
+			local pass = result.pass == self.successCondition
+
+			assertLevel(pass, result.message, 3)
+			self:_resetModifiers()
+			return self
+		end)
 	end
+
 	return self
 end
 
@@ -106,7 +116,7 @@ function Expectation.__index(self, key)
 
 	-- Invert your assertion
 	if NEGATION_KEYS[key] then
-		local newExpectation = Expectation.new(self.value)
+		local newExpectation = Expectation.new(self.value):extend(self.matchers)
 		newExpectation.successCondition = not self.successCondition
 
 		return newExpectation

@@ -103,8 +103,8 @@ function Expectation:extend(matchers)
 	self.matchers = matchers or {}
 
 	for name, implementation in pairs(self.matchers) do
-		assert(string.sub(name, 1, 1) ~= "_", string.format("Cannot write matcher %q. Matchers cannot start with %q", name, "_"))
-		assert(self:checkMatcherNameCollisions(name), string.format("Cannot overwrite matcher %q, as it already exists", name))
+		assert(name:sub(1, 1) ~= "_", string.format("Cannot write matcher %q. Matchers cannot start with %q", name, "_"))
+		assert(self:checkMatcherNameCollisions(name), string.format("Cannot overwrite matcher %q; it already exists", name))
 		self[name] = bindSelf(self, function(_self, ...)
 			local result = implementation(self.value, ...)
 			local pass = result.pass == self.successCondition

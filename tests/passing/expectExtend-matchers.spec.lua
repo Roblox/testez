@@ -1,3 +1,5 @@
+-- luacheck: globals describe beforeAll expect it
+
 local customEqualMatcher = function(received, expected)
 	local pass = received == expected
 	if pass then

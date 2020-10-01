@@ -1,3 +1,5 @@
+-- luacheck: globals describe beforeAll expect
+
 local noOptMatcher = function(_received, _expected)
 	return {
 		message = "",

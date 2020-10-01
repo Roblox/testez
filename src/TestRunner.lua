@@ -6,7 +6,6 @@
 	state is contained inside a TestSession object.
 ]]
 
-local Expectation = require(script.Parent.Expectation)
 local TestEnum = require(script.Parent.TestEnum)
 local TestSession = require(script.Parent.TestSession)
 local LifecycleHooks = require(script.Parent.LifecycleHooks)
@@ -16,10 +15,6 @@ local RUNNING_GLOBAL = "__TESTEZ_RUNNING_TEST__"
 local TestRunner = {
 	environment = {}
 }
-
-function TestRunner.environment.expect(...)
-	return Expectation.new(...)
-end
 
 --[[
 	Runs the given TestPlan and returns a TestResults object representing the
@@ -38,6 +33,18 @@ function TestRunner.runPlan(plan)
 	TestRunner.runPlanNode(session, plan, lifecycleHooks)
 
 	return session:finalize()
+end
+
+local function wrapExpectContextWithPublicApi(expectationContext)
+	return setmetatable({
+		extend = function(...)
+			expectationContext:extend(...)
+		end,
+	}, {
+		__call = function(_self, ...)
+			return expectationContext:startExpectationChain(...)
+		end,
+	})
 end
 
 --[[
@@ -69,6 +76,8 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			success = false
 			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
 		end
+
+		testEnvironment.expect = wrapExpectContextWithPublicApi(session:getExpectationContext())
 
 		local context = session:getContext()
 

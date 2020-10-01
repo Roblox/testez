@@ -91,6 +91,13 @@ function Expectation.new(value)
 	return self
 end
 
+function Expectation:extend(extensions)
+	for key, value in pairs(extensions) do
+		self[key] = bindSelf(self, value)
+	end
+	return self
+end
+
 function Expectation.__index(self, key)
 	-- Keys that don't do anything except improve readability
 	if SELF_KEYS[key] then

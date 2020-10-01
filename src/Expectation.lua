@@ -91,23 +91,9 @@ function Expectation.new(value)
 	return self
 end
 
-local function checkMatcherNameCollisions(name)
-	for key in pairs(Expectation) do
-		if name == key then
-			return false
-		end
-	end
-
-	for key in pairs(SELF_KEYS) do
-		if name == key then
-			return false
-		end
-	end
-
-	for key in pairs(NEGATION_KEYS) do
-		if name == key then
-			return false
-		end
+function Expectation:checkMatcherNameCollisions(name)
+	if SELF_KEYS[name] or NEGATION_KEYS[name] or self[name] then
+		return false
 	end
 
 	return true
@@ -118,7 +104,7 @@ function Expectation:extend(matchers)
 
 	for name, implementation in pairs(self.matchers) do
 		assert(string.sub(name, 1, 1) ~= "_", string.format("Cannot write matcher %q. Matchers cannot start with %q", name, "_"))
-		assert(checkMatcherNameCollisions(name), string.format("Cannot overwrite matcher %q, as it already exists", name))
+		assert(self:checkMatcherNameCollisions(name), string.format("Cannot overwrite matcher %q, as it already exists", name))
 		self[name] = bindSelf(self, function(_self, ...)
 			local result = implementation(self.value, ...)
 			local pass = result.pass == self.successCondition

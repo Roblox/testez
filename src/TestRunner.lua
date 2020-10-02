@@ -74,7 +74,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			end
 
 			success = false
-			errorMessage = messagePrefix .. message .. "\n" .. debug.traceback()
+			errorMessage = messagePrefix .. debug.traceback(tostring(message), 2)
 		end
 
 		testEnvironment.expect = wrapExpectContextWithPublicApi(session:getExpectationContext())
@@ -86,7 +86,7 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 				callback(context)
 			end,
 			function(message)
-				return messagePrefix .. message .. "\n" .. debug.traceback()
+				return messagePrefix .. debug.traceback(tostring(message), 2)
 			end
 		)
 

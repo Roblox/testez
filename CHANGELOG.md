@@ -3,7 +3,7 @@
 ## Unreleased Changes
 
 
-## 0.3.4 (2020-10-02)
+## 0.4.0 (2020-10-02)
 * Added `expect.extend` which allows projects to register their own, opinionated expectations that integrates into `expect`. ([#142](https://github.com/Roblox/testez/pull/142))
   * Modeled after [jest's implementation](https://jestjs.io/docs/en/expect#expectextendmatchers).
   * Matchers are functions that should return an object with with two keys, boolean `pass` and a string `message`

@@ -86,7 +86,7 @@ elseif isRobloxCli then
 	if errorMessage ~= nil then
 		print(errorMessage)
 	end
-	ProcessService:Exit(statusCode)
+	ProcessService:ExitAsync(statusCode)
 else
 	-- In Studio, we can just throw an error to get the user's attention
 

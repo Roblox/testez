@@ -10,7 +10,7 @@ local function check(str, test)
 				setfenv(test, getfenv())
 				test()
 			end,
-			path = {'errorTypeTests'}
+			path = {"errorTypeTests"}
 		}
 	})
 

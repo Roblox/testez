@@ -2,7 +2,7 @@
 
 ### afterAll
 ```
-afterAll(callback)
+afterAll(callback(context: table))
 ```
 
 Returns a function after all the tests within its scope run. This is useful if you want to clean up some global state that is used by other tests within its scope.
@@ -35,7 +35,7 @@ end)
 
 ### afterEach
 ```
-afterEach(callback)
+afterEach(callback(context: table))
 ```
 
 Returns a function after each of the tests within its scope. This is useful if you want to cleanup some temporary state that is created by each test.
@@ -63,7 +63,7 @@ end)
 
 ### beforeAll
 ```
-beforeAll(callback)
+beforeAll(callback(context: table))
 ```
 Runs a function before any of the tests within its scope run. This is useful if you want to set up state that will be used by other tests within its scope.
 
@@ -86,7 +86,7 @@ end)
 
 ### beforeEach
 ```
-beforeEach(callback)
+beforeEach(callback(context: table))
 ```
 
 Runs a function before each of the tests within its scope. This is useful if you want to reset global state that will be used by other tests within its scope.
@@ -116,7 +116,7 @@ end)
 
 ### describe
 ```
-describe(phrase, callback)
+describe(phrase: string, callback(context: table))
 ```
 
 This function creates a new `describe` block. These blocks correspond to the **things** that are being tested.
@@ -135,7 +135,7 @@ end)
 
 ### expect
 ```
-expect(value)
+expect(value: any)
 ```
 
 Creates a new `Expectation`, used for testing the properties of the given value.
@@ -184,7 +184,7 @@ end).never.to.throw("bar")
 
 ### it
 ```
-it(phrase, callback)
+it(phrase: string, callback(context: table))
 ```
 
 This function creates a new 'it' block. These blocks correspond to the **behaviors** that should be expected of the thing you're testing.
@@ -201,7 +201,7 @@ end)
 
 ### FIXME
 ```
-FIXME(optionalMessage)
+FIXME(optionalMessage: string)
 ```
 
 When called inside a `describe` block, `FIXME` is used to identify broken tests and marks the block as *skipped*.
@@ -251,9 +251,9 @@ This function works similarly to `FOCUS()`, except instead of marking a block as
 
 ### itFOCUS, itSKIP, and itFIXME
 ```
-itFOCUS(phrase, callback)
-itSKIP(phrase, callback)
-itFIXME(phrase, callback)
+itFOCUS(phrase: string, callback(context: table))
+itSKIP(phrase: string, callback(context: table))
+itFIXME(phrase: string, callback(context: table))
 ```
 
 These methods are special versions of `it` that automatically mark the `it` block as *focused* or *skipped*. They're necessary because `FOCUS`, `SKIP`, and `FIXME` can't be called inside `it` blocks!

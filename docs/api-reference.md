@@ -1,5 +1,119 @@
 ## Inside Tests
 
+### afterAll
+```
+afterAll(callback)
+```
+
+Returns a function after all the tests within its scope run. This is useful if you want to clean up some global state that is used by other tests within its scope.
+
+For example:
+
+```lua
+local DEFAULT_STATE = {
+	hello = "world",
+}
+
+local globalState = DEFAULT_STATE
+
+afterAll(function()
+	globalState = DEFAULT_STATE
+end)
+
+it("SHOULD read globalState", function()
+	expect(globalState.hello).to.equal("world")
+end)
+
+it("SHOULD insert globalState", function()
+	globalState.foo = "bar"
+	expect(globalState.foo).to.equal("bar")
+end)
+```
+
+!!!note
+	If you want to run some cleanup after every test instead of all tests, use `afterEach` instead.
+
+### afterEach
+```
+afterEach(callback)
+```
+
+Returns a function after each of the tests within its scope. This is useful if you want to cleanup some temporary state that is created by each test.
+
+```lua
+local DEFAULT_STATE = {
+	hello = "world",
+}
+
+local globalState = DEFAULT_STATE
+
+afterEach(function()
+	globalState = DEFAULT_STATE
+end)
+
+it("SHOULD read globalState", function()
+	expect(globalState.hello).to.equal("world")
+end)
+
+it("SHOULD insert globalState", function()
+	globalState.foo = "bar"
+	expect(globalState.foo).to.equal("bar")
+end)
+```
+
+### beforeAll
+```
+beforeAll(callback)
+```
+Runs a function before any of the tests within its scope run. This is useful if you want to set up state that will be used by other tests within its scope.
+
+For example:
+
+```lua
+local globalState = {}
+
+beforeAll(function()
+	globalState.foo = "bar"
+end)
+
+it("SHOULD have access to globalState", function()
+	expect(globalState.foo).to.equal("bar")
+end)
+```
+
+!!!note
+	If you want to run a function before each test instead of before all tests, use `beforeEach` instead.
+
+### beforeEach
+```
+beforeEach(callback)
+```
+
+Runs a function before each of the tests within its scope. This is useful if you want to reset global state that will be used by other tests within its scope.
+
+For example:
+
+```lua
+local globalState = {}
+
+beforeEach(function()
+	globalState.foo = 100
+end)
+
+it("SHOULD be able to read foo", function()
+	expect(globalState.foo).to.equal(100)
+end)
+
+it("SHOULD be able to write foo", function()
+	globalState.foo = globalState.foo / 2
+	expect(globalState.foo).to.equal(50)
+end)
+```
+
+!!!note
+	If you only need to run some setup code once, before any tests run, use `beforeAll` instead.
+
+
 ### describe
 ```
 describe(phrase, callback)
@@ -18,68 +132,6 @@ describe("This cheese", function()
 	end)
 end)
 ```
-
-### it
-```
-it(phrase, callback)
-```
-
-This function creates a new 'it' block. These blocks correspond to the **behaviors** that should be expected of the thing you're testing.
-
-For example:
-
-```lua
-it("should add 1 and 1", function()
-	expect(1 + 1).to.equal(2)
-end)
-```
-
-### itFOCUS and itSKIP
-```
-itFOCUS(phrase, callback)
-itSKIP(phrase, callback)
-```
-
-These methods are special versions of `it` that automatically mark the `it` block as *focused* or *skipped*. They're necessary because `FOCUS` and `SKIP` can't be called inside `it` blocks!
-
-### FOCUS
-```
-FOCUS()
-```
-
-When called inside a `describe` block, `FOCUS()` marks that block as *focused*. If there are any focused blocks inside your test tree, *only* focused blocks will be executed, and all other tests will be skipped.
-
-When you're writing a new set of tests as part of a larger codebase, use `FOCUS()` while debugging them to reduce the amount of noise you need to scroll through.
-
-For example:
-
-```lua
-describe("Secret Feature X", function()
-	FOCUS()
-
-	it("should do something", function()
-	end)
-end)
-
-describe("Secret Feature Y", function()
-	it("should do nothing", function()
-		-- This code will not run!
-	end)
-end)
-```
-
-!!! note
-	`FOCUS` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
-
-### SKIP
-```
-SKIP()
-```
-
-This function works similarly to `FOCUS()`, except instead of marking a block as *focused*, it will mark a block as *skipped*, which stops any of the test assertions in the block from being executed.
-
-!!!note
-	`SKIP` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
 
 ### expect
 ```
@@ -129,3 +181,79 @@ expect(function()
 	error("foo")
 end).never.to.throw("bar")
 ```
+
+### it
+```
+it(phrase, callback)
+```
+
+This function creates a new 'it' block. These blocks correspond to the **behaviors** that should be expected of the thing you're testing.
+
+For example:
+
+```lua
+it("should add 1 and 1", function()
+	expect(1 + 1).to.equal(2)
+end)
+```
+
+## Maintenance and Debugging
+
+### FIXME
+```
+FIXME(optionalMessage)
+```
+
+When called inside a `describe` block, `FIXME` is used to identify broken tests and marks the block as *skipped*.
+
+!!!note
+	`FIXME` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
+
+
+### FOCUS
+```
+FOCUS()
+```
+
+When called inside a `describe` block, `FOCUS()` marks that block as *focused*. If there are any focused blocks inside your test tree, *only* focused blocks will be executed, and all other tests will be skipped.
+
+When you're writing a new set of tests as part of a larger codebase, use `FOCUS()` while debugging them to reduce the amount of noise you need to scroll through.
+
+For example:
+
+```lua
+describe("Secret Feature X", function()
+	FOCUS()
+
+	it("should do something", function()
+	end)
+end)
+
+describe("Secret Feature Y", function()
+	it("should do nothing", function()
+		-- This code will not run!
+	end)
+end)
+```
+
+!!! note
+	`FOCUS` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
+
+### SKIP
+```
+SKIP()
+```
+
+This function works similarly to `FOCUS()`, except instead of marking a block as *focused*, it will mark a block as *skipped*, which stops any of the test assertions in the block from being executed.
+
+!!!note
+	`SKIP` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
+
+### itFOCUS, itSKIP, and itFIXME
+```
+itFOCUS(phrase, callback)
+itSKIP(phrase, callback)
+itFIXME(phrase, callback)
+```
+
+These methods are special versions of `it` that automatically mark the `it` block as *focused* or *skipped*. They're necessary because `FOCUS`, `SKIP`, and `FIXME` can't be called inside `it` blocks!

@@ -91,7 +91,7 @@ can be used to collect setup and teardown code into a common place.
 When placed in an `init.spec.lua` file, these hooks will run for all tests
 within that folder.
 
-!!! note
+!!!note
 	The callbacks in the lifecycle hooks are run after all `describe` blocks'
 	callbacks. Be careful not to count on setup or teardown code applying to
 	code not inside an `it` block.

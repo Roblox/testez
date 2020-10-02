@@ -147,13 +147,13 @@ afterEach(function()
 	globalState = DEFAULT_STATE
 end)
 
-it("SHOULD read globalState", function()
-	expect(globalState.hello).to.equal("world")
-end)
-
 it("SHOULD insert globalState", function()
 	globalState.foo = "bar"
 	expect(globalState.foo).to.equal("bar")
+end)
+
+it("SHOULD read globalState", function()
+	expect(globalState.hello).to.equal("world")
 end)
 ```
 
@@ -261,6 +261,19 @@ This function works similarly to `FOCUS()`, except instead of marking a block as
 !!!note
 	`SKIP` does not work inside an `it` block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.
 
+### describeFOCUS and describeSKIP
+```
+describeFOCUS(phrase: string)
+describeSKIP(phrase: string)
+```
+
+These methods are special versions of `describe` that automatically mark the `describe` block as *focused* or *skipped*.
+
+!!!note
+	`fdescribe` is an alias for `describeFOCUS`.
+	`xdescribe` is an alias for `describeSKIP`.
+
+
 ### itFOCUS, itSKIP, and itFIXME
 ```
 itFOCUS(phrase: string, callback(context: table))
@@ -269,6 +282,11 @@ itFIXME(phrase: string, callback(context: table))
 ```
 
 These methods are special versions of `it` that automatically mark the `it` block as *focused* or *skipped*. They're necessary because `FOCUS`, `SKIP`, and `FIXME` can't be called inside `it` blocks!
+
+!!!note
+	`fit` is an alias for `itFOCUS`.
+	`xit` is an alias for `itSKIP`.
+
 
 ## init.spec.lua
 
@@ -299,6 +317,7 @@ return function()
 		context.helpers = require(script.Parent.helpers)
 	end)
 end
+
 -- test.spec.lua
 return function()
 	it("a test using a helper", function(context)

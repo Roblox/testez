@@ -194,7 +194,8 @@ function TestNode:expand()
 	for key, value in pairs(self.environment) do
 		callbackEnv[key] = value
 	end
-	-- Copy 'script' directly to new env to make Studio debugger happy, as it does not look into __index, because of security reasons
+	-- Copy 'script' directly to new env to make Studio debugger happy.
+	-- Studio debugger does not look into __index, because of security reasons
 	callbackEnv.script = originalEnv.script
 	setfenv(self.callback, callbackEnv)
 

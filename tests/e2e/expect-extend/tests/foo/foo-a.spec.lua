@@ -15,7 +15,6 @@ return function()
 			print("foo-a")
 			expect(0).foo(0)
 			expect(0).bar(0)
-			fail("test")
 		end)
 	end)
 end

@@ -9,12 +9,19 @@ stds.roblox = {
 		-- -- Extra functions
 		"typeof",
 		"tick", "warn",
-	}
+		table = {
+			fields = {
+				find = {},
+				create = {},
+				pack = {},
+			},
+		},
+	},
 }
 
 stds.testez = {
 	read_globals = {
-		"it", "describe", "beforeAll", "beforeEach", "afterAll", "afterEach",
+		"it", "describe", "beforeAll", "beforeEach", "afterAll", "afterEach", "fail", "expect"
 	},
 }
 
@@ -26,4 +33,8 @@ ignore = {
 
 files["tests/lifecycleHooks.lua"] = {
 	std = "+testez",
+}
+
+files["tests/e2e"] = {
+	std = "+testez"
 }

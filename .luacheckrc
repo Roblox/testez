@@ -9,7 +9,12 @@ stds.roblox = {
 		-- -- Extra functions
 		"typeof",
 		"tick", "warn",
-	}
+		table = {
+			find = {},
+			create = {},
+			pack = {},
+		},
+	},
 }
 
 stds.testez = {

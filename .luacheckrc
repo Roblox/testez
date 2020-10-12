@@ -10,9 +10,11 @@ stds.roblox = {
 		"typeof",
 		"tick", "warn",
 		table = {
-			find = {},
-			create = {},
-			pack = {},
+			fields = {
+				find = {},
+				create = {},
+				pack = {},
+			},
 		},
 	},
 }

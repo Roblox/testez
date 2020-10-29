@@ -1,6 +1,6 @@
 return function()
 	describe("When an error occurs in an afterEach block", function()
-		it("Should fail", function()
+		it("Should pass", function()
 			expect(true).to.equal(true)
 		end)
 

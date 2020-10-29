@@ -15,4 +15,4 @@ else
 fi
 
 rojo build test-place.project.json -o TestPlace.rbxlx
-robloxdev-cli run --load.place TestPlace.rbxlx --assetFolder "$CONTENT"
+roblox-cli run --load.place TestPlace.rbxlx --assetFolder "$CONTENT"

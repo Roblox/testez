@@ -1,6 +1,7 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* `afterEach` blocks now run their code after `it` blocks fail or error
 
 
 ## 0.4.0 (2020-10-02)

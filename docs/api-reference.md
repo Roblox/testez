@@ -135,6 +135,7 @@ afterEach(callback(context: table))
 ```
 
 Returns a function after each of the tests within its scope. This is useful if you want to cleanup some temporary state that is created by each test.
+It is always ran regardless of if the test failed or not.
 
 ```lua
 local DEFAULT_STATE = {

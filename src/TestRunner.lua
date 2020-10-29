@@ -113,18 +113,20 @@ function TestRunner.runPlanNode(session, planNode, lifecycleHooks)
 			end
 		end
 
-		do
-			local success, errorMessage = runCallback(childPlanNode.callback)
-			if not success then
-				return false, errorMessage
-			end
-		end
+		local testSuccess, testErrorMessage = runCallback(childPlanNode.callback)
 
 		for _, hook in ipairs(lifecycleHooks:getAfterEachHooks()) do
 			local success, errorMessage = runCallback(hook, "afterEach hook: ")
 			if not success then
+				if not testSuccess then
+					return false, testErrorMessage .. "\nWhile cleaning up the failed test another error was found:\n" .. errorMessage
+				end
 				return false, errorMessage
 			end
+		end
+
+		if not testSuccess then
+			return false, testErrorMessage
 		end
 
 		return true, nil

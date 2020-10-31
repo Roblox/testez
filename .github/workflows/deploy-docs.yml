@@ -1,8 +1,10 @@
 name: Deploy docs
 
 on:
+  pull_request:
   push:
-    tags: ["*"]          
+    branches:
+      - master
 
 jobs:
   build:

@@ -1,8 +1,9 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
-* `afterEach` blocks now run their code after `it` blocks fail or error
 
+## 0.4.1 (2020-10-30)
+* `afterEach` blocks now run their code after `it` blocks fail or error
 
 ## 0.4.0 (2020-10-02)
 * Added `expect.extend` which allows projects to register their own, opinionated expectations that integrates into `expect`. ([#142](https://github.com/Roblox/testez/pull/142))

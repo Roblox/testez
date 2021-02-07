@@ -60,6 +60,93 @@ return {
             ("Error message does not match:\n%s\n"):format(message)
         )
     end,
+    ["it should fail if an empty function is expected to throw with a message"] = function()
+        local function shouldNotThrow()
+        end
+
+        local expect = Expectation.new(shouldNotThrow)
+
+        local success, message = pcall(function()
+            expect:throw("foo")
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match("Expected function to throw an error containing \"foo\", but it did not."),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["it should fail if a throwing function is expected to throw with a different error message"] = function()
+        local function shouldThrow()
+            error("oof")
+        end
+
+        local expect = Expectation.new(shouldThrow)
+
+        local success, message = pcall(function()
+            expect:throw("foo")
+        end)
+
+        assert(not success, "should fail")
+        -- Make sure we state the expected error
+        assert(
+            message:match("Expected function to throw an error containing \"foo\""),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+        -- Make sure we state the actual error
+        assert(
+            message:match(": oof"),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["should succeed if it doesn't fail when it was expecting to never throw with a message"] = function()
+        local function shouldNotThrow()
+        end
+
+        local expect = Expectation.new(shouldNotThrow)
+
+        local success = pcall(function()
+            expect.never:throw("foo")
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["it should succeed if a throwing function is expected to throw a substring of the message"] = function()
+        local function shouldThrow()
+            error("foo-oof")
+        end
+
+        local expect = Expectation.new(shouldThrow)
+
+        local success = pcall(function()
+            expect:throw("oof")
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["it should fail if a throwing function is expected to never throw a substring of the message"] = function()
+        local function shouldThrow()
+            error("foo-oof")
+        end
+
+        local expect = Expectation.new(shouldThrow)
+
+        local success, message = pcall(function()
+            expect.never:throw("oof")
+        end)
+
+        assert(not success, "should fail")
+        -- Make sure we state the expected error
+        assert(
+            message:match("Expected function to never throw an error containing \"oof\""),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+        -- Make sure we state the actual error
+        assert(
+            message:match(": foo%-oof"),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
     ["it should succeed if types match"] = function()
         local expectNumber = Expectation.new(5)
         local expectString = Expectation.new("Foo")

@@ -8,8 +8,9 @@ theme:
   palette:
     primary: 'Light Blue'
     accent: 'Light Blue'
+    scheme: preference
 
-pages:
+nav:
   - Home: index.md
   - Getting Started:
     - Installation: getting-started/installation.md

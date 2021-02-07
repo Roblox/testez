@@ -8,13 +8,14 @@ on:
 jobs:
   clabot:
     runs-on: ubuntu-latest
+    if: contains(github.event.comment.html_url, '/pull/') || github.event_name != 'issue_comment'
     steps:
     - name: "CLA Signature Bot"
       uses: roblox/cla-signature-bot@v2.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        whitelist: "LPGhatguy,ZoteTheMighty,cliffchapmanrbx,MagiMaster,MisterUncloaked,amatosov-rbx"
+        whitelist: "LPGhatguy,ZoteTheMighty,cliffchapmanrbx,MagiMaster,MisterUncloaked,amatosov-rbx,Kylaaa"
         use-remote-repo: true
         remote-repo-name: "roblox/cla-bot-store"
         remote-repo-pat: ${{ secrets.CLA_REMOTE_REPO_PAT }}

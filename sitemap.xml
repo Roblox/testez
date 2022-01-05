@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
+     <loc>https://roblox.github.io/testez/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://roblox.github.io/testez/getting-started/installation/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://roblox.github.io/testez/getting-started/running-tests/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://roblox.github.io/testez/getting-started/writing-tests/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://roblox.github.io/testez/getting-started/debugging-tests/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://roblox.github.io/testez/api-reference/</loc>
+     <lastmod>2022-01-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+</urlset>

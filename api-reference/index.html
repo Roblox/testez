@@ -1,0 +1,966 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <link rel="canonical" href="https://roblox.github.io/testez/api-reference/">
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.0">
+    
+    
+      
+        <title>API Reference - TestEZ Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bc7e593a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab28b872.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#02a6f2">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="light-blue" data-md-color-accent="light-blue">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#inside-tests" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://roblox.github.io/testez/" title="TestEZ Documentation" class="md-header-nav__button md-logo" aria-label="TestEZ Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            TestEZ Documentation
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/Roblox/testez/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Roblox/testez
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://roblox.github.io/testez/" title="TestEZ Documentation" class="md-nav__button md-logo" aria-label="TestEZ Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    TestEZ Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Roblox/testez/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Roblox/testez
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/installation/" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/running-tests/" class="md-nav__link">
+      Running Tests
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/writing-tests/" class="md-nav__link">
+      Writing Tests
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/debugging-tests/" class="md-nav__link">
+      Debugging Tests
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        API Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      API Reference
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inside-tests" class="md-nav__link">
+    Inside Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Inside Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    describe
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#it" class="md-nav__link">
+    it
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expect" class="md-nav__link">
+    expect
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle-hooks" class="md-nav__link">
+    Lifecycle hooks
+  </a>
+  
+    <nav class="md-nav" aria-label="Lifecycle hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#afterall" class="md-nav__link">
+    afterAll
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aftereach" class="md-nav__link">
+    afterEach
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beforeall" class="md-nav__link">
+    beforeAll
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beforeeach" class="md-nav__link">
+    beforeEach
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance-and-debugging" class="md-nav__link">
+    Maintenance and Debugging
+  </a>
+  
+    <nav class="md-nav" aria-label="Maintenance and Debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixme" class="md-nav__link">
+    FIXME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#focus" class="md-nav__link">
+    FOCUS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip" class="md-nav__link">
+    SKIP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describefocus-and-describeskip" class="md-nav__link">
+    describeFOCUS and describeSKIP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itfocus-itskip-and-itfixme" class="md-nav__link">
+    itFOCUS, itSKIP, and itFIXME
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initspeclua" class="md-nav__link">
+    init.spec.lua
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    Context
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inside-tests" class="md-nav__link">
+    Inside Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Inside Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    describe
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#it" class="md-nav__link">
+    it
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expect" class="md-nav__link">
+    expect
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle-hooks" class="md-nav__link">
+    Lifecycle hooks
+  </a>
+  
+    <nav class="md-nav" aria-label="Lifecycle hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#afterall" class="md-nav__link">
+    afterAll
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aftereach" class="md-nav__link">
+    afterEach
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beforeall" class="md-nav__link">
+    beforeAll
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beforeeach" class="md-nav__link">
+    beforeEach
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance-and-debugging" class="md-nav__link">
+    Maintenance and Debugging
+  </a>
+  
+    <nav class="md-nav" aria-label="Maintenance and Debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixme" class="md-nav__link">
+    FIXME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#focus" class="md-nav__link">
+    FOCUS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip" class="md-nav__link">
+    SKIP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describefocus-and-describeskip" class="md-nav__link">
+    describeFOCUS and describeSKIP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itfocus-itskip-and-itfixme" class="md-nav__link">
+    itFOCUS, itSKIP, and itFIXME
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initspeclua" class="md-nav__link">
+    init.spec.lua
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    Context
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Roblox/testez/edit/master/docs/api-reference.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>API Reference</h1>
+                
+                <h2 id="inside-tests">Inside Tests<a class="headerlink" href="#inside-tests" title="Permanent link">&para;</a></h2>
+<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>describe(phrase: string, callback(context: table))
+</code></pre></div>
+<p>This function creates a new <code>describe</code> block. These blocks correspond to the <strong>things</strong> that are being tested.</p>
+<p>Put <code>it</code> blocks inside of <code>describe</code> blocks to describe what behavior should be correct.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;This cheese&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">it</span><span class="p">(</span><span class="s2">&quot;should be moldy&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+        <span class="n">expect</span><span class="p">(</span><span class="n">cheese</span><span class="p">.</span><span class="n">moldy</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="it">it<a class="headerlink" href="#it" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>it(phrase: string, callback(context: table))
+</code></pre></div>
+<p>This function creates a new 'it' block. These blocks correspond to the <strong>behaviors</strong> that should be expected of the thing you're testing.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">it</span><span class="p">(</span><span class="s2">&quot;should add 1 and 1&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">expect</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="expect">expect<a class="headerlink" href="#expect" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>expect(value: any)
+</code></pre></div>
+<p>Creates a new <code>Expectation</code>, used for testing the properties of the given value.</p>
+<p>Expectations are intended to be read like English assertions. These are all true:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Equality</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">never</span><span class="p">.</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1">-- Approximate equality</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">near</span><span class="p">(</span><span class="mi">5</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">near</span><span class="p">(</span><span class="mi">5</span> <span class="o">-</span> <span class="mf">1e-8</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="nb">math.pi</span><span class="p">).</span><span class="n">never</span><span class="p">.</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">near</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">-- Optional limit parameter</span>
+<span class="n">expect</span><span class="p">(</span><span class="nb">math.pi</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">near</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1">-- Nil checking</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">ok</span><span class="p">()</span>
+<span class="n">expect</span><span class="p">(</span><span class="kc">false</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">ok</span><span class="p">()</span>
+<span class="n">expect</span><span class="p">(</span><span class="kc">nil</span><span class="p">).</span><span class="n">never</span><span class="p">.</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">ok</span><span class="p">()</span>
+
+<span class="c1">-- Type checking</span>
+<span class="n">expect</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;number&quot;</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="n">newproxy</span><span class="p">(</span><span class="kc">true</span><span class="p">)).</span><span class="n">to</span><span class="p">.</span><span class="n">be</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;userdata&quot;</span><span class="p">)</span>
+
+<span class="c1">-- Function throwing</span>
+<span class="n">expect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="nb">error</span><span class="p">(</span><span class="s2">&quot;nope&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">throw</span><span class="p">()</span>
+
+<span class="n">expect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="c1">-- I don&#39;t throw!</span>
+<span class="kr">end</span><span class="p">).</span><span class="n">never</span><span class="p">.</span><span class="n">to</span><span class="p">.</span><span class="n">throw</span><span class="p">()</span>
+
+<span class="n">expect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="nb">error</span><span class="p">(</span><span class="s2">&quot;nope&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">throw</span><span class="p">(</span><span class="s2">&quot;nope&quot;</span><span class="p">)</span>
+
+<span class="n">expect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="nb">error</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">).</span><span class="n">never</span><span class="p">.</span><span class="n">to</span><span class="p">.</span><span class="n">throw</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="lifecycle-hooks">Lifecycle hooks<a class="headerlink" href="#lifecycle-hooks" title="Permanent link">&para;</a></h3>
+<p>The lifecycle hooks are a collection of blocks similar to <code>it</code> blocks. They
+can be used to collect setup and teardown code into a common place.</p>
+<p>When placed in an <code>init.spec.lua</code> file, these hooks will run for all tests
+within that folder.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The callbacks in the lifecycle hooks are run after all <code>describe</code> blocks'
+callbacks. Be careful not to count on setup or teardown code applying to
+code not inside an <code>it</code> block.</p>
+</div>
+<h4 id="afterall">afterAll<a class="headerlink" href="#afterall" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>afterAll(callback(context: table))
+</code></pre></div>
+<p>Returns a function after all the tests within its scope run. This is useful if you want to clean up some global state that is used by other tests within its scope.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">DEFAULT_STATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">hello</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kd">local</span> <span class="n">globalState</span> <span class="o">=</span> <span class="n">DEFAULT_STATE</span>
+
+<span class="n">afterAll</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span> <span class="o">=</span> <span class="n">DEFAULT_STATE</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD read globalState&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">hello</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD insert globalState&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">foo</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to run some cleanup after every test instead of all tests, use <code>afterEach</code> instead.</p>
+</div>
+<h4 id="aftereach">afterEach<a class="headerlink" href="#aftereach" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>afterEach(callback(context: table))
+</code></pre></div>
+<p>Returns a function after each of the tests within its scope. This is useful if you want to cleanup some temporary state that is created by each test.
+It is always ran regardless of if the test failed or not.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">DEFAULT_STATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">hello</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kd">local</span> <span class="n">globalState</span> <span class="o">=</span> <span class="n">DEFAULT_STATE</span>
+
+<span class="n">afterEach</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span> <span class="o">=</span> <span class="n">DEFAULT_STATE</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD insert globalState&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">foo</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD read globalState&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">hello</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="beforeall">beforeAll<a class="headerlink" href="#beforeall" title="Permanent link">&para;</a></h4>
+<p><div class="highlight"><pre><span></span><code>beforeAll(callback(context: table))
+</code></pre></div>
+Runs a function before any of the tests within its scope run. This is useful if you want to set up state that will be used by other tests within its scope.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">globalState</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">beforeAll</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD have access to globalState&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">foo</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to run a function before each test instead of before all tests, use <code>beforeEach</code> instead.</p>
+</div>
+<h4 id="beforeeach">beforeEach<a class="headerlink" href="#beforeeach" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>beforeEach(callback(context: table))
+</code></pre></div>
+<p>Runs a function before each of the tests within its scope. This is useful if you want to reset global state that will be used by other tests within its scope.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">globalState</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">beforeEach</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD be able to read foo&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">foo</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">it</span><span class="p">(</span><span class="s2">&quot;SHOULD be able to write foo&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">globalState</span><span class="p">.</span><span class="n">foo</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">globalState</span><span class="p">.</span><span class="n">foo</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you only need to run some setup code once, before any tests run, use <code>beforeAll</code> instead.</p>
+</div>
+<h2 id="maintenance-and-debugging">Maintenance and Debugging<a class="headerlink" href="#maintenance-and-debugging" title="Permanent link">&para;</a></h2>
+<h3 id="fixme">FIXME<a class="headerlink" href="#fixme" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>FIXME(optionalMessage: string)
+</code></pre></div>
+<p>When called inside a <code>describe</code> block, <code>FIXME</code> is used to identify broken tests and marks the block as <em>skipped</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>FIXME</code> does not work inside an <code>it</code> block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.</p>
+</div>
+<h3 id="focus">FOCUS<a class="headerlink" href="#focus" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>FOCUS()
+</code></pre></div>
+<p>When called inside a <code>describe</code> block, <code>FOCUS()</code> marks that block as <em>focused</em>. If there are any focused blocks inside your test tree, <em>only</em> focused blocks will be executed, and all other tests will be skipped.</p>
+<p>When you're writing a new set of tests as part of a larger codebase, use <code>FOCUS()</code> while debugging them to reduce the amount of noise you need to scroll through.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;Secret Feature X&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">FOCUS</span><span class="p">()</span>
+
+    <span class="n">it</span><span class="p">(</span><span class="s2">&quot;should do something&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="n">describe</span><span class="p">(</span><span class="s2">&quot;Secret Feature Y&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">it</span><span class="p">(</span><span class="s2">&quot;should do nothing&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+        <span class="c1">-- This code will not run!</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>FOCUS</code> does not work inside an <code>it</code> block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.</p>
+</div>
+<h3 id="skip">SKIP<a class="headerlink" href="#skip" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>SKIP()
+</code></pre></div>
+<p>This function works similarly to <code>FOCUS()</code>, except instead of marking a block as <em>focused</em>, it will mark a block as <em>skipped</em>, which stops any of the test assertions in the block from being executed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>SKIP</code> does not work inside an <code>it</code> block. The bodies of these blocks aren't executed until the tests run, which is too late to change which tests will run.</p>
+</div>
+<h3 id="describefocus-and-describeskip">describeFOCUS and describeSKIP<a class="headerlink" href="#describefocus-and-describeskip" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>describeFOCUS(phrase: string)
+describeSKIP(phrase: string)
+</code></pre></div>
+<p>These methods are special versions of <code>describe</code> that automatically mark the <code>describe</code> block as <em>focused</em> or <em>skipped</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>fdescribe</code> is an alias for <code>describeFOCUS</code>.
+<code>xdescribe</code> is an alias for <code>describeSKIP</code>.</p>
+</div>
+<h3 id="itfocus-itskip-and-itfixme">itFOCUS, itSKIP, and itFIXME<a class="headerlink" href="#itfocus-itskip-and-itfixme" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>itFOCUS(phrase: string, callback(context: table))
+itSKIP(phrase: string, callback(context: table))
+itFIXME(phrase: string, callback(context: table))
+</code></pre></div>
+<p>These methods are special versions of <code>it</code> that automatically mark the <code>it</code> block as <em>focused</em> or <em>skipped</em>. They're necessary because <code>FOCUS</code>, <code>SKIP</code>, and <code>FIXME</code> can't be called inside <code>it</code> blocks!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>fit</code> is an alias for <code>itFOCUS</code>.
+<code>xit</code> is an alias for <code>itSKIP</code>.</p>
+</div>
+<h2 id="initspeclua">init.spec.lua<a class="headerlink" href="#initspeclua" title="Permanent link">&para;</a></h2>
+<p>When loading a spec file, TestEZ creates a new <code>describe</code> block for each file
+and for each folder those files are in. If the file is called <code>init.spec.lua</code>,
+TestEZ will not create a new <code>describe</code> block for it and instead attach any code
+inside to the folder's <code>describe</code> block. For more on one situation when this
+would be useful, see the section on <a href="#lifecycle-hooks">lifecycle hooks</a>.</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>As mentioned, <code>init.spec.lua</code> allows code to be run as part of a directory's
+otherwise-implicit block, and the lifecycle hooks allow setup and teardown code
+to be run for all tests within a block. This does indeed mean that a hook inside
+an init file will run for all tests in that directory. While hooks within the
+same file can pass extra information along to tests via upvalues, hooks in an
+init file must use the <code>context</code>.</p>
+<p><code>context</code> is a write-once table that is passed in to the callbacks for lifecycle
+hooks and <code>it</code> blocks. Entries in this table are only available to blocks within
+the current <code>describe</code> block. This means it's safe to add entries without
+worrying about influencing tests elsewhere in the tree.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- init.spec.lua</span>
+<span class="kr">return</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">beforeAll</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">helpers</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">script</span><span class="p">.</span><span class="n">Parent</span><span class="p">.</span><span class="n">helpers</span><span class="p">)</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span>
+
+<span class="c1">-- test.spec.lua</span>
+<span class="kr">return</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">it</span><span class="p">(</span><span class="s2">&quot;a test using a helper&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">helpers</span><span class="p">.</span><span class="n">makeUser</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+        <span class="c1">-- ...</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Context is not available to <code>describe</code> blocks since they run before any
+lifecycle hooks or <code>it</code> blocks.</p>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../getting-started/debugging-tests/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Debugging Tests
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.6a3d08fc.min.js"></script>
+      <script src="../assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

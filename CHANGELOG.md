@@ -2,6 +2,10 @@
 
 ## Unreleased Changes
 
+## 0.4.2 (2022-01-05)
+* Updated `rotriever.toml` to fix deprecation warnings
+* Added dark theme support to the documentation site
+
 ## 0.4.1 (2020-10-30)
 * `afterEach` blocks now run their code after `it` blocks fail or error
 

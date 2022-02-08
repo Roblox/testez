@@ -1,0 +1,8 @@
+[package]
+name = "roblox/testez"
+version = "0.4.1"
+license = "Apache2"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]

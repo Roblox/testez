@@ -1,6 +1,7 @@
 # TestEZ Changelog
 
 ## Unreleased Changes
+* Add a deprecation notice for uses of extraEnvironment.
 
 ## 0.4.2 (2022-01-05)
 * Updated `rotriever.toml` to fix deprecation warnings

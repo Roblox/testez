@@ -2,6 +2,10 @@
 
 ## Unreleased Changes
 
+## 0.4.3 (2023-03-12)
+* Added `under` and `over` expectations, analogous to less than and greater than. The latter were ruled out by the last word needing to be callable.
+* Added shorthand `lt`, `lte`, `gt`, and `gte` for those that know and want to keep things tidy.
+
 ## 0.4.2 (2022-01-05)
 * Updated `rotriever.toml` to fix deprecation warnings
 * Added dark theme support to the documentation site

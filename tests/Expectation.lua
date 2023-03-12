@@ -266,4 +266,135 @@ return {
 
         assert(success, "should succeed")
     end,
+    ["a greater than b should succeed when a>b"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:over(1)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a greater than b should fail when equal"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:over(2)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be over %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["a greater than b should fail when a<b"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:over(3)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be over %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    ["a greater than or equal to b should succeed when a>b"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:gte(1)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a greater than or equal to b should succeed when equal"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:gte(2)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a greater than or equal to b should fail when a<b"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:gte(3)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be greater than or equal to %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["a less than b should succeed when a<b"] = function()
+        local expect = Expectation.new(1)
+
+        local success = pcall(function()
+            expect:under(2)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a less than b should fail when equal"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:under(2)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be under %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["a less than b should fail when a<b"] = function()
+        local expect = Expectation.new(3)
+
+        local success = pcall(function()
+            expect:under(2)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be under %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
+    ["a less or equal to b should succeed when a<b"] = function()
+        local expect = Expectation.new(1)
+
+        local success = pcall(function()
+            expect:lte(2)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a less or equal to b should succeed when equal"] = function()
+        local expect = Expectation.new(2)
+
+        local success = pcall(function()
+            expect:lte(2)
+        end)
+
+        assert(success, "should succeed")
+    end,
+    ["a less or equal to b should fail when a<b"] = function()
+        local expect = Expectation.new(3)
+
+        local success = pcall(function()
+            expect:lte(2)
+        end)
+
+        assert(not success, "should fail")
+        assert(
+            message:match('Expected value to be less than or equal to %d+.%d+ but got %d+.%d+ instead'),
+            ("Error message does not match:\n%s\n"):format(message)
+        )
+    end,
 }

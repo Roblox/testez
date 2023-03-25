@@ -89,6 +89,13 @@ function Expectation.new(value)
 	self.equal = bindSelf(self, self.equal)
 	self.throw = bindSelf(self, self.throw)
 	self.near = bindSelf(self, self.near)
+	self.over = bindSelf(self, self.over)
+	self.gt = bindSelf(self, self.over)
+	self.gte = bindSelf(self, self.gte)
+	self.under = bindSelf(self, self.under)
+	self.lt = bindSelf(self, self.under)
+	self.lte = bindSelf(self, self.lte)
+
 
 	return self
 end
@@ -253,6 +260,110 @@ function Expectation:near(otherValue, limit)
 		("Expected value to not be near %f (within %f) but got %f instead"):format(
 			otherValue,
 			limit,
+			self.value
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+--[[
+	Assert that our expectation value is greater than another value.
+]]
+function Expectation:over(otherValue)
+	assert(type(self.value) == "number", "Expectation value must be a number to use 'over'")
+	assert(type(otherValue) == "number", "otherValue must be a number")
+
+	local result = self.value > otherValue == self.successCondition
+
+	local message = formatMessage(self.successCondition,
+		("Expected value to be over %f but got %f instead"):format(
+			otherValue,
+			self.value
+		),
+		("Expected value to not be over %f but got %f instead"):format(
+			otherValue,
+			self.value
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+--[[
+	Assert that our expectation value is greater than or equal to another value.
+]]
+function Expectation:gte(otherValue)
+	assert(type(self.value) == "number", "Expectation value must be a number to use 'gte'")
+	assert(type(otherValue) == "number", "otherValue must be a number")
+
+	local result = self.value >= otherValue == self.successCondition
+
+	local message = formatMessage(self.successCondition,
+		("Expected value to be greater than or equal to %f but got %f instead"):format(
+			otherValue,
+			self.value
+		),
+		("Expected value to not be greater than or equal to %f but got %f instead"):format(
+			otherValue,
+			self.value
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+--[[
+	Assert that our expectation value is less than another value.
+]]
+function Expectation:under(otherValue)
+	assert(type(self.value) == "number", "Expectation value must be a number to use 'under'")
+	assert(type(otherValue) == "number", "otherValue must be a number")
+
+	local result = self.value < otherValue == self.successCondition
+
+	local message = formatMessage(self.successCondition,
+		("Expected value to be under %f but got %f instead"):format(
+			otherValue,
+			self.value
+		),
+		("Expected value to not be under %f but got %f instead"):format(
+			otherValue,
+			self.value
+		)
+	)
+
+	assertLevel(result, message, 3)
+	self:_resetModifiers()
+
+	return self
+end
+
+--[[
+	Assert that our expectation value is less than or equal to another value.
+]]
+function Expectation:lte(otherValue)
+	assert(type(self.value) == "number", "Expectation value must be a number to use 'lte'")
+	assert(type(otherValue) == "number", "otherValue must be a number")
+
+	local result = self.value <= otherValue == self.successCondition
+
+	local message = formatMessage(self.successCondition,
+		("Expected value to be less than or equal to %f but got %f instead"):format(
+			otherValue,
+			self.value
+		),
+		("Expected value to not be less than or equal to %f but got %f instead"):format(
+			otherValue,
 			self.value
 		)
 	)

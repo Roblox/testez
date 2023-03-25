@@ -278,7 +278,7 @@ return {
     ["a greater than b should fail when equal"] = function()
         local expect = Expectation.new(2)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:over(2)
         end)
 
@@ -291,7 +291,7 @@ return {
     ["a greater than b should fail when a<b"] = function()
         local expect = Expectation.new(2)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:over(3)
         end)
 
@@ -300,6 +300,7 @@ return {
             message:match('Expected value to be over %d+.%d+ but got %d+.%d+ instead'),
             ("Error message does not match:\n%s\n"):format(message)
         )
+    end,
     ["a greater than or equal to b should succeed when a>b"] = function()
         local expect = Expectation.new(2)
 
@@ -309,7 +310,7 @@ return {
 
         assert(success, "should succeed")
     end,
-    ["a greater than or equal to b should succeed when equal"] = function()
+    ["a greater than or equal gte to b should succeed when equal"] = function()
         local expect = Expectation.new(2)
 
         local success = pcall(function()
@@ -321,7 +322,7 @@ return {
     ["a greater than or equal to b should fail when a<b"] = function()
         local expect = Expectation.new(2)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:gte(3)
         end)
 
@@ -343,7 +344,7 @@ return {
     ["a less than b should fail when equal"] = function()
         local expect = Expectation.new(2)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:under(2)
         end)
 
@@ -356,7 +357,7 @@ return {
     ["a less than b should fail when a<b"] = function()
         local expect = Expectation.new(3)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:under(2)
         end)
 
@@ -387,7 +388,7 @@ return {
     ["a less or equal to b should fail when a<b"] = function()
         local expect = Expectation.new(3)
 
-        local success = pcall(function()
+        local success, message = pcall(function()
             expect:lte(2)
         end)
 

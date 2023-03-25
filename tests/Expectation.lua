@@ -310,7 +310,7 @@ return {
 
         assert(success, "should succeed")
     end,
-    ["a greater than or equal gte to b should succeed when equal"] = function()
+    ["a greater than or equal to b should succeed when equal"] = function()
         local expect = Expectation.new(2)
 
         local success = pcall(function()

@@ -57,7 +57,7 @@ jobs:
     - name: Setup Rust toolchain
       run: rustup default ${{ matrix.rust_version }}
 
-    - uses: Roblox/setup-foreman@v1
+    - uses: Roblox/setup-foreman@v3
       with:
         version: "^0.6.0"
         token: ${{ secrets.GITHUB_TOKEN }}

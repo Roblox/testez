@@ -6,6 +6,15 @@ local TestEZ = require(<path to TestEZ>)
 TestEZ.TestBootstrap:run({ MY_TESTS })
 ```
 
-The method also returns information about the test run that can be used to take further action!
+This will run all files post-fixed with *.spec.lua (in Rojo) that are children of `MY_TESTS`
 
-The internals of TestEZ are being reworked, so accessing other APIs at this time isn't recommended.
+For example, you might have
+
+- Shared (mapped to ReplicatedStorage)
+    - AnimalModule
+        - cat.lua
+        - cat.spec.lua
+        - dog.lua
+        - dog.spec.lua
+
+then setting `MY_TESTS = game.ReplicatedStorage.Shared.AnimalModule` would run the tests in cat.spec.lua and dog.spec.lua
